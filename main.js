@@ -1,5 +1,5 @@
-const Animation = require('./Camera3D');
-import MC from "@kissmybutton/motorcortex";
+const Camera3D = require('./Camera3D');
+const MC = require("@kissmybutton/motorcortex");
 
 // const Channel = require('./Channel');
 
