@@ -12,10 +12,10 @@
     "threejs"
   ],
   "peerDependencies": {
-    "@kissmybutton/motorcortex": "1.6.8"
+    "@kissmybutton/motorcortex": "1.7.4"
   },
   "devDependencies": {
-    "@kissmybutton/motorcortex": "1.6.8",
+    "@kissmybutton/motorcortex": "1.7.4",
     "babel-eslint": "^8.2.3",
     "babel-loader": "^7.1.4",
     "babel-preset-stage-2": "^6.24.1",

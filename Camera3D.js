@@ -1,114 +1,82 @@
 const MC = require('@kissmybutton/motorcortex');
 global.THREE = require('three');
-require('three/examples/js/renderers/CSS3DRenderer');
-require('three/examples/js/controls/OrbitControls');
+
+// require('three/examples/js/controls/OrbitControls');
 const helper = new MC.Helper();
 const TimedIncident = MC.TimedIncident;
-console.log(global)
-var camera;
-var controls;
-var scene;
-var torus;
-var light;
-var renderer;
-var scene2;
-var renderer2;
-var div;
-var element;
+
 class Camera3D extends TimedIncident {
     onInitialise(attrs, incidentProps) {
         this.animationInitialised = false;
-        // if(!this.attrs.attrs.hasOwnProperty('easing')){
-        //     this.attrs.attrs.easing = 'linear';
-        // }
-
+        // this.animate = this.animate.bind(this);
+        // this.attrs = attrs
     }
 
     onGetContext(){
+        // console.log("in get contex", this.elements)
         if(this.animationInitialised){
             return ;
         }
-        console.log(this.elements)
-        console.log(this.elements[0].offsetWidth)
-        //camera
-        camera = new THREE.PerspectiveCamera(45, this.elements[0].offsetWidth / this.elements[0].offsetHeight, 1, 10000);
-        camera.position.set(0, 0, -100);
-        
-        //controls
-        controls = new THREE.OrbitControls(camera);
-        controls.rotateSpeed = 1.0;
-        controls.zoomSpeed = 1.2;
-        controls.panSpeed = 0.8;
-        
-        //Scene
-        // scene = new THREE.Scene();
-        
-        //TorusGeometry
-        // torus = new THREE.Mesh(new THREE.TorusGeometry(120, 60, 40, 40),
-        //                        new THREE.MeshNormalMaterial());
-        // torus.position.set(0, 0, 0);
-        // // scene.add(torus);
-        
-        // //HemisphereLight
-        // light = new THREE.HemisphereLight(0xffbf67, 0x15c6ff);
-        // scene.add(light);
-        
-        // //WebGL Renderer
-        // renderer = new THREE.WebGLRenderer({ antialias: true, alpha:true });
-        // renderer.setClearColor(0xffffff, 0)
-        // renderer.setSize(this.elements[0].offsetWidth, this.elements[0].offsetHeight);
-        // renderer.domElement.style.zIndex = 5;
-       
 
-       //CSS3D Scene
-        scene2 = new THREE.Scene();
-        
-        //HTML
-        element = document.createElement('div');
-        element.innerHTML = 'Plain text inside a div.';
-        element.className = 'three-div';
-        
         //CSS Object
-        div = new THREE.CSS3DObject(element);
-        div.position.x = 0;
-        div.position.y = 0;
-        div.position.z = 0;
-        div.rotation.y = Math.PI;
-        scene2.add(div);
+        this.channel.getCSS3Objects(this.element);
+        // this.div.position.x = 0;
+        // this.div.position.y = 0;
+        // this.div.position.z = 0;
+        // this.div.rotation.y = Math.PI;
         
-        //CSS3D Renderer
-        renderer2 = new THREE.CSS3DRenderer();
-        renderer2.setSize(this.elements[0].offsetWidth, this.elements[0].offsetHeight);
-        // renderer2.domElement.style.position = 'absolute';
-        // renderer2.domElement.style.top = 0;
-        // this.elements[0].appendChild(renderer.domElement);
-        
-        
-        this.elements[0].appendChild(renderer2.domElement);
-        animate();
+        this.context.rootElement.appendChild(this.channel.CSS3DRenderer.domElement);
+        // this.onPr();
         this.animationInitialised = true;
     }
     
     getScratchValue(mcid, attribute){
-        // return Velocity(this.getElementByMCID(mcid), "style", attribute);
+        return this.attrs.attrs[attribute];
     }
     
     onProgress(progress, millisecond){
-        
-    }
-    
-    // lastWish(){
-    //     this.stop();
-    //     this.complete();
-    // }
-    
+        // this.div.rotation.y = ((this.attrs.animatedAttrs.camera_rotation_y - this.getInitialValue('camera_rotation_y')) * progress) + this.getInitialValue('camera_rotation_y');
+        // // this.camera.position.z = ((this.attrs.animatedAttrs.camera_position_z - this.getInitialValue('camera_position_z')) * progress) + this.getInitialValue('camera_position_z');
+        // this.div.rotation.z = ((this.attrs.animatedAttrs.camera_rotation_y - this.getInitialValue('camera_rotation_y')) * progress) + this.getInitialValue('camera_rotation_y');
+        let id = this.props.selector.split("=")[1]
+        id = id.replace(new RegExp('"', 'g'), '');
+        id = id.replace(new RegExp(']', 'g'), '');
+        console.log(id)
+        // console.log(this.channel.getCSS3Objects(id))
+        // console.log(this.channel.CSS3Objects)
+        // console.log(id.substring(0,id.length-1));
+        // console.log(this.channel.CSS3Objects[id.substring(0,id.length-1)])
+        for ( let key in this.attrs.animatedAttrs) {
+            // console.log(key)
+            if ( key === "camera_rotation_x") {
+                this.channel.CSS3Objects[id].rotation.x = ((this.attrs.animatedAttrs.camera_rotation_x - this.getInitialValue(key)) * progress) + this.getInitialValue(key);
+            }
+            else if ( key === "camera_rotation_y") {
+                this.channel.CSS3Objects[id].rotation.y = ((this.attrs.animatedAttrs.camera_rotation_y - this.getInitialValue(key)) * progress) + this.getInitialValue(key);
+                // console.log(key, this.div.rotation.y)
+            } 
+            else if ( key === "camera_rotation_z") {
+                this.channel.CSS3Objects[id].rotation.z = ((this.attrs.animatedAttrs.camera_rotation_z - this.getInitialValue(key)) * progress) + this.getInitialValue(key);
 
-}
+            }
+            else if ( key === "camera_position_x") {
+                this.channel.camera.position.x = ((this.attrs.animatedAttrs.camera_position_x - this.getInitialValue(key)) * progress) + this.getInitialValue(key);
 
-function animate() {
-            requestAnimationFrame(animate);
-            renderer2.render(scene2, camera);
-            renderer.render(scene, camera);
-            controls.update();
+            }
+            else if ( key === "camera_position_y") {
+                this.channel.camera.position.y = ((this.attrs.animatedAttrs.camera_position_y - this.getInitialValue(key)) * progress) + this.getInitialValue(key);
+
+            }
+            else if ( key === "camera_position_z") {
+                this.channel.camera.position.z = ((this.attrs.animatedAttrs.camera_position_z - this.getInitialValue(key)) * progress) + this.getInitialValue(key);
+
+            }
+
         }
+       
+
+        this.channel.CSS3DRenderer.render(this.channel.CSS3DScene, this.channel.camera);
+        // requestAnimationFrame(this.animate);
+    }
+}
 module.exports = Camera3D;
