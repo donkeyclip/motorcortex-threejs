@@ -38,10 +38,11 @@ class Camera3D extends TimedIncident {
         // this.div.rotation.y = ((this.attrs.animatedAttrs.camera_rotation_y - this.getInitialValue('camera_rotation_y')) * progress) + this.getInitialValue('camera_rotation_y');
         // // this.camera.position.z = ((this.attrs.animatedAttrs.camera_position_z - this.getInitialValue('camera_position_z')) * progress) + this.getInitialValue('camera_position_z');
         // this.div.rotation.z = ((this.attrs.animatedAttrs.camera_rotation_y - this.getInitialValue('camera_rotation_y')) * progress) + this.getInitialValue('camera_rotation_y');
-        let id = this.props.selector.split("=")[1]
-        id = id.replace(new RegExp('"', 'g'), '');
-        id = id.replace(new RegExp(']', 'g'), '');
-        console.log(id)
+        // let id = this.props.selector.split("=")[1]
+        // id = id.replace(new RegExp('"', 'g'), '');
+        // id = id.replace(new RegExp(']', 'g'), '');
+        let elem = this.channel.getCSS3Objects(this.element);
+        // console.log(elem)
         // console.log(this.channel.getCSS3Objects(id))
         // console.log(this.channel.CSS3Objects)
         // console.log(id.substring(0,id.length-1));
@@ -49,14 +50,14 @@ class Camera3D extends TimedIncident {
         for ( let key in this.attrs.animatedAttrs) {
             // console.log(key)
             if ( key === "camera_rotation_x") {
-                this.channel.CSS3Objects[id].rotation.x = ((this.attrs.animatedAttrs.camera_rotation_x - this.getInitialValue(key)) * progress) + this.getInitialValue(key);
+                this.channel.camera.rotation.x = ((this.attrs.animatedAttrs.camera_rotation_x - this.getInitialValue(key)) * progress) + this.getInitialValue(key);
             }
             else if ( key === "camera_rotation_y") {
-                this.channel.CSS3Objects[id].rotation.y = ((this.attrs.animatedAttrs.camera_rotation_y - this.getInitialValue(key)) * progress) + this.getInitialValue(key);
+                this.channel.camera.rotation.y = ((this.attrs.animatedAttrs.camera_rotation_y - this.getInitialValue(key)) * progress) + this.getInitialValue(key);
                 // console.log(key, this.div.rotation.y)
             } 
             else if ( key === "camera_rotation_z") {
-                this.channel.CSS3Objects[id].rotation.z = ((this.attrs.animatedAttrs.camera_rotation_z - this.getInitialValue(key)) * progress) + this.getInitialValue(key);
+                this.channel.camera.rotation.z = ((this.attrs.animatedAttrs.camera_rotation_z - this.getInitialValue(key)) * progress) + this.getInitialValue(key);
 
             }
             else if ( key === "camera_position_x") {

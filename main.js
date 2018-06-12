@@ -10,9 +10,9 @@ class Channel extends MC.AttributeChannel {
         
         //camera
         this.camera = new THREE.PerspectiveCamera( 45, this.ratio, 1, 10000 );
-        this.camera.lookAt(0,0,0)
 
-        // this.camera.position.set(0,0,0);
+        this.camera.position.set(0,0,0);
+        this.camera.lookAt(0,0,0)
 
         this.CSS3DRenderer = new THREE.CSS3DRenderer();
         this.CSS3DRenderer
@@ -30,9 +30,12 @@ class Channel extends MC.AttributeChannel {
             return this.CSS3Objects[element.dataset.motorcortex2Id];
         }
         this.CSS3Objects[element.dataset.motorcortex2Id] = new THREE.CSS3DObject(element);
+        this.CSS3Objects[element.dataset.motorcortex2Id].rotation.y = Math.PI;
+        this.CSS3Objects[element.dataset.motorcortex2Id].position.set(0,0,0);
+
         this.CSS3DScene.add(this.CSS3Objects[element.dataset.motorcortex2Id]);
 
-        console.log(this.CSS3Objects)
+        // console.log(this.CSS3Objects)
         return this.CSS3Objects[element.dataset.motorcortex2Id];
     }
 } 

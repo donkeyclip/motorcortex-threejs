@@ -48,10 +48,10 @@ const camera1 = new threejsPlugin.Camera3D(
     animatedAttrs: {
       camera_rotation_x: 0,
       camera_rotation_y: 10 * Math.PI,
-      camera_rotation_z: 0,
+      camera_rotation_z: 10 * Math.PI,
       camera_position_x: 0,
       camera_position_y: 0,
-      camera_position_z: -200
+      camera_position_z: -500
     },
     attrs: {
       camera_rotation_x: 0,
@@ -59,7 +59,7 @@ const camera1 = new threejsPlugin.Camera3D(
       camera_rotation_z: 0,
       camera_position_x: 0,
       camera_position_y: 0,
-      camera_position_z: -20
+      camera_position_z: -200
     }
   }, 
   {
