@@ -1,4 +1,4 @@
-const MC = require('@kissmybutton/motorcortex');
+// const MC = require('@kissmybutton/motorcortex');
 global.THREE = require('three');
 
 // require('three/examples/js/controls/OrbitControls');
@@ -76,7 +76,7 @@ class Camera3D extends TimedIncident {
         }
        
 
-        this.channel.CSS3DRenderer.render(this.channel.CSS3DScene, this.channel.camera);
+        this.CSS3DRenderer.render(this.channel.CSS3DScene, this.channel.camera);
         // requestAnimationFrame(this.animate);
     }
 }

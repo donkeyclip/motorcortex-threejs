@@ -1,6 +1,7 @@
-const MC = require("@kissmybutton/motorcortex");
+// const MC = require("@kissmybutton/motorcortex");
+const MC = require("../motorcortex");
 const threejsPluginDefinition = require("./main");
-const threejsPlugin = MC.loadPlugin(threejsPluginDefinition);
+// const threejsPlugin = MC.loadPlugin(threejsPluginDefinition);
 
 // Create a Clip
 let css = `
@@ -18,7 +19,6 @@ let css = `
 
 let html = `
 <div class="myCam">
-  <div id="sample-div">Plaintextsample</div>
 </div>
 `;
 
@@ -29,58 +29,68 @@ let containerParams = {
   height: "100%"
 };
 
-const clip = new MC.Clip(null, {
-  css,
-  html,
-  host,
-  containerParams
-});
+// const clip = new MC.Clip(null, {
+//   css,
+//   html,
+//   host,
+//   containerParams
+// });
 
 // Create a Group
-const group = new MC.Group();
+// const group = new MC.Group();
 
 // HTML
 // element.innerHTML = 'Plain text inside a div.';
 // element.className = 'three-div';
 
-const camera1 = new threejsPlugin.Camera3D(
+const clip1 = new MC.Clip3D(
   {
-    animatedAttrs: {
-      camera_rotation_x: 0,
-      camera_rotation_y: 10 * Math.PI,
-      camera_rotation_z: 10 * Math.PI,
-      camera_position_x: 0,
-      camera_position_y: 0,
-      camera_position_z: -500
-    },
-    attrs: {
-      camera_rotation_x: 0,
-      camera_rotation_y: 0,
-      camera_rotation_z: 0,
-      camera_position_x: 0,
-      camera_position_y: 0,
-      camera_position_z: -200
+    scenes:[
+    {
+      id: "scene1",
+      selector: "scene1"
     }
+    ],
+    lights:[
+    ],
+    cameras:[
+    {
+      id: "camera1",
+      selector: "camera1",
+    }
+    ],
+    renderers:[
+    {
+      id: "renderer1",
+      selector: "renderer1"
+    }
+    ],
+    render: () => {
+      console.log("this",this)
+    }
+
   }, 
   {
-    id: "camera1",
-    selector: "#sample-div",
-    duration: 10000
+    id: "clip1",
+    selector: "clips",
+    duration: 10000,
+    host,
+    containerParams
   }
 );
 
-group.addIncident(camera1,100)
+// group.addIncident(camera1,100)
 
 // Add Group to Clip
-clip.addIncident(group, 0);
+// clip.addIncident(group, 0);
 
 
 const Timer = MC.Timer;
 
 let timer = new Timer({
-    Incident: clip
+    Incident: clip1
 });
 window.MCTestTimer = timer;
 
 
-clip.play();
+clip1.play();
