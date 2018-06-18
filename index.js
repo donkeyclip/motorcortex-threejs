@@ -1,7 +1,7 @@
-// const MC = require("@kissmybutton/motorcortex");
-const MC = require("../motorcortex");
+const MC = require("@kissmybutton/motorcortex");
+// const MC = require("../motorcortex");
 const threejsPluginDefinition = require("./main");
-// const threejsPlugin = MC.loadPlugin(threejsPluginDefinition);
+const threejsPlugin = MC.loadPlugin(threejsPluginDefinition);
 
 // Create a Clip
 let css = `
@@ -29,51 +29,65 @@ let containerParams = {
   height: "100%"
 };
 
-// const clip = new MC.Clip(null, {
-//   css,
-//   html,
-//   host,
-//   containerParams
-// });
-
-// Create a Group
-// const group = new MC.Group();
-
-// HTML
-// element.innerHTML = 'Plain text inside a div.';
-// element.className = 'three-div';
-
-const clip1 = new MC.Clip3D(
+const clip1 = new threejsPlugin.Clip3D(
   {
     scenes:[
     {
       id: "scene1",
-      selector: "scene1"
+      groups: "scene1"
     }
     ],
     lights:[
+    {
+      id: "light1",
+      groups: "lights"
+    }
     ],
     cameras:[
     {
       id: "camera1",
-      selector: "camera1",
+      groups: "camera1",
+      settings: {
+        position: {
+          z: 10000
+        },
+        far: 10000
+      }
+    },
+    {
+      id: "camera2",
+      groups: "camera2",
+      settings: {
+        position: {
+          z: 100
+        },
+        rotation: {
+          z: 1.2
+        },
+        far: 100000
+      }
     }
     ],
     renderers:[
     {
       id: "renderer1",
-      selector: "renderer1"
+      groups: "renderer1",
+      settings: {
+        setClearColor: ['green']
+      }
     }
     ],
-    render: () => {
-      console.log("this",this)
-    }
-
+    renders: [
+      {
+        renderer: "#renderer1",
+        camera: "#camera2",
+        scene: "#scene1"
+      }
+    ]
   }, 
   {
     id: "clip1",
-    selector: "clips",
-    duration: 10000,
+    groups: "clips",
     host,
     containerParams
   }
