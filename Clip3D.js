@@ -77,6 +77,9 @@ class Clip3D extends Group{
 
         this.ownContext = contextHanlder.context;
         this.isTheClip = true;
+
+        this.attrs = attrs;
+
         this.ownContext.elements = {
             lights: [],
             cameras: [],
@@ -85,6 +88,9 @@ class Clip3D extends Group{
             models: []
         };
 
+        /*
+        * CAMERA
+        */
         for (let camera of attrs.cameras){
 
             camera.settings = camera.settings || {};
@@ -134,6 +140,9 @@ class Clip3D extends Group{
             console.log(this.ownContext.elements.cameras[length].object.rotation)
         }
 
+        /*
+        * SCENE
+        */
         for (let scene of attrs.scenes){
             this.ownContext.elements.scenes.push(
                 {
@@ -145,6 +154,9 @@ class Clip3D extends Group{
 
         }
 
+        /*
+        * SCENE
+        */
         for (let renderer of attrs.renderers){
             renderer.parameters = renderer.parameters || null;
 
@@ -172,43 +184,66 @@ class Clip3D extends Group{
 
         }
 
+        /*
+        * LIGHT
+        */
         for (let light of attrs.lights){
-            light.parameters = light.parameters || [0xffffff,1,100];
+            light.settings = light.settings || {};
+            light.settings.type = light.settings.type || "DirectionalLight";
+
+            if (light.settings.type === "SpotLight") {
+                light.parameters = light.parameteres || [0xDDDDDD, 1]
+            }
+            else if ( light.settings.type === "DirectionalLight") {
+                light.parameters = light.parameters || [0xffffff,1,100];
+            }
 
             this.ownContext.elements.lights.push(
                 {
                     id: light.id,
                     groups: light.groups,
-                    object: new THREE.DirectionalLight(...light.parameters)
+                    object: new THREE[light.settings.type](...light.parameters)
                 }
             )
 
             let length = this.ownContext.elements.lights.length - 1;
-            console.log(this.ownContext.getElements('#scene1')[0].object)
+
             light = this.ownContext.elements.lights[length].object;
-
-            light.position.set( 0, 1, 0 );          //default; light shining from top
+            light.position.set( 0, 1, 1 );          //default; light shining from top
             light.castShadow = true;            // default false
-            light.shadow.mapSize.width = this.ownContext.window.innerWidth;  // default
-            light.shadow.mapSize.height = this.ownContext.window.innerHeight; // default
-            light.shadow.camera.near = 0.5;    // default
-            light.shadow.camera.far = 10000;     // default
+            // light.shadow.mapSize.width = this.ownContext.window.innerWidth;  // default
+            // light.shadow.mapSize.height = this.ownContext.window.innerHeight; // default
+            // light.shadow.camera.near = 0.5;    // default
+            // light.shadow.camera.far = 10000;     // default
 
-            this.ownContext.getElements('#scene1')[0].object.add(this.ownContext.elements.lights[length].object)
+            // // Add directional light
+            // var spot_light = new THREE.SpotLight();
+            // spot_light.position.set(0,0,100);
+            // spot_light.target = this.ownContext.getElements("#scene1")[0].object;
+            // spot_light.castShadow = true;
+            // spot_light.receiveShadow = true;
+            // spot_light.shadowDarkness = 1;
+            // spot_light.shadowCameraNear = 1;       
+            
+            // var spotLightHelper = new THREE.SpotLightHelper( spot_light );
+
+            this.ownContext.getElements('#scene1')[0].object.add(light)
+            // this.ownContext.getElements('#scene1')[0].object.add(spot_light)
+            // this.ownContext.getElements('#scene1')[0].object.add(spotLightHelper)
             
 
             
         }
 
+        this.render();
+
         this.controls = new THREE.OrbitControls( this.ownContext.getElements('#camera2')[0].object, document.body)
         this.controls.update()
         // console.log(this.controls)
-        this.attrs = attrs;
         // run render function
         // this.render.bind(this);
         // this.animate.bind(this);
 
-        this.render();
         this.animate = () => {
             // console.log("asdf ")
             // console.log("onece", this)
@@ -238,22 +273,25 @@ class Clip3D extends Group{
     render() {
         
         var geometry = new THREE.BoxBufferGeometry( 2, 2, 2 );
-        var material = new THREE.MeshBasicMaterial();
+        var material = new THREE.MeshLambertMaterial({color:'green'});
         var mesh = new THREE.Mesh( geometry, material );
         mesh.castShadow = true; //default is false
-        mesh.receiveShadow = false; //default
+        mesh.receiveShadow = true; //default
+        mesh.position.z = 2
 
         var geometry = new THREE.PlaneGeometry( 50, 20, 32 );
-        var material = new THREE.MeshBasicMaterial( {color: 0xff0000, side: THREE.DoubleSide} );
+        var material = new THREE.MeshLambertMaterial( {color: 0xff0000, side: THREE.DoubleSide} );
         var plane = new THREE.Mesh( geometry, material );
-        plane.castShadow = true;
-        plane.position.z = -1
+        plane.castShadow = false;
         plane.receiveShadow = true;
+
         var axesHelper = new THREE.AxesHelper( 5 );
+
         this.ownContext.elements.scenes[0].object.add( mesh );
         this.ownContext.elements.scenes[0].object.add( plane );
         this.ownContext.elements.scenes[0].object.add( axesHelper );
-        console.log(this.ownContext)
+        // console.log(this.ownContext)
+
         for (let i in this.ownContext.elements.renderers) {
             this.ownContext.rootElement.appendChild( this.ownContext.elements.renderers[i].object.domElement );
         }
@@ -271,7 +309,7 @@ class Clip3D extends Group{
             
 
     lastWish(){
-        // this.ownContext.unmount();
+        this.ownContext.unmount();
     }
 }
 
@@ -286,7 +324,7 @@ class Clip3D extends Group{
 //                 mesh.rotation.y += 0.01;
 //             }
 
-console.log("cliip",Clip3D)
+// console.log("cliip",Clip3D)
 // module.exports = Clip3D;
 
 

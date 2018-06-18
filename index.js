@@ -59,10 +59,11 @@ const clip1 = new threejsPlugin.Clip3D(
       groups: "camera2",
       settings: {
         position: {
-          z: 100
+          z: 10,
+          y: -10
         },
         rotation: {
-          z: 1.2
+          z: 0
         },
         far: 100000
       }
@@ -73,7 +74,7 @@ const clip1 = new threejsPlugin.Clip3D(
       id: "renderer1",
       groups: "renderer1",
       settings: {
-        setClearColor: ['green']
+        setClearColor: ['lightblue']
       }
     }
     ],
