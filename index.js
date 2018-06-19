@@ -40,7 +40,14 @@ const clip1 = new threejsPlugin.Clip3D(
     lights:[
     {
       id: "light1",
-      groups: "lights"
+      groups: "lights",
+      settings: {
+        position:{
+          set: [0,1,1]
+        },
+        castShadow:true,
+        recieveShadow:true
+      }
     }
     ],
     cameras:[
@@ -74,7 +81,11 @@ const clip1 = new threejsPlugin.Clip3D(
       id: "renderer1",
       groups: "renderer1",
       settings: {
-        setClearColor: ['lightblue']
+        setClearColor: ['lightblue'],
+        shadowMap: {
+          enabled: true,
+          type:THREE.PCFSoftShadowMap
+        }
       }
     }
     ],

@@ -2,67 +2,32 @@ const MC = require('@kissmybutton/motorcortex');
 global.THREE = require('three');
 require('three/examples/js/renderers/CSS3DRenderer');
 require('three/examples/js/controls/OrbitControls');
-var controls;
 // const MC = require('../motorcortex');
-
-
-// console.log(MC)
 
 const Helper = MC.Helper;
 const helper = new MC.Helper();
 const Group = MC.Group;
 const conf = MC.conf;
-// context handlers
 const Iframe3DContextHandler = require('./Iframe3DContextHandler');
 
 class Clip3D extends Group{
     /**
-     * @param {object} props - an object that should contain all of the following keys:
+     * @param {object} props - an object that should contain all of the
+     * following keys:
      * - html (the html template to render)
      * - css (the css template of the isolated tree)
-     * - initParams (optional / the initialisation parameteres that will be passed both on the css and the html templates in order to render)
+     * - initParams (optional / the initialisation parameteres that will be
+     * passed both on the css and the html templates in order to render)
      * - host (an Element object that will host the isolated tree)
-     * - containerParams (an object that holds parameters to affect the container of the isolated tree, e.g. width, height etc)
+     * - containerParams (an object that holds parameters to affect the
+     * container of the isolated tree, e.g. width, height etc)
     */
     constructor(attrs={}, props={}){
-        if(!helper.isObject(props)){
-            helper.error(`Self Contained Incident expects an object on its second argument on the constructor. ${typeof props} passed`);
-            return false;
-        }
-        
-        if(!props.hasOwnProperty('id')){
-            helper.error(`Self Contained Incident expects the 'id' key on its constructor properties which is missing`);
-            return false;
-        }
-        
-        
-        if(!props.hasOwnProperty('host')){
-            helper.error(`Self Contained Incident expects the 'host' key on its constructor properties which is missing`);
-            return false;
-        }
+        super(attrs, props);
 
-        if(!props.hasOwnProperty('containerParams')){
-            helper.error(`Self Contained Incident expects the 'containerParams' key on its constructor properties which is missing`);
-            return false;
-        }
+        const checks = this.runChecks(attrs,props);
 
-        if(!attrs.hasOwnProperty('scenes')){
-            helper.error(`Self Contained Incident expects the 'scenes' key on its constructor attributes which is missing`);
-            return false;
-        }
-
-        if(!attrs.hasOwnProperty('lights')){
-            helper.error(`Self Contained Incident expects the 'lights' key on its constructor attributes which is missing`);
-            return false;
-        }
-
-        if(!attrs.hasOwnProperty('cameras')){
-            helper.error(`Self Contained Incident expects the 'cameras' key on its constructor attributes which is missing`);
-            return false;
-        }
-
-        if(!attrs.hasOwnProperty('renderers')){
-            helper.error(`Self Contained Incident expects the 'renderers' key on its constructor attributes which is missing`);
+        if(!checks) {
             return false;
         }
 
@@ -72,8 +37,6 @@ class Clip3D extends Group{
         }
         
         const contextHanlder = new ContextHanlder(props);
-        
-        super(attrs, props);
 
         this.ownContext = contextHanlder.context;
         this.isTheClip = true;
@@ -89,60 +52,32 @@ class Clip3D extends Group{
         };
 
         /*
-        * CAMERA
+        * CAMERAS
         */
+
         for (let camera of attrs.cameras){
-
-            camera.settings = camera.settings || {};
-            camera.settings.type = camera.settings.type || "PerspectiveCamera";
-            if (camera.settings.type === "PerspectiveCamera") {
-                camera.settings.fov = camera.settings.fov || 45;
-                camera.settings.aspect = camera.settings.aspect || this.ownContext.window.innerWidth / this.ownContext.window.innerHeight;
-                camera.settings.near = camera.settings.near || 1;
-                camera.settings.far = camera.settings.far || 1000;
-            } else {
-                camera.settings.left = camera.settings.left || this.ownContext.window.innerWidth / - 2;
-                camera.settings.right = camera.settings.right || this.ownContext.window.innerWidth / 2;
-                camera.settings.top = camera.settings.top || this.ownContext.window.innerHeight / 2;
-                camera.settings.bottom = camera.settings.bottom || this.ownContext.window.innerHeight / - 2;
-                camera.settings.near = camera.settings.near || 1;
-                camera.settings.far = camera.settings.far || 1000;
-            }
-            camera.settings.position = camera.settings.position || {};
-            camera.settings.position.x = camera.settings.position.x || 0;
-            camera.settings.position.y = camera.settings.position.y || 0;
-            camera.settings.position.z = camera.settings.position.z || 1000;
-
-            camera.settings.rotation = camera.settings.rotation || {};
-            camera.settings.rotation.x = camera.settings.rotation.x || 0;
-            camera.settings.rotation.y = camera.settings.rotation.y || 0;
-            camera.settings.rotation.z = camera.settings.rotation.z || 0;
-
+            this.initializeCamera(camera);
             const { type, fov, aspect, near, far } = camera.settings;
             this.ownContext.elements.cameras.push(
                 {
                     id: camera.id,
                     groups: camera.groups,
                     settings: camera.settings,
-                    object: type === "PerspectiveCamera" ? new THREE[type]( fov, aspect, near, far) : new THREE[type]( left, right, top, bottom, near, far)
+                    object: type === "PerspectiveCamera" ?
+                        new THREE[type](fov, aspect, near, far) :
+                        new THREE[type](left, right, top, bottom, near, far)
                 }
             )
 
             let length = this.ownContext.elements.cameras.length - 1;
-
-            this.ownContext.elements.cameras[length].object.position.x = camera.settings.position.x;
-            this.ownContext.elements.cameras[length].object.position.y = camera.settings.position.y;
-            this.ownContext.elements.cameras[length].object.position.z = camera.settings.position.z;
-            this.ownContext.elements.cameras[length].object.rotation.x = camera.settings.rotation.x;
-            this.ownContext.elements.cameras[length].object.rotation.y = camera.settings.rotation.y;
-            this.ownContext.elements.cameras[length].object.rotation.z = camera.settings.rotation.z;
-
-            console.log(this.ownContext.elements.cameras[length].object.rotation)
+            const cameraObj = this.ownContext.elements.cameras[length].object;
+            this.applySettingsToObjects(camera.settings, cameraObj);
         }
 
         /*
-        * SCENE
+        * SCENES
         */
+
         for (let scene of attrs.scenes){
             this.ownContext.elements.scenes.push(
                 {
@@ -155,48 +90,34 @@ class Clip3D extends Group{
         }
 
         /*
-        * SCENE
+        * RENDERERS
         */
-        for (let renderer of attrs.renderers){
-            renderer.parameters = renderer.parameters || null;
 
+        for (let renderer of attrs.renderers){
+            this.initializeRenderer(renderer);
+            const { type } = renderer.settings;
             this.ownContext.elements.renderers.push(
                 {
                     id: renderer.id,
                     groups: renderer.groups,
-                    object: new THREE.WebGLRenderer()
+                    object: new THREE[type]()
                 }
             )
 
             let length = this.ownContext.elements.renderers.length - 1;
-
-            renderer.settings = renderer.settings || {};
-            renderer.settings.setPixelRatio = renderer.settings.setPixelRatio || [this.ownContext.window.devicePixelRatio];
-            renderer.settings.setSize = renderer.settings.setSize || [ this.ownContext.window.innerWidth, this.ownContext.window.innerHeight ];
-
-            for (const setting in renderer.settings) {
-                console.log(setting,renderer.settings[setting])
-                this.ownContext.elements.renderers[length].object[setting](...renderer.settings[setting]);
-            }
-            
-            this.ownContext.elements.renderers[0].object.shadowMap.enabled = true;
-            this.ownContext.elements.renderers[0].object.shadowMap.type = THREE.PCFSoftShadowMap;
-
+            const rendererObj = this.ownContext
+                .elements
+                .renderers[length]
+                .object;
+            this.applySettingsToObjects(renderer.settings, rendererObj )
         }
 
         /*
-        * LIGHT
+        * LIGHTS
         */
-        for (let light of attrs.lights){
-            light.settings = light.settings || {};
-            light.settings.type = light.settings.type || "DirectionalLight";
 
-            if (light.settings.type === "SpotLight") {
-                light.parameters = light.parameteres || [0xDDDDDD, 1]
-            }
-            else if ( light.settings.type === "DirectionalLight") {
-                light.parameters = light.parameters || [0xffffff,1,100];
-            }
+        for (let light of attrs.lights){
+            this.initializeLight(light);
 
             this.ownContext.elements.lights.push(
                 {
@@ -208,59 +129,44 @@ class Clip3D extends Group{
 
             let length = this.ownContext.elements.lights.length - 1;
 
-            light = this.ownContext.elements.lights[length].object;
-            light.position.set( 0, 1, 1 );          //default; light shining from top
-            light.castShadow = true;            // default false
-            // light.shadow.mapSize.width = this.ownContext.window.innerWidth;  // default
-            // light.shadow.mapSize.height = this.ownContext.window.innerHeight; // default
-            // light.shadow.camera.near = 0.5;    // default
-            // light.shadow.camera.far = 10000;     // default
-
-            // // Add directional light
-            // var spot_light = new THREE.SpotLight();
-            // spot_light.position.set(0,0,100);
-            // spot_light.target = this.ownContext.getElements("#scene1")[0].object;
-            // spot_light.castShadow = true;
-            // spot_light.receiveShadow = true;
-            // spot_light.shadowDarkness = 1;
-            // spot_light.shadowCameraNear = 1;       
+            const lightObj = this.ownContext.elements.lights[length].object;
             
-            // var spotLightHelper = new THREE.SpotLightHelper( spot_light );
+            this.applySettingsToObjects(light.settings, lightObj );
 
-            this.ownContext.getElements('#scene1')[0].object.add(light)
-            // this.ownContext.getElements('#scene1')[0].object.add(spot_light)
-            // this.ownContext.getElements('#scene1')[0].object.add(spotLightHelper)
-            
-
-            
+            this.ownContext.getElements('#scene1')[0].object.add(lightObj)
         }
 
         this.render();
 
         this.controls = new THREE.OrbitControls( this.ownContext.getElements('#camera2')[0].object, document.body)
         this.controls.update()
-        // console.log(this.controls)
-        // run render function
-        // this.render.bind(this);
-        // this.animate.bind(this);
 
         this.animate = () => {
-            // console.log("asdf ")
-            // console.log("onece", this)
             requestAnimationFrame( this.animate );
-            // console.log("asdf")
-            // required if controls.enableDamping or controls.autoRotate are set to true
             this.controls.update();
-
             this.ownContext.getElements("#renderer1")[0].object.render(
                 this.ownContext.getElements("#scene1")[0].object,
                 this.ownContext.getElements("#camera2")[0].object
             );
-
         }
+
         this.animate()
     }
 
+    applySettingsToObjects(settings, obj) {
+        const target = obj;
+        for (const key in settings) {
+            if (settings[key] instanceof Array) {
+                obj[key](...settings[key]);
+            } else if ( settings[key] !==  Object(settings[key])){
+                // is primitive
+                obj[key] = settings[key];
+            }
+            else {
+                this.applySettingsToObjects (settings[key], target[key])
+            }
+        }
+    }
 
     _getChannel(channelId){
         if(!this.instantiatedChannels.hasOwnProperty(channelId)){
@@ -290,42 +196,128 @@ class Clip3D extends Group{
         this.ownContext.elements.scenes[0].object.add( mesh );
         this.ownContext.elements.scenes[0].object.add( plane );
         this.ownContext.elements.scenes[0].object.add( axesHelper );
-        // console.log(this.ownContext)
 
         for (let i in this.ownContext.elements.renderers) {
             this.ownContext.rootElement.appendChild( this.ownContext.elements.renderers[i].object.domElement );
         }
 
-        // this.ownContext.window.addEventListener( 'resize', onWindowResize, false );
         for (let i in this.attrs.renders) {
             this.ownContext.getElements(this.attrs.renders[i].renderer)[0].object.render(
                 this.ownContext.getElements(this.attrs.renders[i].scene)[0].object,
                 this.ownContext.getElements(this.attrs.renders[i].camera)[0].object
             );
         }
-        // this.controls.update();
-        // this.animate(); 
     }
             
+    initializeCamera(camera){
+        camera.settings = camera.settings || {};
+        camera.settings.type = camera.settings.type || "PerspectiveCamera";
+        if (camera.settings.type === "PerspectiveCamera") {
+            camera.settings.fov = camera.settings.fov || 45;
+            camera.settings.aspect = camera.settings.aspect || this.ownContext.window.innerWidth / this.ownContext.window.innerHeight;
+            camera.settings.near = camera.settings.near || 1;
+            camera.settings.far = camera.settings.far || 1000;
+        } else {
+            camera.settings.left = camera.settings.left || this.ownContext.window.innerWidth / - 2;
+            camera.settings.right = camera.settings.right || this.ownContext.window.innerWidth / 2;
+            camera.settings.top = camera.settings.top || this.ownContext.window.innerHeight / 2;
+            camera.settings.bottom = camera.settings.bottom || this.ownContext.window.innerHeight / - 2;
+            camera.settings.near = camera.settings.near || 1;
+            camera.settings.far = camera.settings.far || 1000;
+        }
+        camera.settings.position = camera.settings.position || {};
+        camera.settings.position.x = camera.settings.position.x || 0;
+        camera.settings.position.y = camera.settings.position.y || 0;
+        camera.settings.position.z = camera.settings.position.z || 1000;
+
+        camera.settings.rotation = camera.settings.rotation || {};
+        camera.settings.rotation.x = camera.settings.rotation.x || 0;
+        camera.settings.rotation.y = camera.settings.rotation.y || 0;
+        camera.settings.rotation.z = camera.settings.rotation.z || 0;
+    }
+
+    initializeRenderer(renderer) {
+        renderer.settings = renderer.settings || {};
+        renderer.settings.type = renderer.settings.type || "WebGLRenderer";
+        renderer.settings.setPixelRatio = renderer.settings.setPixelRatio ||
+            [this.ownContext.window.devicePixelRatio];
+        renderer.settings.setSize = renderer.settings.setSize ||
+            [
+                this.ownContext.window.innerWidth,
+                this.ownContext.window.innerHeight
+            ];
+    }
+
+    initializeLight(light) {
+        light.settings = light.settings || {};
+        light.settings.type = light.settings.type || "DirectionalLight";
+
+        if (light.settings.type === "SpotLight") {
+            light.parameters = light.parameteres || [0xDDDDDD, 1]
+        }
+        else if ( light.settings.type === "DirectionalLight") {
+            light.parameters = light.parameters || [0xffffff,1,100];
+        } else if (light.setting.type === "PointLight") {
+            light.parameters = light.parameters || [0xff0000,1,100];
+        }
+    }
+
+    runChecks(attrs,props){
+        if(!helper.isObject(props)){
+            helper.error(`Self Contained Incident expects an object on its \
+                second argument on the constructor. ${typeof props} passed`);
+            return false;
+        }
+        
+        if(!props.hasOwnProperty('id')){
+            helper.error(`Self Contained Incident expects the 'id' key on its \
+                constructor properties which is missing`);
+            return false;
+        }
+        
+        
+        if(!props.hasOwnProperty('host')){
+            helper.error(`Self Contained Incident expects the 'host' key on its\
+             constructor properties which is missing`);
+            return false;
+        }
+
+        if(!props.hasOwnProperty('containerParams')){
+            helper.error(`Self Contained Incident expects the 'containerParams'\
+             key on its constructor properties which is missing`);
+            return false;
+        }
+
+        if(!attrs.hasOwnProperty('scenes')){
+            helper.error(`Self Contained Incident expects the 'scenes' key on\
+             its constructor attributes which is missing`);
+            return false;
+        }
+
+        if(!attrs.hasOwnProperty('lights')){
+            helper.error(`Self Contained Incident expects the 'lights' key on \
+                its constructor attributes which is missing`);
+            return false;
+        }
+
+        if(!attrs.hasOwnProperty('cameras')){
+            helper.error(`Self Contained Incident expects the 'cameras' key on \
+                its constructor attributes which is missing`);
+            return false;
+        }
+
+        if(!attrs.hasOwnProperty('renderers')){
+            helper.error(`Self Contained Incident expects the 'renderers' key \
+                on its constructor attributes which is missing`);
+            return false;
+        }
+        return true;
+    }
 
     lastWish(){
         this.ownContext.unmount();
     }
 }
-
-// function onWindowResize() {
-//                 camera.aspect = window.innerWidth / window.innerHeight;
-//                 camera.updateProjectionMatrix();
-//                 renderer.setSize( window.innerWidth, window.innerHeight );
-//             }
-//             function animate() {
-//                 requestAnimationFrame( animate );
-//                 mesh.rotation.x += 0.005;
-//                 mesh.rotation.y += 0.01;
-//             }
-
-// console.log("cliip",Clip3D)
-// module.exports = Clip3D;
 
 
 module.exports = Clip3D;
