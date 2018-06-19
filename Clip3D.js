@@ -16,7 +16,7 @@ class Clip3D extends Group{
      * following keys:
      * - html (the html template to render)
      * - css (the css template of the isolated tree)
-     * - initParams (optional / the initialisation parameteres that will be
+     * - initParams (optional / the initialisation parameters that will be
      * passed both on the css and the html templates in order to render)
      * - host (an Element object that will host the isolated tree)
      * - containerParams (an object that holds parameters to affect the
@@ -57,21 +57,21 @@ class Clip3D extends Group{
 
         for (let camera of attrs.cameras){
             this.initializeCamera(camera);
-            const { type, fov, aspect, near, far } = camera.settings;
+            const { type } = camera.settings;
             this.ownContext.elements.cameras.push(
                 {
                     id: camera.id,
                     groups: camera.groups,
                     settings: camera.settings,
-                    object: type === "PerspectiveCamera" ?
-                        new THREE[type](fov, aspect, near, far) :
-                        new THREE[type](left, right, top, bottom, near, far)
+                    object: new THREE[type](...camera.parameters)
                 }
             )
 
             let length = this.ownContext.elements.cameras.length - 1;
             const cameraObj = this.ownContext.elements.cameras[length].object;
             this.applySettingsToObjects(camera.settings, cameraObj);
+            // case any parameters updated
+            cameraObj.updateProjectionMatrix();
         }
 
         /*
@@ -96,11 +96,12 @@ class Clip3D extends Group{
         for (let renderer of attrs.renderers){
             this.initializeRenderer(renderer);
             const { type } = renderer.settings;
+            console.log(type)
             this.ownContext.elements.renderers.push(
                 {
                     id: renderer.id,
                     groups: renderer.groups,
-                    object: new THREE[type]()
+                    object: new THREE[type](...renderer.parameters)
                 }
             )
 
@@ -133,21 +134,40 @@ class Clip3D extends Group{
             
             this.applySettingsToObjects(light.settings, lightObj );
 
-            this.ownContext.getElements('#scene1')[0].object.add(lightObj)
+            for (let scene of this.ownContext.getElements(light.applyToSelector)){
+
+                scene.object.add(lightObj)
+
+            }
+
         }
 
+        /*
+        * MODELS
+        */
+        for (let model of attrs.models){
+            this.ownContext.elements.models.push(
+                model
+            )
+            for (let scene of this.ownContext.getElements(model.scenes)) {
+                scene.object.add(model.object);
+            }
+
+        }
         this.render();
 
-        this.controls = new THREE.OrbitControls( this.ownContext.getElements('#camera2')[0].object, document.body)
+        this.controls = new THREE.OrbitControls( this.ownContext.getElements('#camera1')[0].object, document.body)
         this.controls.update()
 
         this.animate = () => {
             requestAnimationFrame( this.animate );
             this.controls.update();
-            this.ownContext.getElements("#renderer1")[0].object.render(
-                this.ownContext.getElements("#scene1")[0].object,
-                this.ownContext.getElements("#camera2")[0].object
-            );
+            for (let i in this.attrs.renders) {
+                this.ownContext.getElements(this.attrs.renders[i].renderer)[0].object.render(
+                    this.ownContext.getElements(this.attrs.renders[i].scene)[0].object,
+                    this.ownContext.getElements(this.attrs.renders[i].camera)[0].object
+                );
+            }
         }
 
         this.animate()
@@ -155,16 +175,16 @@ class Clip3D extends Group{
 
     applySettingsToObjects(settings, obj) {
         const target = obj;
+        
         for (const key in settings) {
             if (settings[key] instanceof Array) {
                 obj[key](...settings[key]);
             } else if ( settings[key] !==  Object(settings[key])){
                 // is primitive
                 obj[key] = settings[key];
+                continue;
             }
-            else {
-                this.applySettingsToObjects (settings[key], target[key])
-            }
+            this.applySettingsToObjects (settings[key], target[key])
         }
     }
 
@@ -177,28 +197,11 @@ class Clip3D extends Group{
     }
 
     render() {
-        
-        var geometry = new THREE.BoxBufferGeometry( 2, 2, 2 );
-        var material = new THREE.MeshLambertMaterial({color:'green'});
-        var mesh = new THREE.Mesh( geometry, material );
-        mesh.castShadow = true; //default is false
-        mesh.receiveShadow = true; //default
-        mesh.position.z = 2
-
-        var geometry = new THREE.PlaneGeometry( 50, 20, 32 );
-        var material = new THREE.MeshLambertMaterial( {color: 0xff0000, side: THREE.DoubleSide} );
-        var plane = new THREE.Mesh( geometry, material );
-        plane.castShadow = false;
-        plane.receiveShadow = true;
-
-        var axesHelper = new THREE.AxesHelper( 5 );
-
-        this.ownContext.elements.scenes[0].object.add( mesh );
-        this.ownContext.elements.scenes[0].object.add( plane );
-        this.ownContext.elements.scenes[0].object.add( axesHelper );
-
         for (let i in this.ownContext.elements.renderers) {
             this.ownContext.rootElement.appendChild( this.ownContext.elements.renderers[i].object.domElement );
+            this.ownContext.elements.renderers[i].object.domElement.style.zIndex = i;
+            this.ownContext.elements.renderers[i].object.domElement.style.top = 0;
+            this.ownContext.elements.renderers[i].object.domElement.style.position = "absolute";
         }
 
         for (let i in this.attrs.renders) {
@@ -212,18 +215,21 @@ class Clip3D extends Group{
     initializeCamera(camera){
         camera.settings = camera.settings || {};
         camera.settings.type = camera.settings.type || "PerspectiveCamera";
+        camera.parameters = camera.parameters || {};
         if (camera.settings.type === "PerspectiveCamera") {
-            camera.settings.fov = camera.settings.fov || 45;
-            camera.settings.aspect = camera.settings.aspect || this.ownContext.window.innerWidth / this.ownContext.window.innerHeight;
-            camera.settings.near = camera.settings.near || 1;
-            camera.settings.far = camera.settings.far || 1000;
+            const fov = 45;
+            const aspect = this.ownContext.window.innerWidth / this.ownContext.window.innerHeight;
+            const near = 1;
+            const far = 1000;
+            camera.parameters = [fov, aspect, near, far];
         } else {
-            camera.settings.left = camera.settings.left || this.ownContext.window.innerWidth / - 2;
-            camera.settings.right = camera.settings.right || this.ownContext.window.innerWidth / 2;
-            camera.settings.top = camera.settings.top || this.ownContext.window.innerHeight / 2;
-            camera.settings.bottom = camera.settings.bottom || this.ownContext.window.innerHeight / - 2;
-            camera.settings.near = camera.settings.near || 1;
-            camera.settings.far = camera.settings.far || 1000;
+            const left = this.ownContext.window.innerWidth / - 2;
+            const right = this.ownContext.window.innerWidth / 2;
+            const top = this.ownContext.window.innerHeight / 2;
+            const bottom = this.ownContext.window.innerHeight / - 2;
+            const near = 1;
+            const far = 1000;
+            camera.parameters = [left, right, top, bottom, near, far];
         }
         camera.settings.position = camera.settings.position || {};
         camera.settings.position.x = camera.settings.position.x || 0;
@@ -239,8 +245,12 @@ class Clip3D extends Group{
     initializeRenderer(renderer) {
         renderer.settings = renderer.settings || {};
         renderer.settings.type = renderer.settings.type || "WebGLRenderer";
-        renderer.settings.setPixelRatio = renderer.settings.setPixelRatio ||
-            [this.ownContext.window.devicePixelRatio];
+        renderer.parameters = renderer.parameters || [{}];
+        if (renderer.settings.type === "WebGLRenderer") {
+            renderer.settings.setPixelRatio = renderer.settings.setPixelRatio ||
+                [this.ownContext.window.devicePixelRatio];
+        }
+        
         renderer.settings.setSize = renderer.settings.setSize ||
             [
                 this.ownContext.window.innerWidth,
@@ -253,7 +263,7 @@ class Clip3D extends Group{
         light.settings.type = light.settings.type || "DirectionalLight";
 
         if (light.settings.type === "SpotLight") {
-            light.parameters = light.parameteres || [0xDDDDDD, 1]
+            light.parameters = light.parameters || [0xDDDDDD, 1]
         }
         else if ( light.settings.type === "DirectionalLight") {
             light.parameters = light.parameters || [0xffffff,1,100];
