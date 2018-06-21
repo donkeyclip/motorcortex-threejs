@@ -87,7 +87,7 @@ class Iframe3DContextHandler {
         }
 
         // console.log("asdfs",props.html)
-        iframeDocument.write('<html><head></head><body></body></html>');
+        iframeDocument.write(props.html);
 
         const bodyFixCSS = `
         html,body {

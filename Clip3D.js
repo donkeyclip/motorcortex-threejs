@@ -49,7 +49,8 @@ class Clip3D extends Group{
             scenes: [],
             renderers: [],
             models: [],
-            meshes: []
+            meshes: [],
+            css3d_objects: []
         };
 
         /*
@@ -158,6 +159,27 @@ class Clip3D extends Group{
 
             for (let scene of this.ownContext.getElements(mesh.scenes)) {
                 scene.object.add(mesh.object);
+            }
+        }
+
+        /*
+        * CSS3DOBJECTS
+        */
+        for ( let css3d of attrs.css3d_objects) {
+            this.initializeMesh(css3d);
+            const elements = this.ownContext.document.querySelectorAll(css3d.selector);
+            console.log(elements)
+            for (let element of elements) {
+                console.log(element)
+                css3d.object = new THREE.CSS3DObject(element)
+                this.ownContext.elements.css3d_objects.push(css3d);
+
+
+                this.applySettingsToObjects(css3d.settings, css3d.object );
+
+                for (let scene of this.ownContext.getElements(css3d.scenes)) {
+                    scene.object.add(css3d.object);
+                }
             }
         }
         /*
@@ -297,6 +319,15 @@ class Clip3D extends Group{
         mesh.settings.position.y = mesh.settings.position.y || 0;
         mesh.settings.position.z = mesh.settings.position.z || 0;
     }
+
+    initializeCSS3DObject(css3d) {
+        css3d.settings = css3d.settings || {};
+        css3d.settings.position = css3d.settings.position || {};
+        css3d.settings.position.x = css3d.settings.position.x || 0;
+        css3d.settings.position.y = css3d.settings.position.y || 0;
+        css3d.settings.position.z = css3d.settings.position.z || 0;
+    }
+
     runChecks(attrs,props){
         if(!helper.isObject(props)){
             helper.error(`Self Contained Incident expects an object on its \

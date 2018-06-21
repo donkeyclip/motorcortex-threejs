@@ -19,6 +19,8 @@ let css = `
 
 let html = `
 <div class="myCam">
+  <p id = "teo">Hello World!!</p>
+  <p id = "teo1" class="animated bounceInDown" style="background-color: red">Hello World!!</p>
 </div>
 `;
 
@@ -44,17 +46,17 @@ let containerParams = {
 // plane.castShadow = false;
 // plane.receiveShadow = true;
 
-var axesHelper = new THREE.AxesHelper( 5 );
+// var axesHelper = new THREE.AxesHelper( 5 );
 
-var object = new THREE.CSS3DObject( document.getElementById('teo') );
-object.position.x = 20;
-object.position.y = 20;
-object.position.z = 20;
+// var object = new THREE.CSS3DObject( document.getElementById('teo') );
+// object.position.x = 20;
+// object.position.y = 20;
+// object.position.z = 20;
 
-var newobj = new THREE.CSS3DObject( document.getElementById('teo1') );
-newobj.position.x = 20;
-newobj.position.y = 20;
-newobj.position.z = 10;
+// var newobj = new THREE.CSS3DObject( document.getElementById('teo1') );
+// newobj.position.x = 20;
+// newobj.position.y = 20;
+// newobj.position.z = 10;
 
 const clip1 = new threejsPlugin.Clip3D(
   {
@@ -77,7 +79,7 @@ const clip1 = new threejsPlugin.Clip3D(
             set: [0,1,1]
           },
           castShadow: true,
-          recieveShadow: true
+          receiveShadow: true
         },
         applyToSelector: "#scene1"
       }
@@ -129,7 +131,7 @@ const clip1 = new threejsPlugin.Clip3D(
       },
       settings: {
         castShadow: true,
-        recieveShadow: true,
+        receiveShadow: true,
         position: { 
           z: 2
         }
@@ -148,30 +150,67 @@ const clip1 = new threejsPlugin.Clip3D(
         parameters : [{color: 0x00ff00, side: THREE.DoubleSide}]
       },
       settings: {
-        castShadow: true,
-        recieveShadow: true
+        castShadow: false,
+        receiveShadow: true
       },
       scenes: "#scene1"
     }
+    ],
+    css3d_objects: [
+      {
+        id: "helloWorldRed",
+        groups: "helloWorlds",
+        selector: "#teo",
+        settings: {
+          position: {
+            x:4,
+            y:4,
+            z:10
+          },
+          rotation: {
+            z:0.2,
+            x:0.2
+          }
+        },
+        scenes: "#scene2"
+      },
+      {
+        id: "helloWorldRed",
+        groups: "helloWorlds",
+        selector: '#teo1',
+        settings: {
+          position: {
+            x:4,
+            y:4,
+            z:5
+          },
+          rotation: {
+            z:0.4,
+            x:0.4
+          }
+        },
+        scenes: "#scene2"
+      }
     ],
     renders: [
       {
         renderer: "#renderer1",
         camera: "#camera1",
         scene: "#scene1"
+      },
+      {
+        renderer: "#renderer2",
+        camera: "#camera1",
+        scene: "#scene2"
       }
-      // {
-      //   renderer: "#renderer2",
-      //   camera: "#camera1",
-      //   scene: "#scene2"
-      // }
     ]
   }, 
   {
     id: "clip1",
     groups: "clips",
     host,
-    containerParams
+    containerParams,
+    html
   }
 );
 
@@ -200,7 +239,7 @@ const clip1 = new threejsPlugin.Clip3D(
 //           set: [0,1,1]
 //         },
 //         castShadow:true,
-//         recieveShadow:true
+//         receiveShadow:true
 //       },
 //       applyToSelector: "#scene1"
 //     },
@@ -212,7 +251,7 @@ const clip1 = new threejsPlugin.Clip3D(
 //           set: [0,1,1]
 //         },
 //         castShadow:true,
-//         recieveShadow:true
+//         receiveShadow:true
 //       },
 //       applyToSelector: "#scene2"
 //     }
