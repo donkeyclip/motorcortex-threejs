@@ -90,7 +90,12 @@ const clip1 = new threejsPlugin.Clip3D(
         groups: "camera1",
         settings: {
           position: {
-            z: 10
+            z: 20,
+            y: -40,
+            x: 40
+          },
+          up:{
+            set:[0,0,1]
           },
           far: 1000
         }
@@ -192,6 +197,35 @@ const clip1 = new threejsPlugin.Clip3D(
         scenes: "#scene2"
       }
     ],
+    models: [
+      {
+        id: "horse",
+        groups: "horses",
+        scenes: "#scene1",
+        loader: "#JSONLoader",
+        file: "./models/horse.js",
+        settings: {
+          position: {
+            x:10
+          },
+          scale: {
+            set: [0.02, 0.02, 0.02]
+          },
+          rotation: {
+            x:-Math.PI/2,
+            y: Math.PI,
+            z: Math.PI
+          }
+        },
+        material: {
+          type: "MeshLambertMaterial",
+          parameters: [{
+            vertexColors: THREE.FaceColors,
+            morphTargets: true
+          }]
+        }
+      }
+    ],
     renders: [
       {
         renderer: "#renderer1",
@@ -203,7 +237,18 @@ const clip1 = new threejsPlugin.Clip3D(
         camera: "#camera1",
         scene: "#scene2"
       }
-    ]
+    ],    
+    loaders: [
+      {
+        id: "JSONLoader",
+        groups: "loaders",
+        type: "JSONLoader",
+        material: {
+          vertexColors: THREE.FaceColors,
+          morphTargets: true
+        }
+      }
+    ],
   }, 
   {
     id: "clip1",

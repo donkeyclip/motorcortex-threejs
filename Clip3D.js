@@ -3,7 +3,9 @@ global.THREE = require('three');
 require('three/examples/js/renderers/CSS3DRenderer');
 require('three/examples/js/controls/OrbitControls');
 // const MC = require('../motorcortex');
-
+let mixer;
+let prevTime = Date.now();
+let clip;
 const Helper = MC.Helper;
 const helper = new MC.Helper();
 const Group = MC.Group;
@@ -50,7 +52,8 @@ class Clip3D extends Group{
             renderers: [],
             models: [],
             meshes: [],
-            css3d_objects: []
+            css3d_objects: [],
+            loaders: []
         };
 
         /*
@@ -168,9 +171,7 @@ class Clip3D extends Group{
         for ( let css3d of attrs.css3d_objects) {
             this.initializeMesh(css3d);
             const elements = this.ownContext.document.querySelectorAll(css3d.selector);
-            console.log(elements)
             for (let element of elements) {
-                console.log(element)
                 css3d.object = new THREE.CSS3DObject(element)
                 this.ownContext.elements.css3d_objects.push(css3d);
 
@@ -182,18 +183,60 @@ class Clip3D extends Group{
                 }
             }
         }
+
+        /*
+        * LOADERS
+        */
+        for ( let loader of attrs.loaders) {
+            this.initializeLoader(loader);
+
+            if (!THREE[loader.type]) {
+                try {
+                    require('three/examples/js/loaders/' + loader.type);
+                } catch (e) {
+                    console.log(`Loader ${loader.type} does not exist.`)
+                }
+            }
+
+            loader.object = new THREE[loader.type]();
+            this.ownContext.elements.loaders.push(loader);
+        }
+
         /*
         * MODELS
         */
-        // for (let model of attrs.models){
-        //     this.ownContext.elements.models.push(
-        //         model
-        //     )
-        //     for (let scene of this.ownContext.getElements(model.scenes)) {
-        //         scene.object.add(model.object);
-        //     }
+        for (let model of attrs.models){
+            this.initializeModel(model);
+            const loader = this.ownContext.getElements(model.loader)[0]; 
+            loader.parameters[0] = model.file;
+            
+            loader.parameters[1] = (geometry) => {
+                   
+                const material = new THREE[model.material.type](
+                    ...model.material.parameters
+                );
+                const mesh = new THREE.Mesh(geometry, material);
 
-        // }
+                model.object = mesh;
+                apply();
+                // mixer = new THREE.AnimationMixer( mesh );
+                // clip = THREE.AnimationClip.CreateFromMorphTargetSequence( 'gallop', geometry.morphTargets, 30 );
+                // mixer.clipAction( clip ).setDuration( 3 ).play();
+            }
+
+            const apply = () => {
+
+                this.applySettingsToObjects(model.settings, model.object );
+                this.ownContext.elements.models.push(model)
+
+                for (let scene of this.ownContext.getElements(model.scenes)) {
+                    scene.object.add(model.object);
+                }
+            }
+
+            loader.object.load(...loader.parameters);
+        }
+
         this.render();
 
         this.controls = new THREE.OrbitControls( this.ownContext.getElements('#camera1')[0].object, document.body)
@@ -202,6 +245,12 @@ class Clip3D extends Group{
         this.animate = () => {
             requestAnimationFrame( this.animate );
             this.controls.update();
+
+            if ( mixer ) {
+                    var time = Date.now();
+                    mixer.update( ( time - prevTime ) * 0.001 );
+                    prevTime = time;
+                }
             for (let i in this.attrs.renders) {
                 this.ownContext.getElements(this.attrs.renders[i].renderer)[0].object.render(
                     this.ownContext.getElements(this.attrs.renders[i].scene)[0].object,
@@ -326,6 +375,31 @@ class Clip3D extends Group{
         css3d.settings.position.x = css3d.settings.position.x || 0;
         css3d.settings.position.y = css3d.settings.position.y || 0;
         css3d.settings.position.z = css3d.settings.position.z || 0;
+    }
+
+    initializeLoader(loader) {
+        loader.parameters = loader.parameters || [];
+        if (loader.parameters.length < 2) {
+            loader.parameters.push(
+                null,
+                null,
+                function(xhr){
+                    console.log( (xhr.loaded / xhr.total * 100) + "%loaded")
+                },
+                function (error) {
+                    console.log (error)
+                }
+            )
+
+        }
+    }
+
+    initializeModel(model){
+        model.settings = model.settings || {};
+        model.settings.position = model.settings.position || {};
+        model.settings.position.x = model.settings.position.x || 0;
+        model.settings.position.y = model.settings.position.y || 0;
+        model.settings.position.z = model.settings.position.z || 0;
     }
 
     runChecks(attrs,props){
