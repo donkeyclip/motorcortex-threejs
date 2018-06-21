@@ -53,7 +53,8 @@ class Clip3D extends Group{
             models: [],
             meshes: [],
             css3d_objects: [],
-            loaders: []
+            loaders: [],
+            renders: this.attrs.renders
         };
 
         /*
@@ -66,6 +67,7 @@ class Clip3D extends Group{
             this.ownContext.elements.cameras.push(
                 {
                     id: camera.id,
+                    mcid: camera.id,
                     groups: camera.groups,
                     settings: camera.settings,
                     object: new THREE[type](...camera.parameters)
@@ -74,8 +76,8 @@ class Clip3D extends Group{
 
             let length = this.ownContext.elements.cameras.length - 1;
             const cameraObj = this.ownContext.elements.cameras[length].object;
+
             this.applySettingsToObjects(camera.settings, cameraObj);
-            // case any parameters updated
             cameraObj.updateProjectionMatrix();
         }
 
@@ -87,6 +89,7 @@ class Clip3D extends Group{
             this.ownContext.elements.scenes.push(
                 {
                     id: scene.id,
+                    mcid: scene.id,
                     groups: scene.groups,
                     object: new THREE.Scene()
                 }
@@ -101,10 +104,10 @@ class Clip3D extends Group{
         for (let renderer of attrs.renderers){
             this.initializeRenderer(renderer);
             const { type } = renderer.settings;
-            // console.log(type)
             this.ownContext.elements.renderers.push(
                 {
                     id: renderer.id,
+                    mcid: renderer.id,
                     groups: renderer.groups,
                     object: new THREE[type](...renderer.parameters)
                 }
@@ -128,6 +131,7 @@ class Clip3D extends Group{
             this.ownContext.elements.lights.push(
                 {
                     id: light.id,
+                    mcid: light.id,
                     groups: light.groups,
                     object: new THREE[light.settings.type](...light.parameters)
                 }
@@ -152,6 +156,7 @@ class Clip3D extends Group{
         */
         for ( let mesh of attrs.meshes) {
             this.initializeMesh(mesh);
+            mesh.mcid = mesh.id;
             const geometry = new THREE[mesh.geometry.type](...mesh.geometry.parameters);
             const material = new THREE[mesh.material.type](...mesh.material.parameters);
             mesh.object = new THREE.Mesh( geometry, material );
@@ -170,6 +175,7 @@ class Clip3D extends Group{
         */
         for ( let css3d of attrs.css3d_objects) {
             this.initializeMesh(css3d);
+            css3d.mcid = css3d.id;
             const elements = this.ownContext.document.querySelectorAll(css3d.selector);
             for (let element of elements) {
                 css3d.object = new THREE.CSS3DObject(element)
@@ -182,6 +188,7 @@ class Clip3D extends Group{
                     scene.object.add(css3d.object);
                 }
             }
+            console.log("endeeed");
         }
 
         /*
@@ -189,7 +196,7 @@ class Clip3D extends Group{
         */
         for ( let loader of attrs.loaders) {
             this.initializeLoader(loader);
-
+            loader.mcid = loader.id;
             if (!THREE[loader.type]) {
                 try {
                     require('three/examples/js/loaders/' + loader.type);
@@ -207,11 +214,12 @@ class Clip3D extends Group{
         */
         for (let model of attrs.models){
             this.initializeModel(model);
+            model.mcid = model.id
             const loader = this.ownContext.getElements(model.loader)[0]; 
             loader.parameters[0] = model.file;
             
             loader.parameters[1] = (geometry) => {
-                   
+               
                 const material = new THREE[model.material.type](
                     ...model.material.parameters
                 );
@@ -233,47 +241,49 @@ class Clip3D extends Group{
                     scene.object.add(model.object);
                 }
             }
-
             loader.object.load(...loader.parameters);
         }
 
+        // this.controls = new THREE.OrbitControls( this.ownContext.getElements('#camera1')[0].object, document.body)
+        // this.controls.update()
         this.render();
 
-        this.controls = new THREE.OrbitControls( this.ownContext.getElements('#camera1')[0].object, document.body)
-        this.controls.update()
+        // console.log("rendereed")
+        
+        // this.i = 0
+        // this.animate = () => {
+        //     // if (this.i >10000 ) return;
+        //     this.i++;
+        //     requestAnimationFrame( this.animate );
+        //     // this.controls.update();
 
-        this.animate = () => {
-            requestAnimationFrame( this.animate );
-            this.controls.update();
+        //     if ( mixer ) {
+        //             var time = Date.now();
+        //             mixer.update( ( time - prevTime ) * 0.001 );
+        //             prevTime = time;
+        //         }
+        //     for (let i in this.attrs.renders) {
+        //         this.ownContext.getElements(this.attrs.renders[i].renderer)[0].object.render(
+        //             this.ownContext.getElements(this.attrs.renders[i].scene)[0].object,
+        //             this.ownContext.getElements(this.attrs.renders[i].camera)[0].object
+        //         );
+        //     }
+        // }
 
-            if ( mixer ) {
-                    var time = Date.now();
-                    mixer.update( ( time - prevTime ) * 0.001 );
-                    prevTime = time;
-                }
-            for (let i in this.attrs.renders) {
-                this.ownContext.getElements(this.attrs.renders[i].renderer)[0].object.render(
-                    this.ownContext.getElements(this.attrs.renders[i].scene)[0].object,
-                    this.ownContext.getElements(this.attrs.renders[i].camera)[0].object
-                );
-            }
-        }
-
-        this.animate()
+        // this.animate()
     }
 
     applySettingsToObjects(settings, obj) {
-        const target = obj;
-        
         for (const key in settings) {
             if (settings[key] instanceof Array) {
                 obj[key](...settings[key]);
+                continue;
             } else if ( settings[key] !==  Object(settings[key])){
                 // is primitive
                 obj[key] = settings[key];
                 continue;
             }
-            this.applySettingsToObjects (settings[key], target[key])
+            this.applySettingsToObjects (settings[key], obj[key])
         }
     }
 
@@ -293,7 +303,7 @@ class Clip3D extends Group{
             this.ownContext.elements.renderers[i].object.domElement.style.position = "absolute";
         }
 
-        for (let i in this.attrs.renders) {
+        for (let i in this.attrs.renders) {                
             this.ownContext.getElements(this.attrs.renders[i].renderer)[0].object.render(
                 this.ownContext.getElements(this.attrs.renders[i].scene)[0].object,
                 this.ownContext.getElements(this.attrs.renders[i].camera)[0].object
@@ -324,11 +334,13 @@ class Clip3D extends Group{
         camera.settings.position.x = camera.settings.position.x || 0;
         camera.settings.position.y = camera.settings.position.y || 0;
         camera.settings.position.z = camera.settings.position.z || 1000;
-
-        camera.settings.rotation = camera.settings.rotation || {};
-        camera.settings.rotation.x = camera.settings.rotation.x || 0;
-        camera.settings.rotation.y = camera.settings.rotation.y || 0;
-        camera.settings.rotation.z = camera.settings.rotation.z || 0;
+        // if (!camera.settings.lookAt) {
+        //     camera.settings.rotation = camera.settings.rotation || {};
+        //     camera.settings.rotation.x = camera.settings.rotation.x || 0;
+        //     camera.settings.rotation.y = camera.settings.rotation.y || 0;
+        //     camera.settings.rotation.z = camera.settings.rotation.z || 0;
+        // }
+        camera.settings.lookAt = camera.settings.lookAt || [new THREE.Vector3()]
     }
 
     initializeRenderer(renderer) {

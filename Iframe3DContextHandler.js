@@ -127,7 +127,7 @@ class Iframe3DContextHandler {
         let elements = [];
         let key = "groups";
 
-        if (selector.substring(0,1) === "#") { key = "id" };
+        if (selector.substring(0,1) === "#" || selector.substring(0,1) !== ".") { key = "id" };
         selector = selector.substring(1, selector.length);
 
         for (let prop in this.context.elements) {
@@ -142,18 +142,23 @@ class Iframe3DContextHandler {
     }
     
     getMCID(element){
-        return element.mcid;
+        console.log("in getElement",element)
+        return element.id;
     }
     
     setMCID(element, mcid){
-        element.mcid = mcid;
+        console.log("in set element,",element,mcid)
+        element.mcid = element.id;
     }
     
     getElementSelectorByMCID(mcid){
+        console.log("in get selector",mcid)
         for (let prop in this.context.elements) {
             for (let element in this.context.elements[prop]) {
-                if (this.context.elements[prop][element].mcid === mcid) {
-                    return (this.context.elements[prop][element].selector);
+                console.log(this.context.elements[prop][element])
+                if (this.context.elements[prop][element].id === mcid) {
+                    console.log(mcid)
+                    return "#" + mcid;
                 }
             }
         }
