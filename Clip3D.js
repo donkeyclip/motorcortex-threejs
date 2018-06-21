@@ -48,7 +48,8 @@ class Clip3D extends Group{
             cameras: [],
             scenes: [],
             renderers: [],
-            models: []
+            models: [],
+            meshes: []
         };
 
         /*
@@ -96,7 +97,7 @@ class Clip3D extends Group{
         for (let renderer of attrs.renderers){
             this.initializeRenderer(renderer);
             const { type } = renderer.settings;
-            console.log(type)
+            // console.log(type)
             this.ownContext.elements.renderers.push(
                 {
                     id: renderer.id,
@@ -143,17 +144,34 @@ class Clip3D extends Group{
         }
 
         /*
+        * MESHES
+        */
+        for ( let mesh of attrs.meshes) {
+            this.initializeMesh(mesh);
+            const geometry = new THREE[mesh.geometry.type](...mesh.geometry.parameters);
+            const material = new THREE[mesh.material.type](...mesh.material.parameters);
+            mesh.object = new THREE.Mesh( geometry, material );
+
+            this.ownContext.elements.meshes.push(mesh);
+
+            this.applySettingsToObjects(mesh.settings, mesh.object );
+
+            for (let scene of this.ownContext.getElements(mesh.scenes)) {
+                scene.object.add(mesh.object);
+            }
+        }
+        /*
         * MODELS
         */
-        for (let model of attrs.models){
-            this.ownContext.elements.models.push(
-                model
-            )
-            for (let scene of this.ownContext.getElements(model.scenes)) {
-                scene.object.add(model.object);
-            }
+        // for (let model of attrs.models){
+        //     this.ownContext.elements.models.push(
+        //         model
+        //     )
+        //     for (let scene of this.ownContext.getElements(model.scenes)) {
+        //         scene.object.add(model.object);
+        //     }
 
-        }
+        // }
         this.render();
 
         this.controls = new THREE.OrbitControls( this.ownContext.getElements('#camera1')[0].object, document.body)
@@ -272,6 +290,13 @@ class Clip3D extends Group{
         }
     }
 
+    initializeMesh(mesh) {
+        mesh.settings = mesh.settings || {};
+        mesh.settings.position = mesh.settings.position || {};
+        mesh.settings.position.x = mesh.settings.position.x || 0;
+        mesh.settings.position.y = mesh.settings.position.y || 0;
+        mesh.settings.position.z = mesh.settings.position.z || 0;
+    }
     runChecks(attrs,props){
         if(!helper.isObject(props)){
             helper.error(`Self Contained Incident expects an object on its \

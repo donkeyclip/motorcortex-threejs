@@ -30,19 +30,19 @@ let containerParams = {
 };
 
 
-// models 
-var geometry = new THREE.BoxBufferGeometry( 2, 2, 2 );
-var material = new THREE.MeshLambertMaterial({color:'green'});
-var mesh = new THREE.Mesh( geometry, material );
-mesh.castShadow = true; //default is false
-mesh.receiveShadow = true; //default
-mesh.position.z = 2
+// // models 
+// var geometry = new THREE.BoxBufferGeometry( 2, 2, 2 );
+// var material = new THREE.MeshLambertMaterial({color:'green'});
+// var mesh = new THREE.Mesh( geometry, material );
+// mesh.castShadow = true; //default is false
+// mesh.receiveShadow = true; //default
+// mesh.position.z = 2
 
-var geometry = new THREE.PlaneGeometry( 50, 20, 32 );
-var material = new THREE.MeshLambertMaterial( {color: 0xff0000, side: THREE.DoubleSide} );
-var plane = new THREE.Mesh( geometry, material );
-plane.castShadow = false;
-plane.receiveShadow = true;
+// var geometry = new THREE.PlaneGeometry( 50, 20, 32 );
+// var material = new THREE.MeshLambertMaterial( {color: 0xff0000, side: THREE.DoubleSide} );
+// var plane = new THREE.Mesh( geometry, material );
+// plane.castShadow = false;
+// plane.receiveShadow = true;
 
 var axesHelper = new THREE.AxesHelper( 5 );
 
@@ -76,8 +76,8 @@ const clip1 = new threejsPlugin.Clip3D(
           position:{
             set: [0,1,1]
           },
-          castShadow:true,
-          recieveShadow:true
+          castShadow: true,
+          recieveShadow: true
         },
         applyToSelector: "#scene1"
       }
@@ -115,36 +115,43 @@ const clip1 = new threejsPlugin.Clip3D(
         }
       }
     ],
-    models: [
+    meshes: [
     {
       id: "box",
       groups: "boxes",
-      object: mesh,
+      geometry: {
+        type: "BoxBufferGeometry",
+        parameters: [2,2,2]
+      },
+      material: {
+        type: "MeshLambertMaterial",
+        parameters : [{color: 0xff0000}]
+      },
+      settings: {
+        castShadow: true,
+        recieveShadow: true,
+        position: { 
+          z: 2
+        }
+      },
       scenes: "#scene1"
     },
     {
       id: "plane",
       groups: "planes",
-      object: plane,
+      geometry: {
+        type: "PlaneGeometry",
+        parameters: [20,20,20]
+      },
+      material: {
+        type: "MeshLambertMaterial",
+        parameters : [{color: 0x00ff00, side: THREE.DoubleSide}]
+      },
+      settings: {
+        castShadow: true,
+        recieveShadow: true
+      },
       scenes: "#scene1"
-    },
-    {
-      id: "axesHelper",
-      groups: "axesHelpers",
-      object: axesHelper,
-      scenes: "#scene1"
-    },
-    {
-      id: "text",
-      groups: "texts",
-      object: object,
-      scenes: "#scene2"
-    },
-    {
-      id: "text1",
-      groups: "texts",
-      object: newobj,
-      scenes: "#scene2"
     }
     ],
     renders: [
@@ -152,12 +159,12 @@ const clip1 = new threejsPlugin.Clip3D(
         renderer: "#renderer1",
         camera: "#camera1",
         scene: "#scene1"
-      },
-      {
-        renderer: "#renderer2",
-        camera: "#camera1",
-        scene: "#scene2"
       }
+      // {
+      //   renderer: "#renderer2",
+      //   camera: "#camera1",
+      //   scene: "#scene2"
+      // }
     ]
   }, 
   {
