@@ -1,5 +1,5 @@
 const Clip3D = require('./Clip3D');
-const Camera3D = require('./Camera3D');
+const Object3D = require('./Object3D');
 const MC = require('@kissmybutton/motorcortex');
 // const MC = require("../motorcortex");
 
@@ -10,7 +10,7 @@ module.exports = {
         exportable : Clip3D
     },
     {
-        exportable : Camera3D
+        exportable : Object3D
     },
     ],
     channel: MC.AttributeChannel, 

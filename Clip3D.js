@@ -2,10 +2,7 @@ const MC = require('@kissmybutton/motorcortex');
 global.THREE = require('three');
 require('three/examples/js/renderers/CSS3DRenderer');
 require('three/examples/js/controls/OrbitControls');
-// const MC = require('../motorcortex');
-let mixer;
-let prevTime = Date.now();
-let clip;
+
 const Helper = MC.Helper;
 const helper = new MC.Helper();
 const Group = MC.Group;
@@ -57,6 +54,10 @@ class Clip3D extends Group{
             renders: this.attrs.renders
         };
 
+        this.init(attrs);
+    }
+
+    async init(attrs) {
         /*
         * CAMERAS
         */
@@ -188,7 +189,6 @@ class Clip3D extends Group{
                     scene.object.add(css3d.object);
                 }
             }
-            console.log("endeeed");
         }
 
         /*
@@ -216,61 +216,37 @@ class Clip3D extends Group{
             this.initializeModel(model);
             model.mcid = model.id
             const loader = this.ownContext.getElements(model.loader)[0]; 
-            loader.parameters[0] = model.file;
-            
-            loader.parameters[1] = (geometry) => {
-               
+
+            const loadGeometry = () => {
+              return new Promise(resolve => {
+                loader.parameters[0] = model.file;
+                loader.parameters[1] = resolve;
+
+                loader.object.load(...loader.parameters);
+              });
+            }
+
+            try {
+                const geometry = await loadGeometry();                    
                 const material = new THREE[model.material.type](
                     ...model.material.parameters
                 );
                 const mesh = new THREE.Mesh(geometry, material);
 
                 model.object = mesh;
-                apply();
-                // mixer = new THREE.AnimationMixer( mesh );
-                // clip = THREE.AnimationClip.CreateFromMorphTargetSequence( 'gallop', geometry.morphTargets, 30 );
-                // mixer.clipAction( clip ).setDuration( 3 ).play();
-            }
-
-            const apply = () => {
-
                 this.applySettingsToObjects(model.settings, model.object );
                 this.ownContext.elements.models.push(model)
 
                 for (let scene of this.ownContext.getElements(model.scenes)) {
                     scene.object.add(model.object);
                 }
+                this.flashDOM();
+            } catch( e) {
+
             }
-            loader.object.load(...loader.parameters);
+
         }
-
-        // this.controls = new THREE.OrbitControls( this.ownContext.getElements('#camera1')[0].object, document.body)
-        // this.controls.update()
-        this.render();
-
-        // console.log("rendereed")
-        
-        // this.i = 0
-        // this.animate = () => {
-        //     // if (this.i >10000 ) return;
-        //     this.i++;
-        //     requestAnimationFrame( this.animate );
-        //     // this.controls.update();
-
-        //     if ( mixer ) {
-        //             var time = Date.now();
-        //             mixer.update( ( time - prevTime ) * 0.001 );
-        //             prevTime = time;
-        //         }
-        //     for (let i in this.attrs.renders) {
-        //         this.ownContext.getElements(this.attrs.renders[i].renderer)[0].object.render(
-        //             this.ownContext.getElements(this.attrs.renders[i].scene)[0].object,
-        //             this.ownContext.getElements(this.attrs.renders[i].camera)[0].object
-        //         );
-        //     }
-        // }
-
-        // this.animate()
+        this.render();  
     }
 
     applySettingsToObjects(settings, obj) {
@@ -309,6 +285,7 @@ class Clip3D extends Group{
                 this.ownContext.getElements(this.attrs.renders[i].camera)[0].object
             );
         }
+        console.log(JSON.parse(JSON.stringify(this.ownContext.elements)),this.ownContext.elements)
     }
             
     initializeCamera(camera){

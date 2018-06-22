@@ -142,12 +142,12 @@ class Iframe3DContextHandler {
     }
     
     getMCID(element){
-        console.log("in getElement",element)
+        console.log("in getElement", element)
         return element.id;
     }
     
     setMCID(element, mcid){
-        console.log("in set element,",element,mcid)
+        console.log("in set element", element, mcid)
         element.mcid = element.id;
     }
     
@@ -155,9 +155,9 @@ class Iframe3DContextHandler {
         console.log("in get selector",mcid)
         for (let prop in this.context.elements) {
             for (let element in this.context.elements[prop]) {
-                console.log(this.context.elements[prop][element])
+                // console.log(this.context.elements[prop][element])
                 if (this.context.elements[prop][element].id === mcid) {
-                    console.log(mcid)
+                    // console.log(mcid)
                     return "#" + mcid;
                 }
             }
