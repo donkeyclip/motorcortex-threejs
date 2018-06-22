@@ -127,6 +127,7 @@ class Iframe3DContextHandler {
         let elements = [];
         let key = "groups";
 
+        // console.log("in context handler",selector)
         if (selector.substring(0,1) === "#" || selector.substring(0,1) !== ".") { key = "id" };
         selector = selector.substring(1, selector.length);
 
@@ -138,21 +139,22 @@ class Iframe3DContextHandler {
             }
         }
 
+        // console.log(elements)
         return elements;
     }
     
     getMCID(element){
-        console.log("in getElement", element)
+        // console.log("in getElement", element)
         return element.id;
     }
     
     setMCID(element, mcid){
-        console.log("in set element", element, mcid)
+        // console.log("in set element", element, mcid)
         element.mcid = element.id;
     }
     
     getElementSelectorByMCID(mcid){
-        console.log("in get selector",mcid)
+        // console.log("in get selector",mcid)
         for (let prop in this.context.elements) {
             for (let element in this.context.elements[prop]) {
                 // console.log(this.context.elements[prop][element])

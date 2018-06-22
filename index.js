@@ -357,7 +357,36 @@ const horseAnimation5 = new threejsPlugin.Object3D({
     duration: 2000
   });
 
+const horseMAE = new threejsPlugin.MAE({
+  attrs: {
+    singleLoopDuration:1,
+    animationFrames: 30,
+    animationName: 'gallop'
+  },
+  animatedAttrs: {
+    time: 2000
+  }
+  },{
+    id: 'horse_animation5_gallop',
+    selector: '#horse',
+    duration: 2000
+  });
 
+
+const horsesMAE = new threejsPlugin.MAE({
+  attrs: {
+    singleLoopDuration:1,
+    animationFrames: 30,
+    animationName: 'gallop'
+  },
+  animatedAttrs: {
+    time: 2000
+  }
+  },{
+    id: 'horse_animation6_gallop',
+    selector: '.horses',
+    duration: 2000
+  });
 
 
 
@@ -374,8 +403,10 @@ clip1.addIncident(cameraAnimation,0)
 clip1.addIncident(cameraAnimation2,2000)
 clip1.addIncident(boxAnimation3,4000)
 clip1.addIncident(horseAnimation4,6000)
+clip1.addIncident(horseMAE,6000)
 clip1.addIncident(divAnimation5,8000)
 clip1.addIncident(horseAnimation5,10000)
+clip1.addIncident(horsesMAE,10000)
 console.log("the clip", clip1)
 // clip1.play();
 // clip1.play();

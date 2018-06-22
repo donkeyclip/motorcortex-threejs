@@ -51,7 +51,8 @@ class Clip3D extends Group{
             meshes: [],
             css3d_objects: [],
             loaders: [],
-            renders: this.attrs.renders
+            renders: this.attrs.renders,
+            mixers: []
         };
 
         this.init(attrs);
@@ -285,7 +286,7 @@ class Clip3D extends Group{
                 this.ownContext.getElements(this.attrs.renders[i].camera)[0].object
             );
         }
-        console.log(JSON.parse(JSON.stringify(this.ownContext.elements)),this.ownContext.elements)
+        // console.log(JSON.parse(JSON.stringify(this.ownContext.elements)),this.ownContext.elements)
     }
             
     initializeCamera(camera){

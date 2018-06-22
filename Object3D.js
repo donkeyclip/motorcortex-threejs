@@ -29,6 +29,7 @@ class Object3D extends TimedIncident {
         // console.log(this.element)
         for ( let key in this.attrs.animatedAttrs) {
             // console.log(key)
+            console.log(this)
             const initialValue = this.getInitialValue(key);
             if ((this.attrs.attrs || {}).keepLookAt){
                 for (let element of this.context.getElements(selector)){
