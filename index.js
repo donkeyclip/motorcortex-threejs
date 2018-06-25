@@ -334,7 +334,7 @@ const horseAnimation4 = new threejsPlugin.Object3D({
   },{
     id: 'horse_animation4',
     selector: '#horse',
-    duration: 2000
+    duration: 1500
   });
 
 const divAnimation5 = new threejsPlugin.Object3D({
@@ -354,38 +354,38 @@ const horseAnimation5 = new threejsPlugin.Object3D({
   },{
     id: 'horse_animation5',
     selector: '.horses',
-    duration: 2000
+    duration: 1500
   });
 
 const horseMAE = new threejsPlugin.MAE({
   attrs: {
-    singleLoopDuration:1,
+    singleLoopDuration:1000,
     animationFrames: 30,
     animationName: 'gallop'
   },
   animatedAttrs: {
-    time: 2000
+    time: 1500
   }
   },{
     id: 'horse_animation5_gallop',
     selector: '#horse',
-    duration: 2000
+    duration: 1500
   });
 
 
 const horsesMAE = new threejsPlugin.MAE({
   attrs: {
-    singleLoopDuration:1,
+    singleLoopDuration:1000,
     animationFrames: 30,
     animationName: 'gallop'
   },
   animatedAttrs: {
-    time: 2000
+    time: 1500
   }
   },{
     id: 'horse_animation6_gallop',
     selector: '.horses',
-    duration: 2000
+    duration: 1500
   });
 
 
