@@ -307,9 +307,12 @@ const cameraAnimation = new threejsPlugin.Object3D({
     duration: 2000
   });
 const cameraAnimation2 = new threejsPlugin.Object3D({
+  attrs: {
+    keepLookAt: [new THREE.Vector3()]
+  },
   animatedAttrs: {
-    position_y: -40,
-    position_x: 40
+    position_y: -60,
+    position_x: 60
   }
   },{
     id: 'camera_animation2',
@@ -367,7 +370,6 @@ const horseMAE = new threejsPlugin.MAE({
     time: 1500
   }
   },{
-    id: 'horse_animation5_gallop',
     selector: '#horse',
     duration: 1500
   });
@@ -383,7 +385,6 @@ const horsesMAE = new threejsPlugin.MAE({
     time: 1500
   }
   },{
-    id: 'horse_animation6_gallop',
     selector: '.horses',
     duration: 1500
   });
@@ -407,6 +408,3 @@ clip1.addIncident(horseMAE,6000)
 clip1.addIncident(divAnimation5,8000)
 clip1.addIncident(horseAnimation5,10000)
 clip1.addIncident(horsesMAE,10000)
-console.log("the clip", clip1)
-// clip1.play();
-// clip1.play();
