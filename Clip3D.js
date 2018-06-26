@@ -64,12 +64,15 @@ class Clip3D extends Group{
         */
 
         for (let camera of attrs.cameras){
+            if (this.context.getElements("#"+camera.id)[0]){
+                throw "This id "+ camera.id + " is already in use."
+            }
             this.initializeCamera(camera);
             const { type } = camera.settings;
             this.ownContext.elements.cameras.push(
                 {
                     id: camera.id,
-                    mcid: camera.id,
+                    // mcid: camera.id,
                     groups: camera.groups,
                     settings: camera.settings,
                     object: new THREE[type](...camera.parameters)
@@ -88,10 +91,13 @@ class Clip3D extends Group{
         */
 
         for (let scene of attrs.scenes){
+            if (this.context.getElements("#"+scene.id)[0]){
+                throw "This id "+ scene.id + " is already in use."
+            }
             this.ownContext.elements.scenes.push(
                 {
                     id: scene.id,
-                    mcid: scene.id,
+                    // mcid: scene.id,
                     groups: scene.groups,
                     object: new THREE.Scene()
                 }
@@ -104,12 +110,15 @@ class Clip3D extends Group{
         */
 
         for (let renderer of attrs.renderers){
+            if (this.context.getElements("#"+renderer.id)[0]){
+                throw "This id "+ renderer.id + " is already in use."
+            }
             this.initializeRenderer(renderer);
             const { type } = renderer.settings;
             this.ownContext.elements.renderers.push(
                 {
                     id: renderer.id,
-                    mcid: renderer.id,
+                    // mcid: renderer.id,
                     groups: renderer.groups,
                     object: new THREE[type](...renderer.parameters)
                 }
@@ -128,12 +137,15 @@ class Clip3D extends Group{
         */
 
         for (let light of attrs.lights){
+            if (this.context.getElements("#"+light.id)[0]){
+                throw "This id "+ light.id + " is already in use."
+            }
             this.initializeLight(light);
 
             this.ownContext.elements.lights.push(
                 {
                     id: light.id,
-                    mcid: light.id,
+                    // mcid: light.id,
                     groups: light.groups,
                     object: new THREE[light.settings.type](...light.parameters)
                 }
@@ -157,8 +169,11 @@ class Clip3D extends Group{
         * MESHES
         */
         for ( let mesh of attrs.meshes) {
+            if (this.context.getElements("#"+mesh.id)[0]){
+                throw "This id "+ mesh.id + " is already in use."
+            }
             this.initializeMesh(mesh);
-            mesh.mcid = mesh.id;
+            // mesh.mcid = mesh.id;
             const geometry = new THREE[mesh.geometry.type](...mesh.geometry.parameters);
             const material = new THREE[mesh.material.type](...mesh.material.parameters);
             mesh.object = new THREE.Mesh( geometry, material );
@@ -176,8 +191,11 @@ class Clip3D extends Group{
         * CSS3DOBJECTS
         */
         for ( let css3d of attrs.css3d_objects) {
+            if (this.context.getElements("#"+css3d.id)[0]){
+                throw "This id "+ css3d.id + " is already in use."
+            }
             this.initializeMesh(css3d);
-            css3d.mcid = css3d.id;
+            // css3d.mcid = css3d.id;
             const elements = this.ownContext.document.querySelectorAll(css3d.selector);
             for (let element of elements) {
                 css3d.object = new THREE.CSS3DObject(element)
@@ -196,8 +214,11 @@ class Clip3D extends Group{
         * LOADERS
         */
         for ( let loader of attrs.loaders) {
+            if (this.context.getElements("#"+loader.id)[0]){
+                throw "This id "+ loader.id + " is already in use."
+            }
             this.initializeLoader(loader);
-            loader.mcid = loader.id;
+            // loader.mcid = loader.id;
             if (!THREE[loader.type]) {
                 try {
                     require('three/examples/js/loaders/' + loader.type);
@@ -214,8 +235,11 @@ class Clip3D extends Group{
         * MODELS
         */
         for (let model of attrs.models){
+            if (this.context.getElements("#"+model.id)[0]){
+                throw "This id "+ model.id + " is already in use."
+            }
             this.initializeModel(model);
-            model.mcid = model.id
+            // model.mcid = model.id
             const loader = this.ownContext.getElements(model.loader)[0]; 
 
             const loadGeometry = () => {
