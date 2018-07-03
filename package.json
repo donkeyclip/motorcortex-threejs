@@ -4,7 +4,8 @@
   "description": "Threejs library for MotorCortex",
   "main": "./main.js",
   "scripts": {
-    "start": "webpack-dev-server --inline --hot --disableHostCheck"
+    "start": "webpack-dev-server --inline --hot --disableHostCheck",
+    "build": "webpack --config webpack.config.js"
   },
   "keywords": [
     "MotorCortex",

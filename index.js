@@ -1,5 +1,4 @@
 const MC = require("@kissmybutton/motorcortex");
-// const MC = require("../motorcortex");
 const threejsPluginDefinition = require("./main");
 const threejsPlugin = MC.loadPlugin(threejsPluginDefinition);
 
