@@ -2,24 +2,10 @@ const MC = require("../node_modules/@kissmybutton/motorcortex");
 const threejsPluginDefinition = require("../src/main");
 const threejsPlugin = MC.loadPlugin(threejsPluginDefinition);
 
-// Create a Clip
-// const css = `
-//   .myCam {
-//     background: lightblue;
-//     border-radius: 64px;
-//     border:1px solid black;
-//     height: 64px;
-//     left: 0;
-//     position: absolute;
-//     top: 0;
-//     width: 64px;
-//   }
-// `;
-
 const html = `
 <div class="myCam">
-  <p id = "teo">Hello World!!</p>
-  <p id = "teo1" class="animated bounceInDown" style="background-color: red">Hello World!!</p>
+  <div id="image" style="background-image: url(./mclogo.png);background-repeat: no-repeat;background-size: 100% 100%;width:20px;height:20px;">&nbsp;</div>
+  <p id = "paragraph" style="background-color:white;border-radius:5px;font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;padding:10px;color:#555">Demo of motorcortex-threejs plugin</p>
 </div>
 `;
 
@@ -62,13 +48,14 @@ const clip1 = new threejsPlugin.Clip3D(
         groups: "camera1",
         settings: {
           position: {
-            z: 20,
-            y: -40,
-            x: 40
+            y: -450,
+            x: 0,
+            z: 10
           },
           up: {
             set: [0, 0, 1]
           },
+          lookAt: [new THREE.Vector3(0, -100, 10)],
           far: 1000
         }
       }
@@ -120,7 +107,7 @@ const clip1 = new threejsPlugin.Clip3D(
         groups: "planes",
         geometry: {
           type: "PlaneGeometry",
-          parameters: [20, 20, 20]
+          parameters: [200, 200, 200]
         },
         material: {
           type: "MeshLambertMaterial",
@@ -135,35 +122,34 @@ const clip1 = new threejsPlugin.Clip3D(
     ],
     css3d_objects: [
       {
-        id: "helloWorld",
-        groups: "helloWorlds",
-        selector: "#teo",
+        id: "paragraph",
+        groups: "css3d",
+        selector: "#paragraph",
         settings: {
           position: {
-            x: 4,
-            y: 4,
+            x: 0,
+            y: -100,
             z: 10
           },
           rotation: {
-            z: 0.2,
-            x: 0.2
+            x: Math.PI / 2
           }
         },
         scenes: "#scene2"
       },
       {
-        id: "helloWorldRed",
-        groups: "helloWorlds",
-        selector: "#teo1",
+        id: "image",
+        groups: "css3d",
+        selector: "#image",
         settings: {
           position: {
-            x: 4,
-            y: 4,
-            z: 5
+            x: 0,
+            y: -50,
+            z: 10
           },
           rotation: {
-            z: 0.4,
-            x: 0.4
+            x: Math.PI / 2,
+            y: Math.PI / 2
           }
         },
         scenes: "#scene2"
@@ -303,16 +289,16 @@ const clip1 = new threejsPlugin.Clip3D(
 const cameraAnimation = new threejsPlugin.Object3D(
   {
     attrs: {
-      keepLookAt: [new THREE.Vector3()]
+      keepLookAt: [new THREE.Vector3(0, -90, 10)]
     },
     animatedAttrs: {
-      position_y: -100,
-      position_x: 100,
-      rotation_z: 2 * Math.PI + 0.3217 / 2
+      position_x: 0,
+      position_y: -90,
+      rotation_z: 2 * Math.PI
     }
   },
   {
-    id: "camera_animation",
+    id: "move_to_paragraph",
     selector: "#camera1",
     duration: 2000
   }
@@ -320,11 +306,11 @@ const cameraAnimation = new threejsPlugin.Object3D(
 const cameraAnimation2 = new threejsPlugin.Object3D(
   {
     attrs: {
-      keepLookAt: [new THREE.Vector3()]
+      keepLookAt: [new THREE.Vector3(0, -50, 10)]
     },
     animatedAttrs: {
-      position_y: -60,
-      position_x: 60
+      position_y: -50,
+      position_x: 30
     }
   },
   {
@@ -334,19 +320,87 @@ const cameraAnimation2 = new threejsPlugin.Object3D(
   }
 );
 
+const cameraAnimation3 = new threejsPlugin.Object3D(
+  {
+    attrs: {
+      // keepLookAt: [new THREE.Vector3()]
+    },
+    animatedAttrs: {
+      position_x: 40,
+      position_y: 0,
+      position_z: 2
+    }
+  },
+  {
+    id: "camera_animation3",
+    selector: "#camera1",
+    duration: 1000
+  }
+);
+
+const cameraAnimation4 = new threejsPlugin.Object3D(
+  {
+    attrs: {
+      keepLookAt: [new THREE.Vector3()]
+    },
+    animatedAttrs: {
+      position_x: 40,
+      position_y: -40,
+      position_z: 20
+    }
+  },
+  {
+    id: "camera_animation4",
+    selector: "#camera1",
+    duration: 2000
+  }
+);
+
+const cameraAnimation5 = new threejsPlugin.Object3D(
+  {
+    attrs: {
+      keepLookAt: [new THREE.Vector3()]
+    },
+    animatedAttrs: {
+      position_x: 50,
+      position_y: -90,
+      position_z: 50
+    }
+  },
+  {
+    id: "camera_animation5",
+    selector: "#camera1",
+    duration: 3500
+  }
+);
+
 const boxAnimation3 = new threejsPlugin.Object3D(
   {
     animatedAttrs: {
-      rotation_z: 3 * Math.PI
+      rotation_z: 1.5 * Math.PI,
+      position_y: -10
     }
   },
   {
     id: "box_animation3",
     selector: "#box",
-    duration: 2000
+    duration: 1000
   }
 );
 
+const boxAnimation4 = new threejsPlugin.Object3D(
+  {
+    animatedAttrs: {
+      rotation_z: 3 * Math.PI,
+      position_x: 20
+    }
+  },
+  {
+    id: "box_animation4",
+    selector: "#box",
+    duration: 1000
+  }
+);
 const horseAnimation4 = new threejsPlugin.Object3D(
   {
     animatedAttrs: {
@@ -363,12 +417,12 @@ const horseAnimation4 = new threejsPlugin.Object3D(
 const divAnimation5 = new threejsPlugin.Object3D(
   {
     animatedAttrs: {
-      position_x: -20
+      rotation_y: 4 * Math.PI
     }
   },
   {
     id: "div_animation5",
-    selector: "#helloWorldRed",
+    selector: "#image",
     duration: 2000
   }
 );
@@ -428,11 +482,15 @@ const timer = new Timer({
 });
 window.MCTestTimer = timer;
 
-clip1.addIncident(cameraAnimation, 0);
-clip1.addIncident(cameraAnimation2, 2000);
-clip1.addIncident(boxAnimation3, 4000);
-clip1.addIncident(horseAnimation4, 6000);
-clip1.addIncident(horseMAE, 6000);
-clip1.addIncident(divAnimation5, 8000);
-clip1.addIncident(horseAnimation5, 10000);
-clip1.addIncident(horsesMAE, 10000);
+clip1.addIncident(cameraAnimation, 2000);
+clip1.addIncident(cameraAnimation2, 4000);
+clip1.addIncident(divAnimation5, 6000);
+clip1.addIncident(cameraAnimation3, 8000);
+clip1.addIncident(cameraAnimation4, 9000);
+clip1.addIncident(cameraAnimation5, 11000);
+clip1.addIncident(boxAnimation3, 9000);
+clip1.addIncident(boxAnimation4, 10000);
+clip1.addIncident(horseAnimation4, 11000);
+clip1.addIncident(horseMAE, 11000);
+clip1.addIncident(horseAnimation5, 13000);
+clip1.addIncident(horsesMAE, 13000);
