@@ -21,11 +21,15 @@ const clip1 = new threejsPlugin.Clip3D(
     scenes: [
       {
         id: "scene1",
-        groups: "scenes"
+        groups: "scenes",
+        settings: {
+          // fog: new THREE.Fog(0x59472b, 150, 200)
+        }
       },
       {
         id: "scene2",
-        groups: "scenes"
+        groups: "scenes",
+        settings: {}
       }
     ],
     lights: [
@@ -34,11 +38,23 @@ const clip1 = new threejsPlugin.Clip3D(
         groups: "lights",
         settings: {
           position: {
-            set: [0, 1, 1]
+            set: [0, 0, 100]
           },
+          target: {
+            position: {
+              set: [0, 0, 0]
+            }
+          },
+          type: "SpotLight",
           castShadow: true,
           receiveShadow: true
         },
+        applyToSelector: "#scene1"
+      },
+      {
+        id: "light2",
+        groups: "lights",
+        parameters: [0x444444],
         applyToSelector: "#scene1"
       }
     ],
@@ -56,7 +72,7 @@ const clip1 = new threejsPlugin.Clip3D(
             set: [0, 0, 1]
           },
           lookAt: [new THREE.Vector3(0, -100, 10)],
-          far: 1000
+          far: 10000
         }
       }
     ],
@@ -95,7 +111,7 @@ const clip1 = new threejsPlugin.Clip3D(
         },
         settings: {
           castShadow: true,
-          receiveShadow: true,
+          receiveShadow: false,
           position: {
             z: 2
           }
@@ -165,7 +181,7 @@ const clip1 = new threejsPlugin.Clip3D(
           "https://raw.githubusercontent.com/mrdoob/three.js/master/examples/models/animated/horse.js",
         settings: {
           position: {
-            x: 13,
+            x: -13,
             y: 0,
             z: 0
           },
@@ -176,7 +192,9 @@ const clip1 = new threejsPlugin.Clip3D(
             x: -Math.PI / 2,
             y: Math.PI,
             z: Math.PI
-          }
+          },
+          castShadow: true,
+          receiveShadow: false
         },
         material: {
           type: "MeshLambertMaterial",
@@ -208,7 +226,9 @@ const clip1 = new threejsPlugin.Clip3D(
             x: -Math.PI / 2,
             y: Math.PI,
             z: Math.PI
-          }
+          },
+          castShadow: true,
+          receiveShadow: false
         },
         material: {
           type: "MeshLambertMaterial",
@@ -229,7 +249,7 @@ const clip1 = new threejsPlugin.Clip3D(
           "https://raw.githubusercontent.com/mrdoob/three.js/master/examples/models/animated/horse.js",
         settings: {
           position: {
-            x: 10,
+            x: 30,
             y: 0,
             z: 0
           },
@@ -240,7 +260,9 @@ const clip1 = new threejsPlugin.Clip3D(
             x: -Math.PI / 2,
             y: Math.PI,
             z: Math.PI
-          }
+          },
+          castShadow: true,
+          receiveShadow: false
         },
         material: {
           type: "MeshLambertMaterial",

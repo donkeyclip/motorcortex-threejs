@@ -98,6 +98,12 @@ class Clip3D extends Group {
         groups: scene.groups,
         object: new THREE.Scene()
       });
+
+      const length = this.ownContext.elements.scenes.length - 1;
+      const sceneObj = this.ownContext.elements.scenes[length].object;
+      if (scene.settings.fog) {
+        sceneObj.fog = scene.settings.fog;
+      }
     }
 
     /*
@@ -361,11 +367,15 @@ class Clip3D extends Group {
     light.settings.type = light.settings.type || "DirectionalLight";
 
     if (light.settings.type === "SpotLight") {
-      light.parameters = light.parameters || [0xdddddd, 1];
+      light.parameters = light.parameters || [0xffffff, 1];
+      light.shadow = new THREE.LightShadow(
+        new THREE.PerspectiveCamera(50, 1, 700, 500)
+      );
+      light.shadow.bias = 0.0001;
     } else if (light.settings.type === "DirectionalLight") {
       light.parameters = light.parameters || [0xffffff, 1, 100];
     } else if (light.setting.type === "PointLight") {
-      light.parameters = light.parameters || [0xff0000, 1, 100];
+      light.parameters = light.parameters || [0xffffff, 1, 100];
     }
   }
 
