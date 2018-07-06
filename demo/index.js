@@ -64,8 +64,8 @@ const clip1 = new threejsPlugin.Clip3D(
         groups: "camera1",
         settings: {
           position: {
-            y: -450,
             x: 0,
+            y: -450,
             z: 10
           },
           up: {
@@ -113,6 +113,8 @@ const clip1 = new threejsPlugin.Clip3D(
           castShadow: true,
           receiveShadow: false,
           position: {
+            x: 0,
+            y: 0,
             z: 2
           }
         },
@@ -148,7 +150,9 @@ const clip1 = new threejsPlugin.Clip3D(
             z: 10
           },
           rotation: {
-            x: Math.PI / 2
+            x: Math.PI / 2,
+            y: 0,
+            z: 0
           }
         },
         scenes: "#scene2"
@@ -165,7 +169,8 @@ const clip1 = new threejsPlugin.Clip3D(
           },
           rotation: {
             x: Math.PI / 2,
-            y: Math.PI / 2
+            y: Math.PI / 2,
+            z: 0
           }
         },
         scenes: "#scene2"
@@ -314,9 +319,12 @@ const cameraAnimation = new threejsPlugin.Object3D(
       keepLookAt: [new THREE.Vector3(0, -90, 10)]
     },
     animatedAttrs: {
-      position_x: 0,
-      position_y: -90,
-      rotation_z: 2 * Math.PI
+      position: {
+        y: -90
+      },
+      rotation: {
+        z: 2 * Math.PI
+      }
     }
   },
   {
@@ -331,8 +339,10 @@ const cameraAnimation2 = new threejsPlugin.Object3D(
       keepLookAt: [new THREE.Vector3(0, -50, 10)]
     },
     animatedAttrs: {
-      position_y: -50,
-      position_x: 30
+      position: {
+        x: 30,
+        y: -50
+      }
     }
   },
   {
@@ -348,9 +358,11 @@ const cameraAnimation3 = new threejsPlugin.Object3D(
       // keepLookAt: [new THREE.Vector3()]
     },
     animatedAttrs: {
-      position_x: 40,
-      position_y: 0,
-      position_z: 2
+      position: {
+        x: 40,
+        y: 0,
+        z: 2
+      }
     }
   },
   {
@@ -366,9 +378,11 @@ const cameraAnimation4 = new threejsPlugin.Object3D(
       keepLookAt: [new THREE.Vector3()]
     },
     animatedAttrs: {
-      position_x: 40,
-      position_y: -40,
-      position_z: 20
+      position: {
+        x: 40,
+        y: -40,
+        z: 20
+      }
     }
   },
   {
@@ -384,9 +398,11 @@ const cameraAnimation5 = new threejsPlugin.Object3D(
       keepLookAt: [new THREE.Vector3()]
     },
     animatedAttrs: {
-      position_x: 50,
-      position_y: -90,
-      position_z: 50
+      position: {
+        x: 50,
+        y: -90,
+        z: 50
+      }
     }
   },
   {
@@ -399,8 +415,12 @@ const cameraAnimation5 = new threejsPlugin.Object3D(
 const boxAnimation3 = new threejsPlugin.Object3D(
   {
     animatedAttrs: {
-      rotation_z: 1.5 * Math.PI,
-      position_y: -10
+      rotation: {
+        z: 1.5 * Math.PI
+      },
+      position: {
+        y: -10
+      }
     }
   },
   {
@@ -413,8 +433,12 @@ const boxAnimation3 = new threejsPlugin.Object3D(
 const boxAnimation4 = new threejsPlugin.Object3D(
   {
     animatedAttrs: {
-      rotation_z: 3 * Math.PI,
-      position_x: 20
+      rotation: {
+        z: 3 * Math.PI
+      },
+      position: {
+        x: 20
+      }
     }
   },
   {
@@ -426,7 +450,9 @@ const boxAnimation4 = new threejsPlugin.Object3D(
 const horseAnimation4 = new threejsPlugin.Object3D(
   {
     animatedAttrs: {
-      position_y: -20
+      position: {
+        y: -20
+      }
     }
   },
   {
@@ -439,7 +465,9 @@ const horseAnimation4 = new threejsPlugin.Object3D(
 const divAnimation5 = new threejsPlugin.Object3D(
   {
     animatedAttrs: {
-      rotation_y: 4 * Math.PI
+      rotation: {
+        y: 4 * Math.PI
+      }
     }
   },
   {
@@ -452,7 +480,9 @@ const divAnimation5 = new threejsPlugin.Object3D(
 const horseAnimation5 = new threejsPlugin.Object3D(
   {
     animatedAttrs: {
-      position_y: -30
+      position: {
+        y: -30
+      }
     }
   },
   {

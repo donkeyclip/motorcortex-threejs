@@ -14,7 +14,7 @@ module.exports = {
     filename: "bundle.js",
     // the output bundle
 
-    path: path.resolve(__dirname, "./dist")
+    path: path.resolve(__dirname, "./" /*"./dist"*/)
   },
 
   devtool: "cheap-module-eval-source-map",
