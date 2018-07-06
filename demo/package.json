@@ -13,7 +13,8 @@
     "threejs"
   ],
   "peerDependencies": {
-    "@kissmybutton/motorcortex": "1.8.9"
+    "@kissmybutton/motorcortex": "1.8.9",
+    "babel-core": "^6.26.3"
   },
   "devDependencies": {
     "@kissmybutton/motorcortex": "1.8.9",

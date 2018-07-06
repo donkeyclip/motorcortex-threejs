@@ -9,69 +9,76 @@ class Object3D extends TimedIncident {
   onGetContext() {}
 
   getScratchValue(mcid, attribute) {
-    const attr = attribute.replace("_", ".");
-    try {
-      return eval(`this.element.settings.${attr}`) || 0;
-    } catch (e) {
-      try {
-        return eval(`this.element.object.${attr}`) || 0;
-      } catch (e) {
-        return 0;
-      }
+    if (typeof this.element.settings[attribute] !== "undefined") {
+      return this.element.settings[attribute];
+    } else if (typeof this.element.object[attribute] !== "undefined") {
+      return this.element.object[attribute];
     }
+    return 0;
   }
 
   onProgress(progress /*, millisecond*/) {
     const selector = this.props.selector;
-    // console.log(this.element)
+
     for (const key in this.attrs.animatedAttrs) {
-      // console.log(key)
-      // console.log(this)
       const initialValue = this.getInitialValue(key);
-      if ((this.attrs.attrs || {}).keepLookAt) {
+
+      if (key === "rotation") {
+        const animatedAttr = this.attrs.animatedAttrs.rotation;
+
         for (const element of this.context.getElements(selector)) {
-          element.object.lookAt(...this.attrs.attrs.keepLookAt);
+          initialValue.x = initialValue.x || element.object.rotation.x;
+          initialValue.y = initialValue.y || element.object.rotation.y;
+          initialValue.z = initialValue.z || element.object.rotation.z;
+          typeof animatedAttr.x !== "undefined"
+            ? (element.object.rotation.x =
+                (animatedAttr.x - initialValue.x) * progress + initialValue.x)
+            : null;
+
+          typeof animatedAttr.y !== "undefined"
+            ? (element.object.rotation.y =
+                (animatedAttr.y - initialValue.y) * progress + initialValue.y)
+            : null;
+
+          typeof animatedAttr.z !== "undefined"
+            ? (element.object.rotation.z =
+                (animatedAttr.z - initialValue.z) * progress + initialValue.z)
+            : null;
+        }
+      } else if (key === "position") {
+        const animatedAttr = this.attrs.animatedAttrs.position;
+
+        // console.log("element",this.element);
+        // console.log("animated",animatedAttr);
+        // console.log("initial",initialValue)
+        // console.log(progress)
+
+        for (const element of this.context.getElements(selector)) {
+          initialValue.x = initialValue.x || element.object.position.x;
+          initialValue.y = initialValue.y || element.object.position.y;
+          initialValue.z = initialValue.z || element.object.position.z;
+          // console.log(typeof animatedAttr.x !== 'undefined',typeof animatedAttr.y !== 'undefined',typeof animatedAttr.z !== 'undefined')
+          typeof animatedAttr.x !== "undefined"
+            ? (element.object.position.x =
+                (animatedAttr.x - initialValue.x) * progress + initialValue.x)
+            : null;
+
+          typeof animatedAttr.y !== "undefined"
+            ? (element.object.position.y =
+                (animatedAttr.y - initialValue.y) * progress + initialValue.y)
+            : null;
+
+          typeof animatedAttr.z !== "undefined"
+            ? (element.object.position.z =
+                (animatedAttr.z - initialValue.z) * progress + initialValue.z)
+            : null;
         }
       }
-      if (key === "rotation_x") {
-        const animatedAttr = this.attrs.animatedAttrs.rotation_x;
-        for (const element of this.context.getElements(selector)) {
-          element.object.rotation.x =
-            (animatedAttr - initialValue) * progress + initialValue;
-        }
-      } else if (key === "rotation_y") {
-        const animatedAttr = this.attrs.animatedAttrs.rotation_y;
-        for (const element of this.context.getElements(selector)) {
-          element.object.rotation.y =
-            (animatedAttr - initialValue) * progress + initialValue;
-        }
-      } else if (key === "rotation_z") {
-        const animatedAttr = this.attrs.animatedAttrs.rotation_z;
-        for (const element of this.context.getElements(selector)) {
-          // console.log(element)
-          element.object.rotation.z =
-            (animatedAttr - initialValue) * progress + initialValue;
-        }
-      } else if (key === "position_x") {
-        const animatedAttr = this.attrs.animatedAttrs.position_x;
-        // console.log(selector, this.context.getElements(selector))
-        for (const element of this.context.getElements(selector)) {
-          // console.log(element)
-          element.object.position.x =
-            (animatedAttr - initialValue) * progress + initialValue;
-        }
-      } else if (key === "position_y") {
-        const animatedAttr = this.attrs.animatedAttrs.position_y;
-        for (const element of this.context.getElements(selector)) {
-          element.object.position.y =
-            (animatedAttr - initialValue) * progress + initialValue;
-        }
-      } else if (key === "position_z") {
-        const animatedAttr = this.attrs.animatedAttrs.position_z;
-        for (const element of this.context.getElements(selector)) {
-          element.object.position.z =
-            (animatedAttr - initialValue) * progress + initialValue;
-        }
+    }
+
+    if ((this.attrs.attrs || {}).keepLookAt) {
+      for (const element of this.context.getElements(selector)) {
+        element.object.lookAt(...this.attrs.attrs.keepLookAt);
       }
     }
 
