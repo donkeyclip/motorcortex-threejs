@@ -323,7 +323,7 @@ const cameraAnimation = new threejsPlugin.Object3D(
         y: -90
       },
       rotation: {
-        z: 2 * Math.PI
+        y: 2 * Math.PI
       }
     }
   },
@@ -546,3 +546,5 @@ clip1.addIncident(horseAnimation4, 11000);
 clip1.addIncident(horseMAE, 11000);
 clip1.addIncident(horseAnimation5, 13000);
 clip1.addIncident(horsesMAE, 13000);
+
+// console.log(clip1);

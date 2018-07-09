@@ -54,9 +54,12 @@ class Object3D extends TimedIncident {
         // console.log(progress)
 
         for (const element of this.context.getElements(selector)) {
-          initialValue.x = initialValue.x || element.object.position.x;
-          initialValue.y = initialValue.y || element.object.position.y;
-          initialValue.z = initialValue.z || element.object.position.z;
+          // console.log("INITIAL VALUE",initialValue);
+          // console.log("ANIMATED ATTRIBUTE", animatedAttr);
+
+          // initialValue.x = initialValue.x || element.object.position.x;
+          // initialValue.y = initialValue.y || element.object.position.y;
+          // initialValue.z = initialValue.z || element.object.position.z;
           // console.log(typeof animatedAttr.x !== 'undefined',typeof animatedAttr.y !== 'undefined',typeof animatedAttr.z !== 'undefined')
           typeof animatedAttr.x !== "undefined"
             ? (element.object.position.x =

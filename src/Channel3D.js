@@ -4,10 +4,10 @@ class Channel extends MotorCortex.AttributeChannel {
   constructor(props) {
     super(props);
 
-    this.compoAttributes = {
+    this.setComboAttributes({
       rotation: ["x", "y", "z"],
       position: ["x", "y", "z"]
-    };
+    });
   }
 }
 
