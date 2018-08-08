@@ -1,4 +1,5 @@
 const MC = require("../node_modules/@kissmybutton/motorcortex");
+const Player = require("./node_modules/@kissmybutton/motorcortex-player");
 const threejsPluginDefinition = require("../src/main");
 const threejsPlugin = MC.loadPlugin(threejsPluginDefinition);
 
@@ -526,14 +527,6 @@ const horsesMAE = new threejsPlugin.MAE(
   }
 );
 
-const Timer = MC.Timer;
-
-const timer = new Timer({
-  Incident: clip1,
-  width: 1000
-});
-window.MCTestTimer = timer;
-
 clip1.addIncident(cameraAnimation, 2000);
 clip1.addIncident(cameraAnimation2, 4000);
 clip1.addIncident(divAnimation5, 6000);
@@ -547,4 +540,5 @@ clip1.addIncident(horseMAE, 11000);
 clip1.addIncident(horseAnimation5, 13000);
 clip1.addIncident(horsesMAE, 13000);
 
-// console.log(clip1);
+
+const timer = new Player({ clip: clip1 });
