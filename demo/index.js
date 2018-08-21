@@ -16,7 +16,10 @@ const containerParams = {
   width: "100%",
   height: "100%"
 };
-
+let shadow = true;
+if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+  shadow = false;
+}
 const clip1 = new threejsPlugin.Clip3D(
   {
     scenes: [
@@ -84,11 +87,11 @@ const clip1 = new threejsPlugin.Clip3D(
         settings: {
           setClearColor: ["lightblue"],
           shadowMap: {
-            enabled: true,
+            enabled: shadow,
             type: THREE.PCFSoftShadowMap
           }
         },
-        parameters: [{ alpha: true }]
+        parameters: [{ alpha: true, antialias: true }]
       },
       {
         id: "renderer2",
@@ -541,4 +544,4 @@ clip1.addIncident(horseAnimation5, 13000);
 clip1.addIncident(horsesMAE, 13000);
 
 
-const timer = new Player({ clip: clip1 });
+const timer = new Player({ clip: clip1, theme: "whiteGold on-top" });

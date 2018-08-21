@@ -56,6 +56,17 @@ class Clip3D extends Group {
     };
 
     this.init(attrs);
+    document.body.onresize = () => {
+      for(let i in this.ownContext.elements.cameras) {
+        this.ownContext.elements.cameras[i].object.aspect = this.ownContext.window.innerWidth / this.ownContext.window.innerHeight;
+        this.ownContext.elements.cameras[i].object.updateProjectionMatrix();
+      }
+          
+      for(let i in this.ownContext.elements.renderers) {
+        this.ownContext.elements.renderers[i].object.setSize( this.ownContext.window.innerWidth, this.ownContext.window.innerHeight );
+      }
+
+      }
   }
 
   async init(attrs) {
