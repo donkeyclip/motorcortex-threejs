@@ -20,6 +20,7 @@ let shadow = true;
 if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
   shadow = false;
 }
+
 const clip1 = new threejsPlugin.Clip3D(
   {
     scenes: [
@@ -544,4 +545,4 @@ clip1.addIncident(horseAnimation5, 13000);
 clip1.addIncident(horsesMAE, 13000);
 
 
-const timer = new Player({ clip: clip1, theme: "whiteGold on-top" });
+const timer = new Player({ clip: clip1, theme: "transparent on-top" });
