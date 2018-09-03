@@ -1,7 +1,10 @@
 const MC = require("../node_modules/@kissmybutton/motorcortex");
-const Player = require("./node_modules/@kissmybutton/motorcortex-player");
+const Player = require("../../teo-motorcortex-player/");
+// const Player = require("./node_modules/@kissmybutton/motorcortex-player/");
 const threejsPluginDefinition = require("../src/main");
+const clipThreejsPluginDefinition = require("../src/main");
 const threejsPlugin = MC.loadPlugin(threejsPluginDefinition);
+const clipThreejsPlugin = MC.loadPlugin(clipThreejsPluginDefinition);
 
 const html = `
 <div class="myCam">
@@ -76,7 +79,7 @@ const clip1 = new threejsPlugin.Clip3D(
           up: {
             set: [0, 0, 1]
           },
-          lookAt: [new THREE.Vector3(0, -100, 10)],
+          lookAt: [new THREE.Vector3(0, 0, 0)],
           far: 10000
         }
       }
@@ -188,7 +191,7 @@ const clip1 = new threejsPlugin.Clip3D(
         scenes: "#scene1",
         loader: "#JSONLoader",
         file:
-          "https://raw.githubusercontent.com/mrdoob/three.js/master/examples/models/animated/horse.js",
+          "https://raw.githubusercontent.com/rollup/three-jsnext/master/examples/models/animated/horse.js",
         settings: {
           position: {
             x: -13,
@@ -222,7 +225,7 @@ const clip1 = new threejsPlugin.Clip3D(
         scenes: "#scene1",
         loader: "#JSONLoader",
         file:
-          "https://raw.githubusercontent.com/mrdoob/three.js/master/examples/models/animated/horse.js",
+          "https://raw.githubusercontent.com/rollup/three-jsnext/master/examples/models/animated/horse.js",
         settings: {
           position: {
             x: 12,
@@ -256,7 +259,7 @@ const clip1 = new threejsPlugin.Clip3D(
         scenes: "#scene1",
         loader: "#JSONLoader",
         file:
-          "https://raw.githubusercontent.com/mrdoob/three.js/master/examples/models/animated/horse.js",
+          "https://raw.githubusercontent.com/rollup/three-jsnext/master/examples/models/animated/horse.js",
         settings: {
           position: {
             x: 30,
@@ -320,15 +323,15 @@ const clip1 = new threejsPlugin.Clip3D(
 
 const cameraAnimation = new threejsPlugin.Object3D(
   {
-    attrs: {
-      keepLookAt: [new THREE.Vector3(0, -90, 10)]
-    },
     animatedAttrs: {
       position: {
         y: -90
       },
       rotation: {
-        y: 2 * Math.PI
+        x: undefined,
+        y: undefined,
+        z: 2 * Math.PI,
+        lookAt: [new THREE.Vector3(0, 0, 0)]
       }
     }
   },
@@ -340,13 +343,16 @@ const cameraAnimation = new threejsPlugin.Object3D(
 );
 const cameraAnimation2 = new threejsPlugin.Object3D(
   {
-    attrs: {
-      keepLookAt: [new THREE.Vector3(0, -50, 10)]
-    },
     animatedAttrs: {
       position: {
         x: 30,
         y: -50
+      },
+      rotation: {
+        x: undefined,
+        y: undefined,
+        z: undefined,
+        lookAt: [new THREE.Vector3(0, -50, 10)]
       }
     }
   },
@@ -356,17 +362,37 @@ const cameraAnimation2 = new threejsPlugin.Object3D(
     duration: 2000
   }
 );
+const cameraAnimation21 = new threejsPlugin.Object3D(
+  {
+    animatedAttrs: {
+      rotation: {
+        x: undefined,
+        y: undefined,
+        z: undefined,
+        lookAt: [new THREE.Vector3(0, -50, 10)]
+      }
+    }
+  },
+  {
+    id: "camera_animation21",
+    selector: "#camera1",
+    duration: 2000
+  }
+);
 
 const cameraAnimation3 = new threejsPlugin.Object3D(
   {
-    attrs: {
-      // keepLookAt: [new THREE.Vector3()]
-    },
     animatedAttrs: {
       position: {
         x: 40,
         y: 0,
         z: 2
+      },
+      rotation: {
+        x: undefined,
+        y: undefined,
+        z: undefined,
+        lookAt: [new THREE.Vector3(0,0,0)]
       }
     }
   },
@@ -379,14 +405,18 @@ const cameraAnimation3 = new threejsPlugin.Object3D(
 
 const cameraAnimation4 = new threejsPlugin.Object3D(
   {
-    attrs: {
-      keepLookAt: [new THREE.Vector3()]
-    },
     animatedAttrs: {
       position: {
         x: 40,
         y: -40,
         z: 20
+      },
+      rotation: {
+        x: undefined,
+        y: undefined,
+        z: undefined,
+        lookAt: [new THREE.Vector3(0,0,0)]
+
       }
     }
   },
@@ -399,14 +429,18 @@ const cameraAnimation4 = new threejsPlugin.Object3D(
 
 const cameraAnimation5 = new threejsPlugin.Object3D(
   {
-    attrs: {
-      keepLookAt: [new THREE.Vector3()]
-    },
     animatedAttrs: {
       position: {
         x: 50,
         y: -90,
         z: 50
+      },
+      rotation: {
+        x: undefined,
+        y: undefined,
+        z: undefined,
+        lookAt: [new THREE.Vector3(0,0,0)]
+
       }
     }
   },
@@ -421,6 +455,8 @@ const boxAnimation3 = new threejsPlugin.Object3D(
   {
     animatedAttrs: {
       rotation: {
+        x: 1.5 * Math.PI,
+        y: 1.5 * Math.PI,
         z: 1.5 * Math.PI
       },
       position: {
@@ -439,6 +475,8 @@ const boxAnimation4 = new threejsPlugin.Object3D(
   {
     animatedAttrs: {
       rotation: {
+        x: 3 * Math.PI,
+        y: 3 * Math.PI,
         z: 3 * Math.PI
       },
       position: {
@@ -533,6 +571,7 @@ const horsesMAE = new threejsPlugin.MAE(
 
 clip1.addIncident(cameraAnimation, 2000);
 clip1.addIncident(cameraAnimation2, 4000);
+clip1.addIncident(cameraAnimation21, 6000);
 clip1.addIncident(divAnimation5, 6000);
 clip1.addIncident(cameraAnimation3, 8000);
 clip1.addIncident(cameraAnimation4, 9000);
@@ -544,5 +583,4 @@ clip1.addIncident(horseMAE, 11000);
 clip1.addIncident(horseAnimation5, 13000);
 clip1.addIncident(horsesMAE, 13000);
 
-
-const timer = new Player({ clip: clip1, theme: "transparent on-top" });
+const timer = new Player({ clip: clip1, theme: "transparent on-top", clipClass: clipThreejsPlugin.Clip3D, preview:false });

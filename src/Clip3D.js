@@ -23,6 +23,8 @@ class Clip3D extends Group {
    */
   constructor(attrs = {}, props = {}) {
     super(attrs, props);
+    this.props.selector = "";
+    this.props.css = "";
 
     const checks = this.runChecks(attrs, props);
 
@@ -56,17 +58,20 @@ class Clip3D extends Group {
     };
 
     this.init(attrs);
-    document.body.onresize = () => {
-      for(let i in this.ownContext.elements.cameras) {
-        this.ownContext.elements.cameras[i].object.aspect = this.ownContext.window.innerWidth / this.ownContext.window.innerHeight;
+    window.addEventListener("resize", () => {
+      for (const i in this.ownContext.elements.cameras) {
+        this.ownContext.elements.cameras[i].object.aspect =
+          this.ownContext.window.innerWidth /
+          this.ownContext.window.innerHeight;
         this.ownContext.elements.cameras[i].object.updateProjectionMatrix();
       }
-          
-      for(let i in this.ownContext.elements.renderers) {
-        this.ownContext.elements.renderers[i].object.setSize( this.ownContext.window.innerWidth, this.ownContext.window.innerHeight );
+      for (const i in this.ownContext.elements.renderers) {
+        this.ownContext.elements.renderers[i].object.setSize(
+          this.ownContext.window.innerWidth,
+          this.ownContext.window.innerHeight
+        );
       }
-
-      }
+    });
   }
 
   async init(attrs) {
@@ -321,6 +326,7 @@ class Clip3D extends Group {
           this.ownContext.getElements(this.attrs.renders[i].camera)[0].object
         );
     }
+    // console.log(this);
     // console.log(JSON.parse(JSON.stringify(this.ownContext.elements)),this.ownContext.elements)
   }
 
