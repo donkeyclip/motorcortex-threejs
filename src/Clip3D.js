@@ -21,6 +21,7 @@ class Clip3D extends Group {
    * - containerParams (an object that holds parameters to affect the
    * container of the isolated tree, e.g. width, height etc)
    */
+
   constructor(attrs = {}, props = {}) {
     super(attrs, props);
     this.props.selector = "";
@@ -42,7 +43,7 @@ class Clip3D extends Group {
     this.ownContext = contextHanlder.context;
     this.isTheClip = true;
 
-    this.attrs = attrs;
+    this.attrs = JSON.parse(JSON.stringify(attrs));
 
     this.ownContext.elements = {
       lights: [],
@@ -54,10 +55,12 @@ class Clip3D extends Group {
       css3d_objects: [],
       loaders: [],
       renders: this.attrs.renders,
-      mixers: []
+      mixers: [],
+      rn: Math.random().toFixed(2)
     };
 
     this.init(attrs);
+    console.log(this);
     window.addEventListener("resize", () => {
       for (const i in this.ownContext.elements.cameras) {
         this.ownContext.elements.cameras[i].object.aspect =
@@ -326,8 +329,6 @@ class Clip3D extends Group {
           this.ownContext.getElements(this.attrs.renders[i].camera)[0].object
         );
     }
-    // console.log(this);
-    // console.log(JSON.parse(JSON.stringify(this.ownContext.elements)),this.ownContext.elements)
   }
 
   initializeCamera(camera) {

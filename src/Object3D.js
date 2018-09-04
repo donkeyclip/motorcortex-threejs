@@ -35,24 +35,23 @@ class Object3D extends TimedIncident {
 
   onProgress(progress /*, millisecond*/) {
     const selector = this.props.selector;
-
     for (const key in this.attrs.animatedAttrs) {
       const initialValue = this.getInitialValue(key);
+
       if (key === "rotation") {
         const animatedAttr = this.attrs.animatedAttrs.rotation;
-        // console.log(
-        //   this.id,
-        //   "initial:",
-        //   initialValue,
-        //   "animated:",
-        //   animatedAttr
-        // );
         for (const element of this.context.getElements(selector)) {
-          // initialValue.x = initialValue.x || element.object.rotation.x;
-          // initialValue.y = initialValue.y || element.object.rotation.y;
-          // initialValue.z = initialValue.z || element.object.rotation.z;
-          // initialValue.lookAt = initialValue.lookAt || element.object.rotation.lookAt;
-
+          // console.log(this, element)
+          // if (this.id === "div_animation5_image_rotation") {
+          //   console.log(this)
+          //   console.log(
+          //     this.id,
+          //     "initial:",
+          //     initialValue,
+          //     "animated:",
+          //     animatedAttr
+          //   );
+          // }
           typeof animatedAttr.lookAt !== "undefined"
             ? element.object.lookAt(...animatedAttr.lookAt)
             : null;
@@ -76,12 +75,6 @@ class Object3D extends TimedIncident {
         const animatedAttr = this.attrs.animatedAttrs.position;
 
         for (const element of this.context.getElements(selector)) {
-          // console.log("INITIAL VALUE",initialValue);
-          // console.log("ANIMATED ATTRIBUTE", animatedAttr);
-          // initialValue.x = initialValue.x || element.object.position.x;
-          // initialValue.y = initialValue.y || element.object.position.y;
-          // initialValue.z = initialValue.z || element.object.position.z;
-          // console.log(typeof animatedAttr.x !== 'undefined',typeof animatedAttr.y !== 'undefined',typeof animatedAttr.z !== 'undefined')
           typeof animatedAttr.x !== "undefined"
             ? (element.object.position.x =
                 (animatedAttr.x - initialValue.x) * progress + initialValue.x)

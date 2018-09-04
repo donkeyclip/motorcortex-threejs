@@ -24,7 +24,7 @@ if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(naviga
   shadow = false;
 }
 
-const clip1 = new threejsPlugin.Clip3D(
+global.clip = new threejsPlugin.Clip3D(
   {
     scenes: [
       {
@@ -313,7 +313,7 @@ const clip1 = new threejsPlugin.Clip3D(
     ]
   },
   {
-    id: "clip1",
+    id: "clip",
     groups: "clips",
     host,
     containerParams,
@@ -440,7 +440,6 @@ const cameraAnimation5 = new threejsPlugin.Object3D(
         y: undefined,
         z: undefined,
         lookAt: [new THREE.Vector3(0,0,0)]
-
       }
     }
   },
@@ -509,7 +508,9 @@ const divAnimation5 = new threejsPlugin.Object3D(
   {
     animatedAttrs: {
       rotation: {
-        y: 4 * Math.PI
+        x:undefined,
+        y: 4 * Math.PI,
+        z:undefined
       }
     }
   },
@@ -569,18 +570,33 @@ const horsesMAE = new threejsPlugin.MAE(
   }
 );
 
-clip1.addIncident(cameraAnimation, 2000);
-clip1.addIncident(cameraAnimation2, 4000);
-clip1.addIncident(cameraAnimation21, 6000);
-clip1.addIncident(divAnimation5, 6000);
-clip1.addIncident(cameraAnimation3, 8000);
-clip1.addIncident(cameraAnimation4, 9000);
-clip1.addIncident(cameraAnimation5, 11000);
-clip1.addIncident(boxAnimation3, 9000);
-clip1.addIncident(boxAnimation4, 10000);
-clip1.addIncident(horseAnimation4, 11000);
-clip1.addIncident(horseMAE, 11000);
-clip1.addIncident(horseAnimation5, 13000);
-clip1.addIncident(horsesMAE, 13000);
+clip.addIncident(cameraAnimation, 2000);
+clip.addIncident(cameraAnimation2, 4000);
+clip.addIncident(cameraAnimation21, 6000);
+clip.addIncident(divAnimation5, 6000);
+clip.addIncident(cameraAnimation3, 8000);
+clip.addIncident(cameraAnimation4, 9000);
+clip.addIncident(cameraAnimation5, 11000);
+clip.addIncident(boxAnimation3, 9000);
+clip.addIncident(boxAnimation4, 10000);
+clip.addIncident(horseAnimation4, 11000);
+clip.addIncident(horseMAE, 11000);
+clip.addIncident(horseAnimation5, 13000);
+clip.addIncident(horsesMAE, 13000);
 
-const timer = new Player({ clip: clip1, theme: "transparent on-top", clipClass: clipThreejsPlugin.Clip3D, preview:false });
+const timer = new Player({ clip: clip, theme: "transparent on-top", clipClass: threejsPlugin.Clip3D, preview:true });
+
+
+// ////
+
+
+
+
+// const host1 = document.getElementById("clip");
+
+// const definition = clip.exportState({ unprocessed: true });
+
+// definition.props.host = host1;
+// const clip2 = MC.ClipFromDefinition(definition, threejsPlugin.Clip3D);
+// clip2.play();
+// console.log(clip)
