@@ -60,9 +60,7 @@ class Clip3D extends Group {
     };
 
     this.init(attrs);
-    console.log(this);
     this.ownContext.window.addEventListener("resize", () => {
-
       for (const i in this.ownContext.elements.cameras) {
         this.ownContext.elements.cameras[i].object.aspect =
           this.ownContext.window.innerWidth /
@@ -78,13 +76,13 @@ class Clip3D extends Group {
       }
       // render the scene
       for (const i in this.attrs.renders) {
-      this.ownContext
-        .getElements(this.attrs.renders[i].renderer)[0]
-        .object.render(
-          this.ownContext.getElements(this.attrs.renders[i].scene)[0].object,
-          this.ownContext.getElements(this.attrs.renders[i].camera)[0].object
-        );
-    }
+        this.ownContext
+          .getElements(this.attrs.renders[i].renderer)[0]
+          .object.render(
+            this.ownContext.getElements(this.attrs.renders[i].scene)[0].object,
+            this.ownContext.getElements(this.attrs.renders[i].camera)[0].object
+          );
+      }
     });
   }
 
