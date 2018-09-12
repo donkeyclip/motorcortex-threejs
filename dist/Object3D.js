@@ -33,6 +33,9 @@ var Object3D = function (_TimedIncident) {
   }, {
     key: "getScratchValue",
     value: function getScratchValue(mcid, attribute) {
+      if (!this.element.settings && !this.element.object) {
+        return 0;
+      }
       this.element.settings = this.element.settings || {};
       if (attribute === "rotation") {
         return {
@@ -50,31 +53,28 @@ var Object3D = function (_TimedIncident) {
     value: function onProgress(progress /*, millisecond*/) {
       var selector = this.props.selector;
       for (var key in this.attrs.animatedAttrs) {
+        if ((this.context.elements.controls[0] || {}).object === this.element.object && (((this.context.elements.controls[0] || {}).domElement || {}).style || {}).pointerEvents !== "none") {
+          continue;
+        }
+
         var initialValue = this.getInitialValue(key);
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
 
-        if (key === "rotation") {
-          var animatedAttr = this.attrs.animatedAttrs.rotation;
-          var _iteratorNormalCompletion = true;
-          var _didIteratorError = false;
-          var _iteratorError = undefined;
+        try {
+          for (var _iterator = this.context.getElements(selector)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var element = _step.value;
 
-          try {
-            for (var _iterator = this.context.getElements(selector)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            if (key === "rotation") {
               var _element$object;
 
-              var element = _step.value;
+              var animatedAttr = this.attrs.animatedAttrs.rotation;
 
-              // console.log(this, element)
-              // if (this.id === "div_animation5_image_rotation") {
-              //   console.log(this)
-              //   console.log(
-              //     this.id,
-              //     "initial:",
-              //     initialValue,
-              //     "animated:",
-              //     animatedAttr
-              //   );
-              // }
+              if (!element.object) {
+                continue;
+              }
+
               typeof animatedAttr.lookAt !== "undefined" ? (_element$object = element.object).lookAt.apply(_element$object, _toConsumableArray(animatedAttr.lookAt)) : null;
 
               typeof animatedAttr.x !== "undefined" ? element.object.rotation.x = (animatedAttr.x - initialValue.x) * progress + initialValue.x : null;
@@ -82,58 +82,41 @@ var Object3D = function (_TimedIncident) {
               typeof animatedAttr.y !== "undefined" ? element.object.rotation.y = (animatedAttr.y - initialValue.y) * progress + initialValue.y : null;
 
               typeof animatedAttr.z !== "undefined" ? element.object.rotation.z = (animatedAttr.z - initialValue.z) * progress + initialValue.z : null;
-            }
-          } catch (err) {
-            _didIteratorError = true;
-            _iteratorError = err;
-          } finally {
-            try {
-              if (!_iteratorNormalCompletion && _iterator.return) {
-                _iterator.return();
+            } else if (key === "position") {
+              var _animatedAttr = this.attrs.animatedAttrs.position;
+              if (!element.object) {
+                continue;
               }
-            } finally {
-              if (_didIteratorError) {
-                throw _iteratorError;
-              }
+              typeof _animatedAttr.x !== "undefined" ? element.object.position.x = (_animatedAttr.x - initialValue.x) * progress + initialValue.x : null;
+
+              typeof _animatedAttr.y !== "undefined" ? element.object.position.y = (_animatedAttr.y - initialValue.y) * progress + initialValue.y : null;
+
+              typeof _animatedAttr.z !== "undefined" ? element.object.position.z = (_animatedAttr.z - initialValue.z) * progress + initialValue.z : null;
             }
           }
-        } else if (key === "position") {
-          var _animatedAttr = this.attrs.animatedAttrs.position;
-
-          var _iteratorNormalCompletion2 = true;
-          var _didIteratorError2 = false;
-          var _iteratorError2 = undefined;
-
+        } catch (err) {
+          _didIteratorError = true;
+          _iteratorError = err;
+        } finally {
           try {
-            for (var _iterator2 = this.context.getElements(selector)[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-              var _element = _step2.value;
-
-              typeof _animatedAttr.x !== "undefined" ? _element.object.position.x = (_animatedAttr.x - initialValue.x) * progress + initialValue.x : null;
-
-              typeof _animatedAttr.y !== "undefined" ? _element.object.position.y = (_animatedAttr.y - initialValue.y) * progress + initialValue.y : null;
-
-              typeof _animatedAttr.z !== "undefined" ? _element.object.position.z = (_animatedAttr.z - initialValue.z) * progress + initialValue.z : null;
+            if (!_iteratorNormalCompletion && _iterator.return) {
+              _iterator.return();
             }
-          } catch (err) {
-            _didIteratorError2 = true;
-            _iteratorError2 = err;
           } finally {
-            try {
-              if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                _iterator2.return();
-              }
-            } finally {
-              if (_didIteratorError2) {
-                throw _iteratorError2;
-              }
+            if (_didIteratorError) {
+              throw _iteratorError;
             }
           }
         }
       }
 
-      for (var i in this.context.elements.renders) {
+      for (var i in (this.context.elements || {}).renders) {
         this.context.getElements(this.context.elements.renders[i].renderer)[0].object.render(this.context.getElements(this.context.elements.renders[i].scene)[0].object, this.context.getElements(this.context.elements.renders[i].camera)[0].object);
       }
+      if (this.context.elements.controls[0]) {
+        this.context.elements.controls[0].update();
+      }
+      // this.context.elements.controls[0].update();
     }
   }]);
 

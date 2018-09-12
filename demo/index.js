@@ -290,15 +290,16 @@ global.clip = new threejsPlugin.Clip3D(
     ],
     renders: [
       {
+        renderer: "#renderer2",
+        camera: "#camera1",
+        scene: "#scene2"
+      },
+      {
         renderer: "#renderer1",
         camera: "#camera1",
         scene: "#scene1"
       },
-      {
-        renderer: "#renderer2",
-        camera: "#camera1",
-        scene: "#scene2"
-      }
+      
     ],
     loaders: [
       {
@@ -310,7 +311,12 @@ global.clip = new threejsPlugin.Clip3D(
           morphTargets: true
         }
       }
-    ]
+    ],
+    controls: {
+      enable:true,
+      applyToPlayer: true,
+      cameraId: '#camera1'
+    }
   },
   {
     id: "clip",
@@ -358,23 +364,6 @@ const cameraAnimation2 = new threejsPlugin.Object3D(
   },
   {
     id: "camera_animation2",
-    selector: "#camera1",
-    duration: 2000
-  }
-);
-const cameraAnimation21 = new threejsPlugin.Object3D(
-  {
-    animatedAttrs: {
-      rotation: {
-        x: undefined,
-        y: undefined,
-        z: undefined,
-        lookAt: [new THREE.Vector3(0, -50, 10)]
-      }
-    }
-  },
-  {
-    id: "camera_animation21",
     selector: "#camera1",
     duration: 2000
   }
@@ -572,7 +561,6 @@ const horsesMAE = new threejsPlugin.MAE(
 
 clip.addIncident(cameraAnimation, 2000);
 clip.addIncident(cameraAnimation2, 4000);
-clip.addIncident(cameraAnimation21, 6000);
 clip.addIncident(divAnimation5, 6000);
 clip.addIncident(cameraAnimation3, 8000);
 clip.addIncident(cameraAnimation4, 9000);
@@ -584,7 +572,8 @@ clip.addIncident(horseMAE, 11000);
 clip.addIncident(horseAnimation5, 13000);
 clip.addIncident(horsesMAE, 13000);
 
-const timer = new Player({ clip: clip, theme: "transparent on-top", clipClass: threejsPlugin.Clip3D, preview:true });
+
+const timer = new Player({ clip: clip, theme: "transparent on-top", clipClass: threejsPlugin.Clip3D, preview:false, pointerEvents: true });
 
 
 // ////

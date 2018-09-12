@@ -46,6 +46,7 @@ var Clip3D = function (_Group) {
 
     var _this = _possibleConstructorReturn(this, (Clip3D.__proto__ || Object.getPrototypeOf(Clip3D)).call(this, attrs, props));
 
+    _this.props = props;
     _this.props.selector = "";
     _this.props.css = "";
 
@@ -80,13 +81,12 @@ var Clip3D = function (_Group) {
       loaders: [],
       renders: _this.attrs.renders,
       mixers: [],
+      controls: [],
       rn: Math.random().toFixed(2)
     };
 
-    _this.init(attrs);
-    console.log(_this);
+    _this.init(attrs, props);
     _this.ownContext.window.addEventListener("resize", function () {
-
       for (var i in _this.ownContext.elements.cameras) {
         _this.ownContext.elements.cameras[i].object.aspect = _this.ownContext.window.innerWidth / _this.ownContext.window.innerHeight;
 
@@ -105,7 +105,7 @@ var Clip3D = function (_Group) {
 
   _createClass(Clip3D, [{
     key: "init",
-    value: async function init(attrs) {
+    value: async function init(attrs, props) {
       var _this2 = this;
 
       /*
@@ -592,6 +592,42 @@ var Clip3D = function (_Group) {
             throw _iteratorError8;
           }
         }
+      }
+
+      if (attrs.controls && !props.isPreviewClip) {
+        var applyElement = void 0;
+        if (attrs.controls.applyToPlayer) {
+          applyElement = this.props.host.getElementsByClassName("pointer-event-panel")[0];
+        } else if (attrs.controls.appplyTo) {
+          applyElement = attrs.controls.applyTo;
+        } else {
+          applyElement = this.props.host;
+        }
+        console.log(applyElement);
+        this.ownContext.elements.controls[0] = new THREE.OrbitControls(this.ownContext.getElements(attrs.controls.cameraId)[0].object, applyElement);
+        this.ownContext.elements.controls[0].enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
+        this.ownContext.elements.controls[0].dampingFactor = 0.5;
+        this.ownContext.elements.controls[0].screenSpacePanning = false;
+        this.ownContext.elements.controls[0].minDistance = 1;
+        this.ownContext.elements.controls[0].maxDistance = 1000;
+        this.ownContext.elements.controls[0].maxPolarAngle = Math.PI / 2;
+
+        var render = function render() {
+          if ((((_this2.context.elements.controls[0] || {}).domElement || {}).style || {}).pointerEvents === "none") {
+            return;
+          }
+
+          for (var i in _this2.attrs.renders) {
+            _this2.ownContext.getElements(_this2.attrs.renders[i].renderer)[0].object.render(_this2.ownContext.getElements(_this2.attrs.renders[i].scene)[0].object, _this2.ownContext.getElements(_this2.attrs.renders[i].camera)[0].object);
+          }
+        };
+        var animate = function animate() {
+
+          requestAnimationFrame(animate);
+          _this2.ownContext.elements.controls[0].update(); // only required if controls.enableDamping = true, or if controls.autoRotate = true
+          render();
+        };
+        animate();
       }
 
       this.render();

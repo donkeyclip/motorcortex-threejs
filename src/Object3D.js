@@ -9,6 +9,9 @@ class Object3D extends TimedIncident {
   onGetContext() {}
 
   getScratchValue(mcid, attribute) {
+    if (!this.element.settings && !this.element.object) {
+      return 0;
+    }
     this.element.settings = this.element.settings || {};
     if (attribute === "rotation") {
       return {
@@ -36,22 +39,22 @@ class Object3D extends TimedIncident {
   onProgress(progress /*, millisecond*/) {
     const selector = this.props.selector;
     for (const key in this.attrs.animatedAttrs) {
-      const initialValue = this.getInitialValue(key);
+    if (
+      (this.context.elements.controls[0] || {}).object === this.element.object &&
+      (((this.context.elements.controls[0] || {}).domElement || {}).style || {} ).pointerEvents !== "none"
+    ) {
+      continue;
+    }
 
-      if (key === "rotation") {
-        const animatedAttr = this.attrs.animatedAttrs.rotation;
-        for (const element of this.context.getElements(selector)) {
-          // console.log(this, element)
-          // if (this.id === "div_animation5_image_rotation") {
-          //   console.log(this)
-          //   console.log(
-          //     this.id,
-          //     "initial:",
-          //     initialValue,
-          //     "animated:",
-          //     animatedAttr
-          //   );
-          // }
+      const initialValue = this.getInitialValue(key);
+      for (const element of this.context.getElements(selector)) {
+        if (key === "rotation") {
+          const animatedAttr = this.attrs.animatedAttrs.rotation;
+        
+          if (!element.object) {
+            continue;
+          }
+
           typeof animatedAttr.lookAt !== "undefined"
             ? element.object.lookAt(...animatedAttr.lookAt)
             : null;
@@ -70,11 +73,11 @@ class Object3D extends TimedIncident {
             ? (element.object.rotation.z =
                 (animatedAttr.z - initialValue.z) * progress + initialValue.z)
             : null;
-        }
       } else if (key === "position") {
         const animatedAttr = this.attrs.animatedAttrs.position;
-
-        for (const element of this.context.getElements(selector)) {
+          if (!element.object) {
+            continue;
+          }
           typeof animatedAttr.x !== "undefined"
             ? (element.object.position.x =
                 (animatedAttr.x - initialValue.x) * progress + initialValue.x)
@@ -93,7 +96,8 @@ class Object3D extends TimedIncident {
       }
     }
 
-    for (const i in this.context.elements.renders) {
+
+    for (const i in (this.context.elements || {}).renders) {
       this.context
         .getElements(this.context.elements.renders[i].renderer)[0]
         .object.render(
@@ -103,6 +107,10 @@ class Object3D extends TimedIncident {
             .object
         );
     }
+    if (this.context.elements.controls[0]) {
+      this.context.elements.controls[0].update();
+    }
+    // this.context.elements.controls[0].update();
   }
 }
 module.exports = Object3D;

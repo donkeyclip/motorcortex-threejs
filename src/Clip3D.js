@@ -24,6 +24,7 @@ class Clip3D extends Group {
 
   constructor(attrs = {}, props = {}) {
     super(attrs, props);
+    this.props = props;
     this.props.selector = "";
     this.props.css = "";
 
@@ -56,10 +57,11 @@ class Clip3D extends Group {
       loaders: [],
       renders: this.attrs.renders,
       mixers: [],
+      controls: [],
       rn: Math.random().toFixed(2)
     };
 
-    this.init(attrs);
+    this.init(attrs, props);
     this.ownContext.window.addEventListener("resize", () => {
       for (const i in this.ownContext.elements.cameras) {
         this.ownContext.elements.cameras[i].object.aspect =
@@ -86,7 +88,7 @@ class Clip3D extends Group {
     });
   }
 
-  async init(attrs) {
+  async init(attrs, props) {
     /*
         * CAMERAS
         */
@@ -294,7 +296,50 @@ class Clip3D extends Group {
         throw e;
       }
     }
+
+    if (attrs.controls && !props.isPreviewClip) {
+        let applyElement;
+        if (attrs.controls.applyToPlayer) {
+          applyElement = this.props.host.getElementsByClassName("pointer-event-panel")[0];
+        } else if (attrs.controls.appplyTo) {
+          applyElement = attrs.controls.applyTo;
+        } else {
+          applyElement = this.props.host;
+        }
+        console.log(applyElement)
+        this.ownContext.elements.controls[0] = new THREE.OrbitControls( this.ownContext.getElements(attrs.controls.cameraId)[0].object, applyElement);
+        this.ownContext.elements.controls[0].enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
+        this.ownContext.elements.controls[0].dampingFactor = 0.5;
+        this.ownContext.elements.controls[0].screenSpacePanning = false;
+        this.ownContext.elements.controls[0].minDistance = 1;
+        this.ownContext.elements.controls[0].maxDistance = 1000;
+        this.ownContext.elements.controls[0].maxPolarAngle = Math.PI / 2;
+
+        const render =() => {
+          if ((((this.context.elements.controls[0] || {}).domElement || {}).style || {}).pointerEvents === "none") {
+            return ;
+          }
+
+          for (const i in this.attrs.renders) {
+            this.ownContext
+              .getElements(this.attrs.renders[i].renderer)[0]
+              .object.render(
+                this.ownContext.getElements(this.attrs.renders[i].scene)[0].object,
+                this.ownContext.getElements(this.attrs.renders[i].camera)[0].object
+              );
+          }
+        }
+        const animate = () => {
+          
+          requestAnimationFrame( animate );
+          this.ownContext.elements.controls[0].update(); // only required if controls.enableDamping = true, or if controls.autoRotate = true
+          render();
+        }
+        animate()
+    }
+
     this.render();
+    
   }
 
   applySettingsToObjects(settings, obj) {
@@ -502,5 +547,4 @@ class Clip3D extends Group {
     this.ownContext.unmount();
   }
 }
-
 module.exports = Clip3D;
