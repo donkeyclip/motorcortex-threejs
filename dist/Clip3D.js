@@ -22,6 +22,7 @@ var helper = new MC.Helper();
 var Group = MC.Group;
 var conf = MC.conf;
 var Iframe3DContextHandler = require("./Iframe3DContextHandler");
+var promise = Promise;
 
 var Clip3D = function (_Group) {
   _inherits(Clip3D, _Group);
@@ -526,7 +527,7 @@ var Clip3D = function (_Group) {
           var loader = _this2.ownContext.getElements(model.loader)[0];
 
           var loadGeometry = function loadGeometry() {
-            return new Promise(function (resolve) {
+            return new promise(function (resolve) {
               var _loader$object;
 
               loader.parameters[0] = model.file;
@@ -603,7 +604,6 @@ var Clip3D = function (_Group) {
         } else {
           applyElement = this.props.host;
         }
-        console.log(applyElement);
         this.ownContext.elements.controls[0] = new THREE.OrbitControls(this.ownContext.getElements(attrs.controls.cameraId)[0].object, applyElement);
         this.ownContext.elements.controls[0].enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
         this.ownContext.elements.controls[0].dampingFactor = 0.5;
@@ -622,7 +622,6 @@ var Clip3D = function (_Group) {
           }
         };
         var animate = function animate() {
-
           requestAnimationFrame(animate);
           _this2.ownContext.elements.controls[0].update(); // only required if controls.enableDamping = true, or if controls.autoRotate = true
           render();

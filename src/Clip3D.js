@@ -8,7 +8,7 @@ const helper = new MC.Helper();
 const Group = MC.Group;
 const conf = MC.conf;
 const Iframe3DContextHandler = require("./Iframe3DContextHandler");
-
+const promise = Promise;
 class Clip3D extends Group {
   /**
    * @param {object} props - an object that should contain all of the
@@ -269,7 +269,7 @@ class Clip3D extends Group {
       const loader = this.ownContext.getElements(model.loader)[0];
 
       const loadGeometry = () => {
-        return new Promise(resolve => {
+        return new promise(resolve => {
           loader.parameters[0] = model.file;
           loader.parameters[1] = resolve;
 
@@ -298,48 +298,57 @@ class Clip3D extends Group {
     }
 
     if (attrs.controls && !props.isPreviewClip) {
-        let applyElement;
-        if (attrs.controls.applyToPlayer) {
-          applyElement = this.props.host.getElementsByClassName("pointer-event-panel")[0];
-        } else if (attrs.controls.appplyTo) {
-          applyElement = attrs.controls.applyTo;
-        } else {
-          applyElement = this.props.host;
-        }
-        console.log(applyElement)
-        this.ownContext.elements.controls[0] = new THREE.OrbitControls( this.ownContext.getElements(attrs.controls.cameraId)[0].object, applyElement);
-        this.ownContext.elements.controls[0].enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
-        this.ownContext.elements.controls[0].dampingFactor = 0.5;
-        this.ownContext.elements.controls[0].screenSpacePanning = false;
-        this.ownContext.elements.controls[0].minDistance = 1;
-        this.ownContext.elements.controls[0].maxDistance = 1000;
-        this.ownContext.elements.controls[0].maxPolarAngle = Math.PI / 2;
+      let applyElement;
+      if (attrs.controls.applyToPlayer) {
+        applyElement = this.props.host.getElementsByClassName(
+          "pointer-event-panel"
+        )[0];
+      } else if (attrs.controls.appplyTo) {
+        applyElement = attrs.controls.applyTo;
+      } else {
+        applyElement = this.props.host;
+      }
+      this.ownContext.elements.controls[0] = new THREE.OrbitControls(
+        this.ownContext.getElements(attrs.controls.cameraId)[0].object,
+        applyElement
+      );
+      this.ownContext.elements.controls[0].enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
+      this.ownContext.elements.controls[0].dampingFactor = 0.5;
+      this.ownContext.elements.controls[0].screenSpacePanning = false;
+      this.ownContext.elements.controls[0].minDistance = 1;
+      this.ownContext.elements.controls[0].maxDistance = 1000;
+      this.ownContext.elements.controls[0].maxPolarAngle = Math.PI / 2;
 
-        const render =() => {
-          if ((((this.context.elements.controls[0] || {}).domElement || {}).style || {}).pointerEvents === "none") {
-            return ;
-          }
+      const render = () => {
+        if (
+          (
+            ((this.context.elements.controls[0] || {}).domElement || {})
+              .style || {}
+          ).pointerEvents === "none"
+        ) {
+          return;
+        }
 
-          for (const i in this.attrs.renders) {
-            this.ownContext
-              .getElements(this.attrs.renders[i].renderer)[0]
-              .object.render(
-                this.ownContext.getElements(this.attrs.renders[i].scene)[0].object,
-                this.ownContext.getElements(this.attrs.renders[i].camera)[0].object
-              );
-          }
+        for (const i in this.attrs.renders) {
+          this.ownContext
+            .getElements(this.attrs.renders[i].renderer)[0]
+            .object.render(
+              this.ownContext.getElements(this.attrs.renders[i].scene)[0]
+                .object,
+              this.ownContext.getElements(this.attrs.renders[i].camera)[0]
+                .object
+            );
         }
-        const animate = () => {
-          
-          requestAnimationFrame( animate );
-          this.ownContext.elements.controls[0].update(); // only required if controls.enableDamping = true, or if controls.autoRotate = true
-          render();
-        }
-        animate()
+      };
+      const animate = () => {
+        requestAnimationFrame(animate);
+        this.ownContext.elements.controls[0].update(); // only required if controls.enableDamping = true, or if controls.autoRotate = true
+        render();
+      };
+      animate();
     }
 
     this.render();
-    
   }
 
   applySettingsToObjects(settings, obj) {
