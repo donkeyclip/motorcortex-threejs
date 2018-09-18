@@ -39,18 +39,21 @@ class Object3D extends TimedIncident {
   onProgress(progress /*, millisecond*/) {
     const selector = this.props.selector;
     for (const key in this.attrs.animatedAttrs) {
-    if (
-      (this.context.elements.controls[0] || {}).object === this.element.object &&
-      (((this.context.elements.controls[0] || {}).domElement || {}).style || {} ).pointerEvents !== "none"
-    ) {
-      continue;
-    }
+      if (
+        (this.context.elements.controls[0] || {}).object ===
+          this.element.object &&
+        (
+          ((this.context.elements.controls[0] || {}).domElement || {}).style ||
+          {}
+        ).pointerEvents !== "none"
+      ) {
+        continue;
+      }
 
       const initialValue = this.getInitialValue(key);
       for (const element of this.context.getElements(selector)) {
         if (key === "rotation") {
           const animatedAttr = this.attrs.animatedAttrs.rotation;
-        
           if (!element.object) {
             continue;
           }
@@ -73,8 +76,9 @@ class Object3D extends TimedIncident {
             ? (element.object.rotation.z =
                 (animatedAttr.z - initialValue.z) * progress + initialValue.z)
             : null;
-      } else if (key === "position") {
-        const animatedAttr = this.attrs.animatedAttrs.position;
+          // element.object.lookAt(new THREE.Vector3(0, -50, 10))
+        } else if (key === "position") {
+          const animatedAttr = this.attrs.animatedAttrs.position;
           if (!element.object) {
             continue;
           }
@@ -96,7 +100,6 @@ class Object3D extends TimedIncident {
       }
     }
 
-
     for (const i in (this.context.elements || {}).renders) {
       this.context
         .getElements(this.context.elements.renders[i].renderer)[0]
@@ -107,10 +110,12 @@ class Object3D extends TimedIncident {
             .object
         );
     }
-    if (this.context.elements.controls[0]) {
+    if (
+      (((this.context.elements.controls[0] || {}).domElement || {}).style || {})
+        .pointerEvents !== "none"
+    ) {
       this.context.elements.controls[0].update();
     }
-    // this.context.elements.controls[0].update();
   }
 }
 module.exports = Object3D;

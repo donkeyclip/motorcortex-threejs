@@ -70,7 +70,6 @@ var Object3D = function (_TimedIncident) {
               var _element$object;
 
               var animatedAttr = this.attrs.animatedAttrs.rotation;
-
               if (!element.object) {
                 continue;
               }
@@ -82,6 +81,7 @@ var Object3D = function (_TimedIncident) {
               typeof animatedAttr.y !== "undefined" ? element.object.rotation.y = (animatedAttr.y - initialValue.y) * progress + initialValue.y : null;
 
               typeof animatedAttr.z !== "undefined" ? element.object.rotation.z = (animatedAttr.z - initialValue.z) * progress + initialValue.z : null;
+              // element.object.lookAt(new THREE.Vector3(0, -50, 10))
             } else if (key === "position") {
               var _animatedAttr = this.attrs.animatedAttrs.position;
               if (!element.object) {
@@ -113,10 +113,9 @@ var Object3D = function (_TimedIncident) {
       for (var i in (this.context.elements || {}).renders) {
         this.context.getElements(this.context.elements.renders[i].renderer)[0].object.render(this.context.getElements(this.context.elements.renders[i].scene)[0].object, this.context.getElements(this.context.elements.renders[i].camera)[0].object);
       }
-      if (this.context.elements.controls[0]) {
+      if ((((this.context.elements.controls[0] || {}).domElement || {}).style || {}).pointerEvents !== "none") {
         this.context.elements.controls[0].update();
       }
-      // this.context.elements.controls[0].update();
     }
   }]);
 

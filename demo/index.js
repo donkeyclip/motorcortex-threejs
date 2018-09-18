@@ -1,10 +1,8 @@
 const MC = require("../node_modules/@kissmybutton/motorcortex");
-const Player = require("../../teo-motorcortex-player/");
-// const Player = require("./node_modules/@kissmybutton/motorcortex-player/");
+// const Player = require("../../teo-motorcortex-player/");
+const Player = require("./node_modules/@kissmybutton/motorcortex-player/");
 const threejsPluginDefinition = require("../src/main");
-const clipThreejsPluginDefinition = require("../src/main");
 const threejsPlugin = MC.loadPlugin(threejsPluginDefinition);
-const clipThreejsPlugin = MC.loadPlugin(clipThreejsPluginDefinition);
 
 const html = `
 <div class="myCam">
@@ -20,11 +18,15 @@ const containerParams = {
   height: "100%"
 };
 let shadow = true;
-if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+if (
+  /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent
+  )
+) {
   shadow = false;
 }
 
-global.clip = new threejsPlugin.Clip3D(
+const clip = new threejsPlugin.Clip3D(
   {
     scenes: [
       {
@@ -298,8 +300,7 @@ global.clip = new threejsPlugin.Clip3D(
         renderer: "#renderer1",
         camera: "#camera1",
         scene: "#scene1"
-      },
-      
+      }
     ],
     loaders: [
       {
@@ -313,9 +314,9 @@ global.clip = new threejsPlugin.Clip3D(
       }
     ],
     controls: {
-      enable:true,
+      enable: true,
       applyToPlayer: true,
-      cameraId: '#camera1'
+      cameraId: "#camera1"
     }
   },
   {
@@ -368,6 +369,23 @@ const cameraAnimation2 = new threejsPlugin.Object3D(
     duration: 2000
   }
 );
+const cameraAnimation21 = new threejsPlugin.Object3D(
+  {
+    animatedAttrs: {
+      rotation: {
+        x: undefined,
+        y: undefined,
+        z: undefined,
+        lookAt: [new THREE.Vector3(0, -50, 10)]
+      }
+    }
+  },
+  {
+    id: "camera_animation21",
+    selector: "#camera1",
+    duration: 2000
+  }
+);
 
 const cameraAnimation3 = new threejsPlugin.Object3D(
   {
@@ -381,7 +399,7 @@ const cameraAnimation3 = new threejsPlugin.Object3D(
         x: undefined,
         y: undefined,
         z: undefined,
-        lookAt: [new THREE.Vector3(0,0,0)]
+        lookAt: [new THREE.Vector3(0, 0, 0)]
       }
     }
   },
@@ -404,8 +422,7 @@ const cameraAnimation4 = new threejsPlugin.Object3D(
         x: undefined,
         y: undefined,
         z: undefined,
-        lookAt: [new THREE.Vector3(0,0,0)]
-
+        lookAt: [new THREE.Vector3(0, 0, 0)]
       }
     }
   },
@@ -428,7 +445,7 @@ const cameraAnimation5 = new threejsPlugin.Object3D(
         x: undefined,
         y: undefined,
         z: undefined,
-        lookAt: [new THREE.Vector3(0,0,0)]
+        lookAt: [new THREE.Vector3(0, 0, 0)]
       }
     }
   },
@@ -497,9 +514,9 @@ const divAnimation5 = new threejsPlugin.Object3D(
   {
     animatedAttrs: {
       rotation: {
-        x:undefined,
+        x: undefined,
         y: 4 * Math.PI,
-        z:undefined
+        z: undefined
       }
     }
   },
@@ -561,6 +578,7 @@ const horsesMAE = new threejsPlugin.MAE(
 
 clip.addIncident(cameraAnimation, 2000);
 clip.addIncident(cameraAnimation2, 4000);
+clip.addIncident(cameraAnimation21, 6000);
 clip.addIncident(divAnimation5, 6000);
 clip.addIncident(cameraAnimation3, 8000);
 clip.addIncident(cameraAnimation4, 9000);
@@ -572,20 +590,10 @@ clip.addIncident(horseMAE, 11000);
 clip.addIncident(horseAnimation5, 13000);
 clip.addIncident(horsesMAE, 13000);
 
-
-const timer = new Player({ clip: clip, theme: "transparent on-top", clipClass: threejsPlugin.Clip3D, preview:false, pointerEvents: true });
-
-
-// ////
-
-
-
-
-// const host1 = document.getElementById("clip");
-
-// const definition = clip.exportState({ unprocessed: true });
-
-// definition.props.host = host1;
-// const clip2 = MC.ClipFromDefinition(definition, threejsPlugin.Clip3D);
-// clip2.play();
-// console.log(clip)
+new Player({
+  clip: clip,
+  theme: "transparent on-top",
+  clipClass: threejsPlugin.Clip3D,
+  preview: false,
+  pointerEvents: false
+});

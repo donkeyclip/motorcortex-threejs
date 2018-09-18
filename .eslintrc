@@ -3,9 +3,8 @@
   "extends": ["eslint:recommended", "prettier"],
   "plugins": ["babel", "prettier"],
   "env": {
-     "es6": true,
-      "node": true,
-      "browser": true
+    "browser": true,
+    "node": true
   },
   "globals": {
     "THREE": false,
