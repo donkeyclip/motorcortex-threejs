@@ -1,6 +1,5 @@
-const MC = require("../node_modules/@kissmybutton/motorcortex");
-// const Player = require("../../teo-motorcortex-player/");
-const Player = require("./node_modules/@kissmybutton/motorcortex-player/");
+const MC = require("@kissmybutton/motorcortex");
+const Player = require("@kissmybutton/motorcortex-player/");
 const threejsPluginDefinition = require("../src/main");
 const threejsPlugin = MC.loadPlugin(threejsPluginDefinition);
 

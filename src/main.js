@@ -9,13 +9,16 @@ module.exports = {
   npm_name: "@kissmybutton/motorcortex-threejs",
   incidents: [
     {
-      exportable: Clip3D
+      exportable: Clip3D,
+      name: "Clip3D"
     },
     {
-      exportable: Object3D
+      exportable: Object3D,
+      name: "Object3D"
     },
     {
-      exportable: MAE
+      exportable: MAE,
+      name: "MAE"
     }
   ],
   channel: Channel3D,

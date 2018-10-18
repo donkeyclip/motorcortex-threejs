@@ -19,13 +19,13 @@ require("three/examples/js/controls/OrbitControls");
 
 // const Helper = MC.Helper;
 var helper = new MC.Helper();
-var Group = MC.Group;
+var ExtendableClip = MC.ExtendableClip;
 var conf = MC.conf;
 var Iframe3DContextHandler = require("./Iframe3DContextHandler");
 var promise = Promise;
 
-var Clip3D = function (_Group) {
-  _inherits(Clip3D, _Group);
+var Clip3D = function (_ExtendableClip) {
+  _inherits(Clip3D, _ExtendableClip);
 
   /**
    * @param {object} props - an object that should contain all of the
@@ -822,6 +822,6 @@ var Clip3D = function (_Group) {
   }]);
 
   return Clip3D;
-}(Group);
+}(ExtendableClip);
 
 module.exports = Clip3D;

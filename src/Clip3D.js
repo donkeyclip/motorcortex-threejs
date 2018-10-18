@@ -5,11 +5,11 @@ require("three/examples/js/controls/OrbitControls");
 
 // const Helper = MC.Helper;
 const helper = new MC.Helper();
-const Group = MC.Group;
+const ExtendableClip = MC.ExtendableClip;
 const conf = MC.conf;
 const Iframe3DContextHandler = require("./Iframe3DContextHandler");
 const promise = Promise;
-class Clip3D extends Group {
+class Clip3D extends ExtendableClip {
   /**
    * @param {object} props - an object that should contain all of the
    * following keys:
