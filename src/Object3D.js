@@ -112,7 +112,8 @@ class Object3D extends TimedIncident {
     }
     if (
       (((this.context.elements.controls[0] || {}).domElement || {}).style || {})
-        .pointerEvents !== "none"
+        .pointerEvents !== "none" &&
+      typeof this.context.elements.controls[0] !== "undefined"
     ) {
       this.context.elements.controls[0].update();
     }

@@ -13,7 +13,7 @@ const html = `
 const host = document.getElementById("clip");
 
 const containerParams = {
-  width: "100%",
+  width: "80%",
   height: "100%"
 };
 let shadow = true;
