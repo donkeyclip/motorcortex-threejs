@@ -1,6 +1,6 @@
 {
   "name": "@kissmybutton/motorcortex-threejs",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "Threejs library for MotorCortex",
   "main": "./dist/main.js",
   "files": [
@@ -80,14 +80,14 @@
     "whatwg-fetch": "^2.0.4"
   },
   "peerDependencies": {
-    "@kissmybutton/motorcortex": "^1.11.0-rc10",
+    "@kissmybutton/motorcortex": "^1.11.0-rc11",
     "babel-core": "^6.26.3"
   },
   "devDependencies": {
     "@commitlint/cli": "^7.0.0",
     "@commitlint/config-conventional": "^7.0.1",
-    "@kissmybutton/motorcortex": "^1.11.0-rc10",
-    "@kissmybutton/motorcortex-player": "^1.3.3",
+    "@kissmybutton/motorcortex": "^1.11.0-rc11",
+    "@kissmybutton/motorcortex-player": "^1.3.4",
     "@semantic-release/changelog": "^2.0.2",
     "@semantic-release/git": "^5.0.0",
     "@semantic-release/github": "^4.2.17",
