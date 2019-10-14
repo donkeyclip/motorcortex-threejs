@@ -1,5 +1,6 @@
 const MC = require("@kissmybutton/motorcortex");
 const Player = require("@kissmybutton/motorcortex-player/");
+// const Player = require("../../teo-motorcortex-player/src/Player");
 const threejsPluginDefinition = require("../src/main");
 const threejsPlugin = MC.loadPlugin(threejsPluginDefinition);
 
@@ -17,6 +18,7 @@ const containerParams = {
   height: "100%"
 };
 let shadow = true;
+
 if (
   /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
     navigator.userAgent
@@ -25,7 +27,7 @@ if (
   shadow = false;
 }
 
-const clip = new threejsPlugin.Clip3D(
+const clip = new threejsPlugin.Clip(
   {
     scenes: [
       {
@@ -311,12 +313,12 @@ const clip = new threejsPlugin.Clip3D(
           morphTargets: true
         }
       }
-    ],
-    controls: {
-      enable: true,
-      applyToPlayer: true,
-      cameraId: "#camera1"
-    }
+    ]
+    // controls: {
+    //   enable: true,
+    //   applyToPlayer: true,
+    //   cameraId: "#camera1"
+    // }
   },
   {
     id: "clip",
@@ -588,11 +590,11 @@ clip.addIncident(horseAnimation4, 11000);
 clip.addIncident(horseMAE, 11000);
 clip.addIncident(horseAnimation5, 13000);
 clip.addIncident(horsesMAE, 13000);
-
+window.clip = clip;
 new Player({
   clip: clip,
   theme: "transparent on-top",
-  clipClass: threejsPlugin.Clip3D,
+  // clipClass: threejsPlugin.Clip,
   preview: false,
   pointerEvents: false
 });

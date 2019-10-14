@@ -1,19 +1,17 @@
 const MC = require("@kissmybutton/motorcortex");
 
 // const helper = new MC.Helper();
-const TimedIncident = MC.TimedIncident;
+const Incident = MC.API.MonoIncident;
 
-class Object3D extends TimedIncident {
-  // onInitialise(attrs, incidentProps) {}
-
+class Object3D extends Incident {
   onGetContext() {}
 
-  getScratchValue(mcid, attribute) {
+  getScratchValue() {
     if (!this.element.settings && !this.element.object) {
       return 0;
     }
     this.element.settings = this.element.settings || {};
-    if (attribute === "rotation") {
+    if (this.attributeKey === "rotation") {
       return {
         x:
           (this.element.settings.rotation || {}).x ||
@@ -31,76 +29,41 @@ class Object3D extends TimedIncident {
       };
     } else {
       return (
-        this.element.settings[attribute] || this.element.object[attribute] || 0
+        this.element.settings[this.attributeKey] ||
+        this.element.object[this.attributeKey] ||
+        0
       );
     }
   }
 
-  onProgress(progress /*, millisecond*/) {
-    const selector = this.props.selector;
-    for (const key in this.attrs.animatedAttrs) {
-      if (
-        (this.context.elements.controls[0] || {}).object ===
-          this.element.object &&
-        (
-          ((this.context.elements.controls[0] || {}).domElement || {}).style ||
-          {}
-        ).pointerEvents !== "none"
-      ) {
-        continue;
-      }
+  onProgress(fraction /*, millisecond*/) {
+    // console.log(
+    //   this.element,
+    //   this.attributeKey,
+    //   this.initialValue,
+    //   this.targetValue,
+    //   this.attrs
+    // );
+    typeof this.targetValue.lookAt !== "undefined"
+      ? this.element.object.lookAt(...this.targetValue.lookAt)
+      : null;
+    typeof this.targetValue.x !== "undefined"
+      ? (this.element.object[this.attributeKey].x =
+          (this.targetValue.x - this.initialValue.x) * fraction +
+          this.initialValue.x)
+      : null;
+    typeof this.targetValue.y !== "undefined"
+      ? (this.element.object[this.attributeKey].y =
+          (this.targetValue.y - this.initialValue.y) * fraction +
+          this.initialValue.y)
+      : null;
+    typeof this.targetValue.z !== "undefined"
+      ? (this.element.object[this.attributeKey].z =
+          (this.targetValue.z - this.initialValue.z) * fraction +
+          this.initialValue.z)
+      : null;
 
-      const initialValue = this.getInitialValue(key);
-      for (const element of this.context.getElements(selector)) {
-        if (key === "rotation") {
-          const animatedAttr = this.attrs.animatedAttrs.rotation;
-          if (!element.object) {
-            continue;
-          }
-
-          typeof animatedAttr.lookAt !== "undefined"
-            ? element.object.lookAt(...animatedAttr.lookAt)
-            : null;
-
-          typeof animatedAttr.x !== "undefined"
-            ? (element.object.rotation.x =
-                (animatedAttr.x - initialValue.x) * progress + initialValue.x)
-            : null;
-
-          typeof animatedAttr.y !== "undefined"
-            ? (element.object.rotation.y =
-                (animatedAttr.y - initialValue.y) * progress + initialValue.y)
-            : null;
-
-          typeof animatedAttr.z !== "undefined"
-            ? (element.object.rotation.z =
-                (animatedAttr.z - initialValue.z) * progress + initialValue.z)
-            : null;
-          // element.object.lookAt(new THREE.Vector3(0, -50, 10))
-        } else if (key === "position") {
-          const animatedAttr = this.attrs.animatedAttrs.position;
-          if (!element.object) {
-            continue;
-          }
-          typeof animatedAttr.x !== "undefined"
-            ? (element.object.position.x =
-                (animatedAttr.x - initialValue.x) * progress + initialValue.x)
-            : null;
-
-          typeof animatedAttr.y !== "undefined"
-            ? (element.object.position.y =
-                (animatedAttr.y - initialValue.y) * progress + initialValue.y)
-            : null;
-
-          typeof animatedAttr.z !== "undefined"
-            ? (element.object.position.z =
-                (animatedAttr.z - initialValue.z) * progress + initialValue.z)
-            : null;
-        }
-      }
-    }
-
-    for (const i in (this.context.elements || {}).renders) {
+    for (const i in this.context.elements.renders) {
       this.context
         .getElements(this.context.elements.renders[i].renderer)[0]
         .object.render(
@@ -110,12 +73,13 @@ class Object3D extends TimedIncident {
             .object
         );
     }
-    if (
-      (((this.context.elements.controls[0] || {}).domElement || {}).style || {})
-        .pointerEvents !== "none"
-    ) {
-      this.context.elements.controls[0].update();
-    }
+    // if (
+    //   (((this.context.elements.controls[0] || {}).domElement || {}).style || {})
+    //     .pointerEvents !== "none" &&
+    //   this.context.elements.controls.length !== 0
+    // ) {
+    //   this.context.elements.controls[0].update();
+    // }
   }
 }
 module.exports = Object3D;

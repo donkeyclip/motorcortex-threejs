@@ -1,17 +1,11 @@
 const Clip3D = require("./Clip3D");
 const Object3D = require("./Object3D");
 const MAE = require("./ModelAnimationExecution");
-// const MC = require("@kissmybutton/motorcortex");
-const Channel3D = require("./Channel3D");
-// const MC = require("../motorcortex");
+const compositeAttributes = require("./compoAttrs");
 
 module.exports = {
   npm_name: "@kissmybutton/motorcortex-threejs",
   incidents: [
-    {
-      exportable: Clip3D,
-      name: "Clip3D"
-    },
     {
       exportable: Object3D,
       name: "Object3D"
@@ -21,6 +15,6 @@ module.exports = {
       name: "MAE"
     }
   ],
-  channel: Channel3D,
-  clip: Clip3D
+  Clip: Clip3D,
+  compositeAttributes
 };

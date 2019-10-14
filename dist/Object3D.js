@@ -1,43 +1,60 @@
 "use strict";
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var MC = require("@kissmybutton/motorcortex");
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
-// const helper = new MC.Helper();
-var TimedIncident = MC.TimedIncident;
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
-var Object3D = function (_TimedIncident) {
-  _inherits(Object3D, _TimedIncident);
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var MC = require("@kissmybutton/motorcortex"); // const helper = new MC.Helper();
+
+
+var Incident = MC.API.MonoIncident;
+
+var Object3D =
+/*#__PURE__*/
+function (_Incident) {
+  _inherits(Object3D, _Incident);
 
   function Object3D() {
     _classCallCheck(this, Object3D);
 
-    return _possibleConstructorReturn(this, (Object3D.__proto__ || Object.getPrototypeOf(Object3D)).apply(this, arguments));
+    return _possibleConstructorReturn(this, _getPrototypeOf(Object3D).apply(this, arguments));
   }
 
   _createClass(Object3D, [{
     key: "onGetContext",
-
-    // onInitialise(attrs, incidentProps) {}
-
     value: function onGetContext() {}
   }, {
     key: "getScratchValue",
-    value: function getScratchValue(mcid, attribute) {
+    value: function getScratchValue() {
       if (!this.element.settings && !this.element.object) {
         return 0;
       }
+
       this.element.settings = this.element.settings || {};
-      if (attribute === "rotation") {
+
+      if (this.attributeKey === "rotation") {
         return {
           x: (this.element.settings.rotation || {}).x || this.element.object.rotation.x || 0,
           y: (this.element.settings.rotation || {}).y || this.element.object.rotation.y || 0,
@@ -45,81 +62,42 @@ var Object3D = function (_TimedIncident) {
           lookAt: this.element.settings.lookAt
         };
       } else {
-        return this.element.settings[attribute] || this.element.object[attribute] || 0;
+        return this.element.settings[this.attributeKey] || this.element.object[this.attributeKey] || 0;
       }
     }
   }, {
     key: "onProgress",
-    value: function onProgress(progress /*, millisecond*/) {
-      var selector = this.props.selector;
-      for (var key in this.attrs.animatedAttrs) {
-        if ((this.context.elements.controls[0] || {}).object === this.element.object && (((this.context.elements.controls[0] || {}).domElement || {}).style || {}).pointerEvents !== "none") {
-          continue;
-        }
+    value: function onProgress(fraction
+    /*, millisecond*/
+    ) {
+      var _this$element$object;
 
-        var initialValue = this.getInitialValue(key);
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
+      // console.log(
+      //   this.element,
+      //   this.attributeKey,
+      //   this.initialValue,
+      //   this.targetValue,
+      //   this.attrs
+      // );
+      typeof this.targetValue.lookAt !== "undefined" ? (_this$element$object = this.element.object).lookAt.apply(_this$element$object, _toConsumableArray(this.targetValue.lookAt)) : null;
+      typeof this.targetValue.x !== "undefined" ? this.element.object[this.attributeKey].x = (this.targetValue.x - this.initialValue.x) * fraction + this.initialValue.x : null;
+      typeof this.targetValue.y !== "undefined" ? this.element.object[this.attributeKey].y = (this.targetValue.y - this.initialValue.y) * fraction + this.initialValue.y : null;
+      typeof this.targetValue.z !== "undefined" ? this.element.object[this.attributeKey].z = (this.targetValue.z - this.initialValue.z) * fraction + this.initialValue.z : null;
 
-        try {
-          for (var _iterator = this.context.getElements(selector)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var element = _step.value;
-
-            if (key === "rotation") {
-              var _element$object;
-
-              var animatedAttr = this.attrs.animatedAttrs.rotation;
-              if (!element.object) {
-                continue;
-              }
-
-              typeof animatedAttr.lookAt !== "undefined" ? (_element$object = element.object).lookAt.apply(_element$object, _toConsumableArray(animatedAttr.lookAt)) : null;
-
-              typeof animatedAttr.x !== "undefined" ? element.object.rotation.x = (animatedAttr.x - initialValue.x) * progress + initialValue.x : null;
-
-              typeof animatedAttr.y !== "undefined" ? element.object.rotation.y = (animatedAttr.y - initialValue.y) * progress + initialValue.y : null;
-
-              typeof animatedAttr.z !== "undefined" ? element.object.rotation.z = (animatedAttr.z - initialValue.z) * progress + initialValue.z : null;
-              // element.object.lookAt(new THREE.Vector3(0, -50, 10))
-            } else if (key === "position") {
-              var _animatedAttr = this.attrs.animatedAttrs.position;
-              if (!element.object) {
-                continue;
-              }
-              typeof _animatedAttr.x !== "undefined" ? element.object.position.x = (_animatedAttr.x - initialValue.x) * progress + initialValue.x : null;
-
-              typeof _animatedAttr.y !== "undefined" ? element.object.position.y = (_animatedAttr.y - initialValue.y) * progress + initialValue.y : null;
-
-              typeof _animatedAttr.z !== "undefined" ? element.object.position.z = (_animatedAttr.z - initialValue.z) * progress + initialValue.z : null;
-            }
-          }
-        } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator.return) {
-              _iterator.return();
-            }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
-          }
-        }
-      }
-
-      for (var i in (this.context.elements || {}).renders) {
+      for (var i in this.context.elements.renders) {
         this.context.getElements(this.context.elements.renders[i].renderer)[0].object.render(this.context.getElements(this.context.elements.renders[i].scene)[0].object, this.context.getElements(this.context.elements.renders[i].camera)[0].object);
-      }
-      if ((((this.context.elements.controls[0] || {}).domElement || {}).style || {}).pointerEvents !== "none") {
-        this.context.elements.controls[0].update();
-      }
+      } // if (
+      //   (((this.context.elements.controls[0] || {}).domElement || {}).style || {})
+      //     .pointerEvents !== "none" &&
+      //   this.context.elements.controls.length !== 0
+      // ) {
+      //   this.context.elements.controls[0].update();
+      // }
+
     }
   }]);
 
   return Object3D;
-}(TimedIncident);
+}(Incident);
 
 module.exports = Object3D;
