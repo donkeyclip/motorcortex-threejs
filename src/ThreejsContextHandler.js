@@ -1,4 +1,6 @@
 const promise = Promise;
+const uuidv1 = require("uuid/v1");
+
 class ThreejsContextHandler {
   constructor(attrs, props, _thisClip) {
     // initialisation of the final audio resources colleciton
@@ -74,7 +76,7 @@ class ThreejsContextHandler {
       pushMixer: this.pushMixer.bind(this)
     };
 
-    this.init(attrs, props);
+    this.init();
   }
 
   getElementByMCID(mcid) {
@@ -92,7 +94,6 @@ class ThreejsContextHandler {
     const elements = [];
     let key = "groups";
 
-    // console.log("in context handler",selector)
     if (selector.substring(0, 1) === "#" || selector.substring(0, 1) !== ".") {
       key = "id";
     }
@@ -105,28 +106,21 @@ class ThreejsContextHandler {
         }
       }
     }
-
-    // console.log(elements)
     return elements;
   }
 
   getMCID(element) {
-    // console.log("in getElement", element)
     return element.id;
   }
 
   setMCID(element /*, mcid*/) {
-    // console.log("in set element", element, mcid)
     element.mcid = element.id;
   }
 
   getElementSelectorByMCID(mcid) {
-    // console.log("in get selector",mcid)
     for (const prop in this.context.elements) {
       for (const element in this.context.elements[prop]) {
-        // console.log(this.context.elements[prop][element])
         if (this.context.elements[prop][element].id === mcid) {
-          // console.log(mcid)
           return "#" + mcid;
         }
       }
@@ -134,20 +128,19 @@ class ThreejsContextHandler {
     return null;
   }
 
-  async init(attrs /*props*/) {
+  async init() {
     /*
-        * CAMERAS
-        */
-
-    for (const camera of attrs.cameras) {
+    * CAMERAS
+    */
+    for (const camera of this.attrs.cameras) {
+      camera.id = camera.id || uuidv1();
       if (this.context.getElements("#" + camera.id)[0]) {
-        throw "This id " + camera.id + " is already in use.";
+        throw `This id '${camera.id}' is already in use.`;
       }
       this.initializeCamera(camera);
       const { type } = camera.settings;
       this.context.elements.cameras.push({
         id: camera.id,
-        // mcid: camera.id,
         groups: camera.groups,
         settings: camera.settings,
         object: new THREE[type](...camera.parameters)
@@ -161,16 +154,15 @@ class ThreejsContextHandler {
     }
 
     /*
-        * SCENES
-        */
-
-    for (const scene of attrs.scenes) {
+    * SCENES
+    */
+    for (const scene of this.attrs.scenes) {
+      scene.id = scene.id || uuidv1();
       if (this.context.getElements("#" + scene.id)[0]) {
-        throw "This id " + scene.id + " is already in use.";
+        throw `This id ${scene.id} is already in use.`;
       }
       this.context.elements.scenes.push({
         id: scene.id,
-        // mcid: scene.id,
         groups: scene.groups,
         object: new THREE.Scene()
       });
@@ -183,18 +175,17 @@ class ThreejsContextHandler {
     }
 
     /*
-        * RENDERERS
-        */
-
-    for (const renderer of attrs.renderers) {
+    * RENDERERS
+    */
+    for (const renderer of this.attrs.renderers) {
+      renderer.id = renderer.id || uuidv1();
       if (this.context.getElements("#" + renderer.id)[0]) {
-        throw "This id " + renderer.id + " is already in use.";
+        throw `This id ${renderer.id}is already in use.`;
       }
       this.initializeRenderer(renderer);
       const { type } = renderer.settings;
       this.context.elements.renderers.push({
         id: renderer.id,
-        // mcid: renderer.id,
         groups: renderer.groups,
         object: new THREE[type](...renderer.parameters)
       });
@@ -205,18 +196,18 @@ class ThreejsContextHandler {
     }
 
     /*
-        * LIGHTS
-        */
+    * LIGHTS
+    */
 
-    for (const light of attrs.lights) {
+    for (const light of this.attrs.lights) {
+      light.id = light.id || uuidv1();
       if (this.context.getElements("#" + light.id)[0]) {
-        throw "This id " + light.id + " is already in use.";
+        throw `This id  ${light.id} is already in use.`;
       }
       this.initializeLight(light);
 
       this.context.elements.lights.push({
         id: light.id,
-        // mcid: light.id,
         groups: light.groups,
         object: new THREE[light.settings.type](...light.parameters)
       });
@@ -233,14 +224,15 @@ class ThreejsContextHandler {
     }
 
     /*
-        * MESHES
-        */
-    for (const mesh of attrs.meshes) {
+    * MESHES
+    */
+    for (const mesh of this.attrs.meshes) {
+      mesh.id = mesh.id || uuidv1();
       if (this.context.getElements("#" + mesh.id)[0]) {
-        throw "This id " + mesh.id + " is already in use.";
+        throw `This id ${mesh.id} is already in use.`;
       }
       this.initializeMesh(mesh);
-      // mesh.mcid = mesh.id;
+
       const geometry = new THREE[mesh.geometry.type](
         ...mesh.geometry.parameters
       );
@@ -259,14 +251,14 @@ class ThreejsContextHandler {
     }
 
     /*
-        * CSS3DOBJECTS
-        */
-    for (const css3d of attrs.css3d_objects) {
+    * CSS3DOBJECTS
+    */
+    for (const css3d of this.attrs.css3d_objects) {
+      css3d.id = css3d.id || uuidv1();
       if (this.context.getElements("#" + css3d.id)[0]) {
-        throw "This id " + css3d.id + " is already in use.";
+        throw `This id ${css3d.id} is already in use.`;
       }
       this.initializeMesh(css3d);
-      // css3d.mcid = css3d.id;
       const elements = this.context.rootElement.querySelectorAll(
         css3d.selector
       );
@@ -283,19 +275,18 @@ class ThreejsContextHandler {
     }
 
     /*
-        * LOADERS
-        */
-    for (const loader of attrs.loaders) {
+    * LOADERS
+    */
+    for (const loader of this.attrs.loaders) {
+      loader.id = loader.id || uuidv1();
       if (this.context.getElements("#" + loader.id)[0]) {
-        throw "This id " + loader.id + " is already in use.";
+        throw `This id ${loader.id} is already in use.`;
       }
       this.initializeLoader(loader);
-      // loader.mcid = loader.id;
       if (!THREE[loader.type]) {
         try {
           require("three/examples/js/loaders/" + loader.type);
         } catch (e) {
-          // console.log(e);
           throw e;
         }
       }
@@ -304,14 +295,14 @@ class ThreejsContextHandler {
       this.context.elements.loaders.push(loader);
     }
     /*
-        * MODELS
-        */
-    for (const model of attrs.models) {
+    * MODELS
+    */
+    for (const model of this.attrs.models) {
+      model.id = model.id || uuidv1();
       if (this.context.getElements("#" + model.id)[0]) {
-        throw "This id " + model.id + " is already in use.";
+        throw `This id ${model.id} is already in use.`;
       }
       this.initializeModel(model);
-      // model.mcid = model.id
       const loader = this.context.getElements(model.loader)[0];
 
       const loadGeometry = () => {
@@ -331,22 +322,16 @@ class ThreejsContextHandler {
           model.object = new THREE.Mesh(g, material);
           this.applySettingsToObjects(model.settings, model.object);
 
-          // const theElement = this.context.getElements("#" + model.id)[0];
-          // console.log("asdf", theElement);
-          // theElement.object = mesh;
-
           for (const scene of this.context.getElements(model.scenes)) {
-            // const selectedObject = scene.object.getObjectByName(model.id);
-            // scene.object.remove(model.object);
             scene.object.add(model.object);
           }
 
-          // setTimeout(() => {
-          this.context.loading.splice(0, 1);
-          if (this.context.loading.length === 0) {
-            this._thisClip.unblock();
-          }
-          // }, 2000);
+          setTimeout(() => {
+            this.context.loading.splice(0, 1);
+            if (this.context.loading.length === 0) {
+              this._thisClip.unblock();
+            }
+          }, 2000);
         });
 
         this.context.loading.push(1);
@@ -360,67 +345,57 @@ class ThreejsContextHandler {
         this.applySettingsToObjects(model.settings, model.object);
 
         this.context.elements.models.push(model);
-
-        // for (const scene of this.context.getElements(model.scenes)) {
-        //   scene.object.add(model.object);
-        // }
       } catch (e) {
-        // console.log(e);
         throw e;
       }
     }
     /*
-        * CONTROLS
-        */
-    // if (attrs.controls) {
-    //   let applyElement;
-    //   if (attrs.controls.applyToPlayer) {
-    //     applyElement = this.props.host.getElementsByClassName(
-    //       "pointer-event-panel"
-    //     )[0];
-    //   } else if (attrs.controls.appplyTo) {
-    //     applyElement = attrs.controls.applyTo;
-    //   } else {
-    //     applyElement = this.props.host;
-    //   }
-    //   console.log("controls", this);
-    //   this.context.elements.controls[0] = new THREE.OrbitControls(
-    //     this.context.getElements(attrs.controls.cameraId)[0].object,
-    //     applyElement
-    //   );
-    //   this.context.elements.controls[0].enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
-    //   this.context.elements.controls[0].dampingFactor = 0.5;
-    //   this.context.elements.controls[0].screenSpacePanning = false;
-    //   this.context.elements.controls[0].minDistance = 1;
-    //   this.context.elements.controls[0].maxDistance = 1000;
-    //   this.context.elements.controls[0].maxPolarAngle = Math.PI / 2;
+    * CONTROLS
+    */
+    if (this.attrs.controls) {
+      let applyElement;
+      if (this.attrs.controls.appplyTo) {
+        applyElement = this.attrs.controls.applyTo;
+      } else {
+        applyElement = this.context.rootElement;
+      }
+      this.context.elements.controls[0] = new THREE.OrbitControls(
+        this.context.getElements(this.attrs.controls.cameraId)[0].object,
+        applyElement
+      );
+      this.context.elements.controls[0].enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
+      this.context.elements.controls[0].dampingFactor = 0.5;
+      this.context.elements.controls[0].screenSpacePanning = false;
+      this.context.elements.controls[0].minDistance = 1;
+      this.context.elements.controls[0].maxDistance = 1000;
+      this.context.elements.controls[0].maxPolarAngle = Math.PI / 2;
 
-    //   const render = () => {
-    //     if (
-    //       (
-    //         ((this.context.elements.controls[0] || {}).domElement || {})
-    //           .style || {}
-    //       ).pointerEvents === "none"
-    //     ) {
-    //       return;
-    //     }
+      const render = () => {
+        if (
+          (
+            ((this.context.elements.controls[0] || {}).domElement || {})
+              .style || {}
+          ).pointerEvents === "none"
+        ) {
+          return;
+        }
 
-    //     for (const i in this.attrs.renders) {
-    //       this.context
-    //         .getElements(this.attrs.renders[i].renderer)[0]
-    //         .object.render(
-    //           this.context.getElements(this.attrs.renders[i].scene)[0].object,
-    //           this.context.getElements(this.attrs.renders[i].camera)[0].object
-    //         );
-    //     }
-    //   };
-    //   const animate = () => {
-    //     requestAnimationFrame(animate);
-    //     this.context.elements.controls[0].update(); // only required if controls.enableDamping = true, or if controls.autoRotate = true
-    //     render();
-    //   };
-    //   animate();
-    // }
+        for (const i in this.attrs.renders) {
+          this.context
+            .getElements(this.attrs.renders[i].renderer)[0]
+            .object.render(
+              this.context.getElements(this.attrs.renders[i].scene)[0].object,
+              this.context.getElements(this.attrs.renders[i].camera)[0].object
+            );
+        }
+      };
+      const animate = () => {
+        requestAnimationFrame(animate);
+        this.context.elements.controls[0].update(); // only required if controls.enableDamping = true, or if controls.autoRotate = true
+        render();
+      };
+      animate();
+    }
   }
   pushMixer(mixer) {
     this.context.elements.mixers.push(mixer);
@@ -450,13 +425,7 @@ class ThreejsContextHandler {
     camera.settings.position.x = camera.settings.position.x || 0;
     camera.settings.position.y = camera.settings.position.y || 0;
     camera.settings.position.z = camera.settings.position.z || 1000;
-    // if (!camera.settings.lookAt) {
-    //     camera.settings.rotation = camera.settings.rotation || {};
-    //     camera.settings.rotation.x = camera.settings.rotation.x || 0;
-    //     camera.settings.rotation.y = camera.settings.rotation.y || 0;
-    //     camera.settings.rotation.z = camera.settings.rotation.z || 0;
-    // }
-    camera.settings.lookAt = camera.settings.lookAt || [new THREE.Vector3()];
+    camera.settings.lookAt = camera.settings.lookAt || [0, 0, 0];
   }
 
   initializeRenderer(renderer) {
@@ -518,7 +487,6 @@ class ThreejsContextHandler {
           // console.log((xhr.loaded / xhr.total) * 100 + "%loaded");
         },
         function(error) {
-          // console.log(error);
           throw error;
         }
       );

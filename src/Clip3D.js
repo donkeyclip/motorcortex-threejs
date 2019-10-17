@@ -34,7 +34,6 @@ class Clip3D extends ExtendableClip {
       this.props,
       this
     );
-
     this.ownContext = { ...contextHanlder.context };
     this.isTheClip = true;
 
@@ -66,7 +65,7 @@ class Clip3D extends ExtendableClip {
     });
   }
 
-  async init(/*attrs, props*/) {
+  async init() {
     this.render();
   }
 

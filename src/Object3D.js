@@ -44,8 +44,11 @@ class Object3D extends Incident {
     //   this.targetValue,
     //   this.attrs
     // );
+
     typeof this.targetValue.lookAt !== "undefined"
-      ? this.element.object.lookAt(...this.targetValue.lookAt)
+      ? this.element.object.lookAt(
+          new THREE.Vector3(...this.targetValue.lookAt)
+        )
       : null;
     typeof this.targetValue.x !== "undefined"
       ? (this.element.object[this.attributeKey].x =
