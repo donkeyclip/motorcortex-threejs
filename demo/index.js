@@ -1,22 +1,51 @@
 const MC = require("@kissmybutton/motorcortex");
-const Player = require("@kissmybutton/motorcortex-player/");
+// const Player = require("@kissmybutton/motorcortex-player/");
+const Player = require("../../teo-motorcortex-player/src/Player");
 const threejsPluginDefinition = require("../src/main");
 const threejsPlugin = MC.loadPlugin(threejsPluginDefinition);
 
-const html = `
-<div class="myCam">
-  <div id="image" style="background-image: url(./mclogo.png);background-repeat: no-repeat;background-size: 100% 100%;width:20px;height:20px;">&nbsp;</div>
-  <p id = "paragraph" style="background-color:white;border-radius:5px;font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;padding:10px;color:#555">Demo of motorcortex-threejs plugin</p>
-</div>
-`;
-
 const host = document.getElementById("clip");
-
 const containerParams = {
   width: "80%",
   height: "100%"
 };
+
+const myClip = new MC.Clip({
+  html: `
+    <div class="container">
+      <div class="cinema"></div>
+      <div class="cinema"></div>
+      <div class="cinema"></div>
+    </div>
+  `,
+  css: `
+    .container {
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+    }
+    .cinema{
+      width:90%;
+      height:200px;
+      margin:10px;
+      position:relative;
+    }
+  `,
+  host,
+  containerParams,
+  audio: "off"
+});
+
+const html = `
+  <div class="myCam">
+    <div id="image" style="background-image: url(./mclogo.png);background-repeat: no-repeat;background-size: 100% 100%;width:20px;height:20px;">&nbsp;</div>
+    <p id = "paragraph" style="background-color:white;border-radius:5px;font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;padding:10px;color:#555">Demo of motorcortex-threejs plugin</p>
+  </div>
+`;
+// const html = ``;
 let shadow = true;
+
 if (
   /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
     navigator.userAgent
@@ -25,7 +54,7 @@ if (
   shadow = false;
 }
 
-const clip = new threejsPlugin.Clip3D(
+const clip = new threejsPlugin.Clip(
   {
     scenes: [
       {
@@ -80,7 +109,7 @@ const clip = new threejsPlugin.Clip3D(
           up: {
             set: [0, 0, 1]
           },
-          lookAt: [new THREE.Vector3(0, 0, 0)],
+          lookAt: [0, 0, 0],
           far: 10000
         }
       }
@@ -305,23 +334,19 @@ const clip = new threejsPlugin.Clip3D(
       {
         id: "JSONLoader",
         groups: "loaders",
-        type: "JSONLoader",
-        material: {
-          vertexColors: THREE.FaceColors,
-          morphTargets: true
-        }
+        type: "JSONLoader"
       }
-    ],
+    ] /*,
     controls: {
-      enable: true,
-      applyToPlayer: true,
+      enable: false,
       cameraId: "#camera1"
-    }
+    }*/
   },
   {
     id: "clip",
     groups: "clips",
-    host,
+    selector: ".cinema",
+    // host,
     containerParams,
     html
   }
@@ -337,7 +362,7 @@ const cameraAnimation = new threejsPlugin.Object3D(
         x: undefined,
         y: undefined,
         z: 2 * Math.PI,
-        lookAt: [new THREE.Vector3(0, 0, 0)]
+        lookAt: [0, 0, 0]
       }
     }
   },
@@ -358,7 +383,7 @@ const cameraAnimation2 = new threejsPlugin.Object3D(
         x: undefined,
         y: undefined,
         z: undefined,
-        lookAt: [new THREE.Vector3(0, -50, 10)]
+        lookAt: [0, -50, 10]
       }
     }
   },
@@ -375,7 +400,7 @@ const cameraAnimation21 = new threejsPlugin.Object3D(
         x: undefined,
         y: undefined,
         z: undefined,
-        lookAt: [new THREE.Vector3(0, -50, 10)]
+        lookAt: [0, -50, 10]
       }
     }
   },
@@ -398,7 +423,7 @@ const cameraAnimation3 = new threejsPlugin.Object3D(
         x: undefined,
         y: undefined,
         z: undefined,
-        lookAt: [new THREE.Vector3(0, 0, 0)]
+        lookAt: [0, 0, 0]
       }
     }
   },
@@ -421,7 +446,7 @@ const cameraAnimation4 = new threejsPlugin.Object3D(
         x: undefined,
         y: undefined,
         z: undefined,
-        lookAt: [new THREE.Vector3(0, 0, 0)]
+        lookAt: [0, 0, 0]
       }
     }
   },
@@ -444,7 +469,7 @@ const cameraAnimation5 = new threejsPlugin.Object3D(
         x: undefined,
         y: undefined,
         z: undefined,
-        lookAt: [new THREE.Vector3(0, 0, 0)]
+        lookAt: [0, 0, 0]
       }
     }
   },
@@ -589,10 +614,13 @@ clip.addIncident(horseMAE, 11000);
 clip.addIncident(horseAnimation5, 13000);
 clip.addIncident(horsesMAE, 13000);
 
+myClip.addIncident(clip, 0);
+// window.clip = myClip;
 new Player({
-  clip: clip,
+  clip: myClip,
   theme: "transparent on-top",
-  clipClass: threejsPlugin.Clip3D,
+  // clipClass: threejsPlugin.Clip,
   preview: false,
-  pointerEvents: false
+  pointerEvents: false,
+  showIndicator: true
 });

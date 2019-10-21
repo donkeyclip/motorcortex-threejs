@@ -4,7 +4,7 @@ const webpack = require("webpack");
 module.exports = {
   context: path.resolve(__dirname),
 
-  entry: "./index.js",
+  entry: ["babel-polyfill", "./index.js"],
 
   resolve: {
     extensions: [".js"],
