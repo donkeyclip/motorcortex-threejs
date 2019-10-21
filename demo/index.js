@@ -10,26 +10,32 @@ const containerParams = {
   height: "100%"
 };
 
-// const myClip = new MC.Clip({
-//   html: `
-//     <div>
-//       <div class="cinema"></div>
-//       <div class="cinema"></div>
-//       <div class="cinema"></div>
-//     </div>
-//   `,
-//   css: `
-//     .cinema{
-//       width:400px;
-//       height:400px;
-//       margin:10px;
-//       position:relative;
-//     }
-//   `,
-//   host,
-//   containerParams,
-//   audio: "off"
-// });
+const myClip = new MC.Clip({
+  html: `
+    <div class="container">
+      <div class="cinema"></div>
+      <div class="cinema"></div>
+      <div class="cinema"></div>
+    </div>
+  `,
+  css: `
+    .container {
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+    }
+    .cinema{
+      width:90%;
+      height:200px;
+      margin:10px;
+      position:relative;
+    }
+  `,
+  host,
+  containerParams,
+  audio: "off"
+});
 
 const html = `
   <div class="myCam">
@@ -37,7 +43,7 @@ const html = `
     <p id = "paragraph" style="background-color:white;border-radius:5px;font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;padding:10px;color:#555">Demo of motorcortex-threejs plugin</p>
   </div>
 `;
-
+// const html = ``;
 let shadow = true;
 
 if (
@@ -57,12 +63,12 @@ const clip = new threejsPlugin.Clip(
         settings: {
           // fog: new THREE.Fog(0x59472b, 150, 200)
         }
+      },
+      {
+        id: "scene2",
+        groups: "scenes",
+        settings: {}
       }
-      // {
-      //   id: "scene2",
-      //   groups: "scenes",
-      //   settings: {}
-      // }
     ],
     lights: [
       {
@@ -120,14 +126,14 @@ const clip = new threejsPlugin.Clip(
           }
         },
         parameters: [{ alpha: true, antialias: true }]
+      },
+      {
+        id: "renderer2",
+        groups: "renderers",
+        settings: {
+          type: "CSS3DRenderer"
+        }
       }
-      // {
-      //   id: "renderer2",
-      //   groups: "renderers",
-      //   settings: {
-      //     type: "CSS3DRenderer"
-      //   }
-      // }
     ],
     meshes: [
       {
@@ -171,42 +177,42 @@ const clip = new threejsPlugin.Clip(
       }
     ],
     css3d_objects: [
-      // {
-      //   id: "paragraph",
-      //   groups: "css3d",
-      //   selector: "#paragraph",
-      //   settings: {
-      //     position: {
-      //       x: 0,
-      //       y: -100,
-      //       z: 10
-      //     },
-      //     rotation: {
-      //       x: Math.PI / 2,
-      //       y: 0,
-      //       z: 0
-      //     }
-      //   },
-      //   scenes: "#scene2"
-      // },
-      // {
-      //   id: "image",
-      //   groups: "css3d",
-      //   selector: "#image",
-      //   settings: {
-      //     position: {
-      //       x: 0,
-      //       y: -50,
-      //       z: 10
-      //     },
-      //     rotation: {
-      //       x: Math.PI / 2,
-      //       y: Math.PI / 2,
-      //       z: 0
-      //     }
-      //   },
-      //   scenes: "#scene2"
-      // }
+      {
+        id: "paragraph",
+        groups: "css3d",
+        selector: "#paragraph",
+        settings: {
+          position: {
+            x: 0,
+            y: -100,
+            z: 10
+          },
+          rotation: {
+            x: Math.PI / 2,
+            y: 0,
+            z: 0
+          }
+        },
+        scenes: "#scene2"
+      },
+      {
+        id: "image",
+        groups: "css3d",
+        selector: "#image",
+        settings: {
+          position: {
+            x: 0,
+            y: -50,
+            z: 10
+          },
+          rotation: {
+            x: Math.PI / 2,
+            y: Math.PI / 2,
+            z: 0
+          }
+        },
+        scenes: "#scene2"
+      }
     ],
     models: [
       {
@@ -313,11 +319,11 @@ const clip = new threejsPlugin.Clip(
       }
     ],
     renders: [
-      // {
-      //   renderer: "#renderer2",
-      //   camera: "#camera1",
-      //   scene: "#scene2"
-      // },
+      {
+        renderer: "#renderer2",
+        camera: "#camera1",
+        scene: "#scene2"
+      },
       {
         renderer: "#renderer1",
         camera: "#camera1",
@@ -328,23 +334,19 @@ const clip = new threejsPlugin.Clip(
       {
         id: "JSONLoader",
         groups: "loaders",
-        type: "JSONLoader",
-        material: {
-          vertexColors: THREE.FaceColors,
-          morphTargets: true
-        }
+        type: "JSONLoader"
       }
-    ]
-    // controls: {
-    //   enable: true,
-    //   cameraId: "#camera1"
-    // }
+    ] /*,
+    controls: {
+      enable: false,
+      cameraId: "#camera1"
+    }*/
   },
   {
     id: "clip",
     groups: "clips",
-    // selector: ".cinema",
-    host,
+    selector: ".cinema",
+    // host,
     containerParams,
     html
   }
@@ -532,22 +534,22 @@ const horseAnimation4 = new threejsPlugin.Object3D(
   }
 );
 
-// const divAnimation5 = new threejsPlugin.Object3D(
-//   {
-//     animatedAttrs: {
-//       rotation: {
-//         x: undefined,
-//         y: 4 * Math.PI,
-//         z: undefined
-//       }
-//     }
-//   },
-//   {
-//     id: "div_animation5",
-//     selector: "#image",
-//     duration: 2000
-//   }
-// );
+const divAnimation5 = new threejsPlugin.Object3D(
+  {
+    animatedAttrs: {
+      rotation: {
+        x: undefined,
+        y: 4 * Math.PI,
+        z: undefined
+      }
+    }
+  },
+  {
+    id: "div_animation5",
+    selector: "#image",
+    duration: 2000
+  }
+);
 
 const horseAnimation5 = new threejsPlugin.Object3D(
   {
@@ -601,7 +603,7 @@ const horsesMAE = new threejsPlugin.MAE(
 clip.addIncident(cameraAnimation, 2000);
 clip.addIncident(cameraAnimation2, 4000);
 clip.addIncident(cameraAnimation21, 6000);
-// clip.addIncident(divAnimation5, 6000);
+clip.addIncident(divAnimation5, 6000);
 clip.addIncident(cameraAnimation3, 8000);
 clip.addIncident(cameraAnimation4, 9000);
 clip.addIncident(cameraAnimation5, 11000);
@@ -612,12 +614,13 @@ clip.addIncident(horseMAE, 11000);
 clip.addIncident(horseAnimation5, 13000);
 clip.addIncident(horsesMAE, 13000);
 
-// myClip.addIncident(clip, 0);
+myClip.addIncident(clip, 0);
 // window.clip = myClip;
 new Player({
-  clip: clip,
+  clip: myClip,
   theme: "transparent on-top",
   // clipClass: threejsPlugin.Clip,
   preview: false,
-  pointerEvents: false
+  pointerEvents: false,
+  showIndicator: true
 });

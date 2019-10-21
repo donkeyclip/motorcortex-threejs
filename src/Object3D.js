@@ -37,14 +37,6 @@ class Object3D extends Incident {
   }
 
   onProgress(fraction /*, millisecond*/) {
-    // console.log(
-    //   this.element,
-    //   this.attributeKey,
-    //   this.initialValue,
-    //   this.targetValue,
-    //   this.attrs
-    // );
-
     typeof this.targetValue.lookAt !== "undefined"
       ? this.element.object.lookAt(
           new THREE.Vector3(...this.targetValue.lookAt)

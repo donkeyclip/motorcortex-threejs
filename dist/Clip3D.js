@@ -18,13 +18,9 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _get(target, property, receiver) { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(receiver); } return desc.value; }; } return _get(target, property, receiver || target); }
-
-function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
-
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
@@ -39,8 +35,7 @@ require("three/examples/js/renderers/CSS3DRenderer");
 require("three/examples/js/controls/OrbitControls"); // const Helper = MC.Helper;
 
 
-var ExtendableClip = MC.API.ExtendableClip;
-var conf = MC.conf;
+var ExtendableClip = MC.API.ExtendableClip; // const conf = MC.conf;
 
 var ThreejsContextHandler = require("./ThreejsContextHandler");
 
@@ -69,8 +64,12 @@ function (_ExtendableClip) {
     _classCallCheck(this, Clip3D);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Clip3D).call(this, attrs, props));
+    var initialAttrs = JSON.parse(JSON.stringify(_this.attrs));
+    var initialProps = JSON.parse(JSON.stringify(_this.props));
+    _this.initialAttrs = initialAttrs;
+    _this.initialProps = initialProps;
 
-    var checks = _this.runChecks(attrs, props);
+    var checks = _this.runChecks(_this.attrs, _this.props);
 
     if (!checks) {
       return _possibleConstructorReturn(_this, false);
@@ -79,19 +78,18 @@ function (_ExtendableClip) {
     var contextHanlder = new ThreejsContextHandler(_this.attrs, _this.props, _assertThisInitialized(_this));
     _this.ownContext = _objectSpread({}, contextHanlder.context);
     _this.isTheClip = true;
-    _this.attrs = JSON.parse(JSON.stringify(attrs));
 
-    _this.init(attrs, props);
+    _this.init(_this.attrs, _this.props);
 
     _this.ownContext.window.addEventListener("resize", function () {
       for (var i in _this.ownContext.elements.cameras) {
-        _this.ownContext.elements.cameras[i].object.aspect = _this.props.host.offsetWidth / _this.props.host.offsetHeight;
+        _this.ownContext.elements.cameras[i].object.aspect = _this.props.context.rootElement.offsetWidth / _this.props.context.rootElement.offsetHeight;
 
         _this.ownContext.elements.cameras[i].object.updateProjectionMatrix();
       }
 
       for (var _i in _this.ownContext.elements.renderers) {
-        _this.ownContext.elements.renderers[_i].object.setSize(_this.props.host.offsetWidth, _this.props.host.offsetHeight);
+        _this.ownContext.elements.renderers[_i].object.setSize(_this.props.context.rootElement.offsetWidth, _this.props.context.rootElement.offsetHeight);
       } // render the scene
 
 
@@ -108,7 +106,7 @@ function (_ExtendableClip) {
     value: function () {
       var _init = _asyncToGenerator(
       /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee(attrs, props) {
+      regeneratorRuntime.mark(function _callee() {
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
@@ -123,12 +121,22 @@ function (_ExtendableClip) {
         }, _callee, this);
       }));
 
-      function init(_x, _x2) {
+      function init() {
         return _init.apply(this, arguments);
       }
 
       return init;
     }()
+  }, {
+    key: "exportConstructionArguments",
+    value: function exportConstructionArguments() {
+      return {
+        attrs: JSON.parse(JSON.stringify(this.initialAttrs)),
+        props: JSON.parse(JSON.stringify(_objectSpread({}, this.initialProps, {
+          host: undefined
+        })))
+      };
+    }
   }, {
     key: "render",
     value: function render() {
@@ -187,18 +195,14 @@ function (_ExtendableClip) {
       }
 
       return true;
-    }
-  }, {
-    key: "onProgress",
-    value: function onProgress(fraction, milliseconds, contextId) {
-      var forceReset = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+    } // onProgress(fraction, milliseconds, contextId, forceReset = false) {
+    //   if (this.context.loading.length > 0) {
+    //     this.setBlock();
+    //   } else {
+    //     super.onProgress(fraction, milliseconds, contextId, forceReset);
+    //   }
+    // }
 
-      if (this.context.loading.length > 0) {
-        this.setBlock();
-      } else {
-        _get(_getPrototypeOf(Clip3D.prototype), "onProgress", this).call(this, fraction, milliseconds, contextId, forceReset);
-      }
-    }
   }, {
     key: "lastWish",
     value: function lastWish() {

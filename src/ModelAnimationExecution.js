@@ -1,14 +1,12 @@
 const MC = require("@kissmybutton/motorcortex");
 
-// const helper = new MC.Helper();
 const Incident = MC.API.MonoIncident;
-// const prevTime = Date.now();
 class MAE extends Incident {
   onInitialise() {
     this.loaded = false;
   }
   onGetContext() {
-    if (this.context.loading.length > 0 || this.loaded) {
+    if (this.context.loading.length > 0 || this.loaded[this.id]) {
       return;
     }
 
@@ -27,6 +25,7 @@ class MAE extends Incident {
       this.loaded = true;
       return;
     }
+    this.element.animations = this.element.animations || {};
 
     //push the mixer in the onprogress
     this.context.pushMixer({
@@ -51,8 +50,8 @@ class MAE extends Incident {
   }
 
   getScratchValue() {
-    const attr = this.attributeKey;
     this.element.animations = this.element.animations || {};
+    const attr = this.attributeKey;
     const { animations } = this.element;
     animations[attr + "_previous"] = animations[attr + "_previous"] || 0;
     return animations[attr + "_previous"];
@@ -67,7 +66,7 @@ class MAE extends Incident {
     const animatedAttr = this.attrs.animatedAttrs[key];
 
     const time = Math.floor(animatedAttr * progress) + initialValue;
-    const prevTime = this.element.animations[key + "_previous"];
+    const prevTime = this.element.animations[key + "_previous"] || 0;
     const delta = time - prevTime;
 
     this.element.animations[key + "_previous"] = time;

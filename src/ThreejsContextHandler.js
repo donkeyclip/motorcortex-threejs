@@ -1,12 +1,12 @@
 const promise = Promise;
-const uuidv1 = require("uuid/v1");
+const uuidv1 = require("uuid/v4");
 
 class ThreejsContextHandler {
   constructor(attrs, props, _thisClip) {
-    // initialisation of the final audio resources colleciton
-    this.props = JSON.parse(JSON.stringify(props));
-    this.attrs = JSON.parse(JSON.stringify(attrs));
+    this.props = props;
+    this.attrs = attrs;
     this._thisClip = _thisClip;
+    this.hasLoaded = false;
     const shadow = props.host.attachShadow({ mode: "closed" });
     const wrapper = document.createElement("div");
     if (Object.prototype.hasOwnProperty.call(props, "containerParams")) {
@@ -49,6 +49,7 @@ class ThreejsContextHandler {
 
     this.rootElement = wrapper;
     this.context = {
+      clipId: uuidv1(),
       document: document,
       window: window,
       rootElement: this.rootElement,
@@ -240,7 +241,6 @@ class ThreejsContextHandler {
         ...mesh.material.parameters
       );
       mesh.object = new THREE.Mesh(geometry, material);
-
       this.context.elements.meshes.push(mesh);
 
       this.applySettingsToObjects(mesh.settings, mesh.object);
@@ -314,40 +314,40 @@ class ThreejsContextHandler {
         });
       };
 
-      try {
-        loadGeometry().then(g => {
-          const material = new THREE[model.material.type](
-            ...model.material.parameters
-          );
-          model.object = new THREE.Mesh(g, material);
-          this.applySettingsToObjects(model.settings, model.object);
-
-          for (const scene of this.context.getElements(model.scenes)) {
-            scene.object.add(model.object);
-          }
-
-          setTimeout(() => {
-            this.context.loading.splice(0, 1);
-            if (this.context.loading.length === 0) {
-              this._thisClip.unblock();
-            }
-          }, 2000);
-        });
-
-        this.context.loading.push(1);
-        // create pseudo point as element
-        const geometry = new THREE.BufferGeometry();
-        const material = new THREE.PointsMaterial();
-        const pseudoModel = new THREE.Points(geometry, material);
-        pseudoModel.name = model.id;
-        model.object = pseudoModel;
-        //
+      loadGeometry().then(g => {
+        this.hasLoaded = true;
+        const material = new THREE[model.material.type](
+          ...model.material.parameters
+        );
+        model.object = new THREE.Mesh(g, material);
         this.applySettingsToObjects(model.settings, model.object);
 
-        this.context.elements.models.push(model);
-      } catch (e) {
-        throw e;
+        for (const scene of this.context.getElements(model.scenes)) {
+          scene.object.add(model.object);
+        }
+
+        setTimeout(() => {
+          this.context.loading.splice(0, 1);
+          if (this.context.loading.length === 0) {
+            this._thisClip.contextLoaded();
+          }
+        }, 2000);
+      });
+
+      this.context.loading.push(1);
+      if (this.context.loading.length === 1 && !this.hasLoaded) {
+        this._thisClip.contextLoading();
       }
+      // create pseudo point as element
+      const geometry = new THREE.BufferGeometry();
+      const material = new THREE.PointsMaterial();
+      const pseudoModel = new THREE.Points(geometry, material);
+      pseudoModel.name = model.id;
+      model.object = pseudoModel;
+      //
+      this.applySettingsToObjects(model.settings, model.object);
+
+      this.context.elements.models.push(model);
     }
     /*
     * CONTROLS
@@ -409,6 +409,7 @@ class ThreejsContextHandler {
       const aspect =
         this.context.rootElement.offsetWidth /
         this.context.rootElement.offsetHeight;
+
       const near = 1;
       const far = 1000;
       camera.parameters = [fov, aspect, near, far];

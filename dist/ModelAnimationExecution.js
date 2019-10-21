@@ -18,10 +18,9 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-var MC = require("@kissmybutton/motorcortex"); // const helper = new MC.Helper();
+var MC = require("@kissmybutton/motorcortex");
 
-
-var Incident = MC.API.MonoIncident; // const prevTime = Date.now();
+var Incident = MC.API.MonoIncident;
 
 var MAE =
 /*#__PURE__*/
@@ -42,7 +41,7 @@ function (_Incident) {
   }, {
     key: "onGetContext",
     value: function onGetContext() {
-      if (this.context.loading.length > 0 || this.loaded) {
+      if (this.context.loading.length > 0 || this.loaded[this.id]) {
         return;
       }
 
@@ -57,8 +56,9 @@ function (_Incident) {
       if (this.context.getElements(mixerSelector)[0]) {
         this.loaded = true;
         return;
-      } //push the mixer in the onprogress
+      }
 
+      this.element.animations = this.element.animations || {}; //push the mixer in the onprogress
 
       this.context.pushMixer({
         id: "".concat(selector, "_").concat(animationName),
@@ -74,8 +74,8 @@ function (_Incident) {
   }, {
     key: "getScratchValue",
     value: function getScratchValue() {
-      var attr = this.attributeKey;
       this.element.animations = this.element.animations || {};
+      var attr = this.attributeKey;
       var animations = this.element.animations;
       animations[attr + "_previous"] = animations[attr + "_previous"] || 0;
       return animations[attr + "_previous"];
@@ -93,7 +93,7 @@ function (_Incident) {
       var initialValue = this.initialValue;
       var animatedAttr = this.attrs.animatedAttrs[key];
       var time = Math.floor(animatedAttr * progress) + initialValue;
-      var prevTime = this.element.animations[key + "_previous"];
+      var prevTime = this.element.animations[key + "_previous"] || 0;
       var delta = time - prevTime;
       this.element.animations[key + "_previous"] = time;
       var selector = this.props.selector;

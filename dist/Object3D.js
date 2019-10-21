@@ -2,6 +2,10 @@
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
+function isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function _construct(Parent, args, Class) { if (isNativeReflectConstruct()) { _construct = Reflect.construct; } else { _construct = function _construct(Parent, args, Class) { var a = [null]; a.push.apply(a, args); var Constructor = Function.bind.apply(Parent, a); var instance = new Constructor(); if (Class) _setPrototypeOf(instance, Class.prototype); return instance; }; } return _construct.apply(null, arguments); }
+
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
@@ -70,16 +74,7 @@ function (_Incident) {
     value: function onProgress(fraction
     /*, millisecond*/
     ) {
-      var _this$element$object;
-
-      // console.log(
-      //   this.element,
-      //   this.attributeKey,
-      //   this.initialValue,
-      //   this.targetValue,
-      //   this.attrs
-      // );
-      typeof this.targetValue.lookAt !== "undefined" ? (_this$element$object = this.element.object).lookAt.apply(_this$element$object, _toConsumableArray(this.targetValue.lookAt)) : null;
+      typeof this.targetValue.lookAt !== "undefined" ? this.element.object.lookAt(_construct(THREE.Vector3, _toConsumableArray(this.targetValue.lookAt))) : null;
       typeof this.targetValue.x !== "undefined" ? this.element.object[this.attributeKey].x = (this.targetValue.x - this.initialValue.x) * fraction + this.initialValue.x : null;
       typeof this.targetValue.y !== "undefined" ? this.element.object[this.attributeKey].y = (this.targetValue.y - this.initialValue.y) * fraction + this.initialValue.y : null;
       typeof this.targetValue.z !== "undefined" ? this.element.object[this.attributeKey].z = (this.targetValue.z - this.initialValue.z) * fraction + this.initialValue.z : null;

@@ -22,8 +22,11 @@ class Clip3D extends ExtendableClip {
 
   constructor(attrs = {}, props = {}) {
     super(attrs, props);
-
-    const checks = this.runChecks(attrs, props);
+    const initialAttrs = JSON.parse(JSON.stringify(this.attrs));
+    const initialProps = JSON.parse(JSON.stringify(this.props));
+    this.initialAttrs = initialAttrs;
+    this.initialProps = initialProps;
+    const checks = this.runChecks(this.attrs, this.props);
 
     if (!checks) {
       return false;
@@ -34,23 +37,23 @@ class Clip3D extends ExtendableClip {
       this.props,
       this
     );
+
     this.ownContext = { ...contextHanlder.context };
     this.isTheClip = true;
 
-    this.attrs = JSON.parse(JSON.stringify(attrs));
-
-    this.init(attrs, props);
+    this.init(this.attrs, this.props);
     this.ownContext.window.addEventListener("resize", () => {
       for (const i in this.ownContext.elements.cameras) {
         this.ownContext.elements.cameras[i].object.aspect =
-          this.props.host.offsetWidth / this.props.host.offsetHeight;
+          this.props.context.rootElement.offsetWidth /
+          this.props.context.rootElement.offsetHeight;
 
         this.ownContext.elements.cameras[i].object.updateProjectionMatrix();
       }
       for (const i in this.ownContext.elements.renderers) {
         this.ownContext.elements.renderers[i].object.setSize(
-          this.props.host.offsetWidth,
-          this.props.host.offsetHeight
+          this.props.context.rootElement.offsetWidth,
+          this.props.context.rootElement.offsetHeight
         );
       }
       // render the scene
@@ -68,7 +71,14 @@ class Clip3D extends ExtendableClip {
   async init() {
     this.render();
   }
-
+  exportConstructionArguments() {
+    return {
+      attrs: JSON.parse(JSON.stringify(this.initialAttrs)),
+      props: JSON.parse(
+        JSON.stringify({ ...this.initialProps, host: undefined })
+      )
+    };
+  }
   render() {
     for (const i in this.ownContext.elements.renderers) {
       this.ownContext.rootElement.appendChild(
@@ -141,13 +151,13 @@ class Clip3D extends ExtendableClip {
     return true;
   }
 
-  onProgress(fraction, milliseconds, contextId, forceReset = false) {
-    if (this.context.loading.length > 0) {
-      this.setBlock();
-    } else {
-      super.onProgress(fraction, milliseconds, contextId, forceReset);
-    }
-  }
+  // onProgress(fraction, milliseconds, contextId, forceReset = false) {
+  //   if (this.context.loading.length > 0) {
+  //     this.setBlock();
+  //   } else {
+  //     super.onProgress(fraction, milliseconds, contextId, forceReset);
+  //   }
+  // }
 
   lastWish() {
     this.ownContext.unmount();
