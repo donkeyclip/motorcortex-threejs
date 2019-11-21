@@ -58,6 +58,14 @@ class Object3D extends Incident {
           this.initialValue.z)
       : null;
 
+    if (this.attributeKey === "targetEntity") {
+      this.element.object.lookAt(
+        ...Object.values(
+          this.context.getElements(this.targetValue)[0].object.position
+        )
+      );
+      this.element.object.up.set(0, 0, 1);
+    }
     for (const i in this.context.elements.renders) {
       this.context
         .getElements(this.context.elements.renders[i].renderer)[0]

@@ -6,7 +6,7 @@ class MAE extends Incident {
     this.loaded = false;
   }
   onGetContext() {
-    if (this.context.loading.length > 0 || this.loaded[this.id]) {
+    if (this.context.loading === true || this.loaded) {
       return;
     }
 

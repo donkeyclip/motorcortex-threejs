@@ -2,13 +2,13 @@
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -30,9 +30,10 @@ var MC = require("@kissmybutton/motorcortex");
 
 global.THREE = require("three");
 
-require("three/examples/js/renderers/CSS3DRenderer");
+require("three/examples/js/renderers/CSS3DRenderer"); // require("three/examples/js/controls/OrbitControls");
 
-require("three/examples/js/controls/OrbitControls"); // const Helper = MC.Helper;
+
+require("three/examples/js/controls/TrackballControls"); // const Helper = MC.Helper;
 
 
 var ExtendableClip = MC.API.ExtendableClip; // const conf = MC.conf;
@@ -73,27 +74,34 @@ function (_ExtendableClip) {
 
     if (!checks) {
       return _possibleConstructorReturn(_this, false);
-    }
+    } //initialize renders
 
-    var contextHanlder = new ThreejsContextHandler(_this.attrs, _this.props, _assertThisInitialized(_this));
-    _this.ownContext = _objectSpread({}, contextHanlder.context);
+
+    var contextHanlder = new ThreejsContextHandler(_this.attrs, _this.props, {
+      _thisClip: _assertThisInitialized(_this)
+    });
+    _this.ownContext = contextHanlder.context;
     _this.isTheClip = true;
 
     _this.init(_this.attrs, _this.props);
 
     _this.ownContext.window.addEventListener("resize", function () {
       for (var i in _this.ownContext.elements.cameras) {
-        _this.ownContext.elements.cameras[i].object.aspect = _this.props.context.rootElement.offsetWidth / _this.props.context.rootElement.offsetHeight;
+        _this.ownContext.elements.cameras[i].object.aspect = _this.context.rootElement.offsetWidth / _this.context.rootElement.offsetHeight;
 
         _this.ownContext.elements.cameras[i].object.updateProjectionMatrix();
       }
 
       for (var _i in _this.ownContext.elements.renderers) {
-        _this.ownContext.elements.renderers[_i].object.setSize(_this.props.context.rootElement.offsetWidth, _this.props.context.rootElement.offsetHeight);
+        _this.ownContext.elements.renderers[_i].object.setSize(_this.context.rootElement.offsetWidth, _this.context.rootElement.offsetHeight);
       } // render the scene
 
 
       for (var _i2 in _this.attrs.renders) {
+        _this.attrs.renders[_i2].scene = _this.attrs.renders[_i2].scene || "#" + _this.ownContext.elements.scenes[0].id;
+        _this.attrs.renders[_i2].camera = _this.attrs.renders[_i2].camera || "#" + _this.ownContext.elements.cameras[0].id;
+        _this.attrs.renders[_i2].renderer = _this.attrs.renders[_i2].renderer || "#" + _this.ownContext.elements.renderers[0].id;
+
         _this.ownContext.getElements(_this.attrs.renders[_i2].renderer)[0].object.render(_this.ownContext.getElements(_this.attrs.renders[_i2].scene)[0].object, _this.ownContext.getElements(_this.attrs.renders[_i2].camera)[0].object);
       }
     });
@@ -148,6 +156,9 @@ function (_ExtendableClip) {
       }
 
       for (var _i3 in this.attrs.renders) {
+        this.attrs.renders[_i3].scene = this.attrs.renders[_i3].scene || "#" + this.ownContext.elements.scenes[0].id;
+        this.attrs.renders[_i3].camera = this.attrs.renders[_i3].camera || "#" + this.ownContext.elements.cameras[0].id;
+        this.attrs.renders[_i3].renderer = this.attrs.renders[_i3].renderer || "#" + this.ownContext.elements.renderers[0].id;
         this.ownContext.getElements(this.attrs.renders[_i3].renderer)[0].object.render(this.ownContext.getElements(this.attrs.renders[_i3].scene)[0].object, this.ownContext.getElements(this.attrs.renders[_i3].camera)[0].object);
       }
     }
@@ -174,35 +185,33 @@ function (_ExtendableClip) {
         return false;
       }
 
-      if (!attrs.hasOwnProperty("scenes")) {
-        console.error("Self Contained Incident expects the 'scenes' key on             its constructor attributes which is missing");
+      if ((attrs.scenes || {}).constructor !== Object.prototype.constructor && !(attrs.scenes instanceof Array)) {
+        console.error("Self Contained Incident expects the 'scenes' key on             its constructor attributes to be an Array or an Object");
         return false;
       }
 
-      if (!attrs.hasOwnProperty("lights")) {
-        console.error("Self Contained Incident expects the 'lights' key on                 its constructor attributes which is missing");
+      if ((attrs.lights || {}).constructor !== Object.prototype.constructor && !(attrs.lights instanceof Array)) {
+        console.error("Self Contained Incident expects the 'lights' key on             its constructor attributes to be an Array or an Object");
         return false;
       }
 
-      if (!attrs.hasOwnProperty("cameras")) {
-        console.error("Self Contained Incident expects the 'cameras' key on                 its constructor attributes which is missing");
+      if ((attrs.cameras || {}).constructor !== Object.prototype.constructor && !(attrs.cameras instanceof Array)) {
+        console.error("Self Contained Incident expects the 'cameras' key on             its constructor attributes to be an Array or an Object");
         return false;
       }
 
-      if (!attrs.hasOwnProperty("renderers")) {
-        console.error("Self Contained Incident expects the 'renderers' key                 on its constructor attributes which is missing");
+      if ((attrs.renderers || {}).constructor !== Object.prototype.constructor && !(attrs.renderers instanceof Array)) {
+        console.error("Self Contained Incident expects the 'renderers' key on             its constructor attributes to be an Array or an Object");
+        return false;
+      }
+
+      if ((attrs.renders || {}).constructor !== Object.prototype.constructor && !(attrs.renders instanceof Array)) {
+        console.error("Self Contained Incident expects the 'renders' key on             its constructor attributes to be an Array or an Object");
         return false;
       }
 
       return true;
-    } // onProgress(fraction, milliseconds, contextId, forceReset = false) {
-    //   if (this.context.loading.length > 0) {
-    //     this.setBlock();
-    //   } else {
-    //     super.onProgress(fraction, milliseconds, contextId, forceReset);
-    //   }
-    // }
-
+    }
   }, {
     key: "lastWish",
     value: function lastWish() {

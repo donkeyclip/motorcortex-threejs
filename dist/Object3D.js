@@ -79,6 +79,14 @@ function (_Incident) {
       typeof this.targetValue.y !== "undefined" ? this.element.object[this.attributeKey].y = (this.targetValue.y - this.initialValue.y) * fraction + this.initialValue.y : null;
       typeof this.targetValue.z !== "undefined" ? this.element.object[this.attributeKey].z = (this.targetValue.z - this.initialValue.z) * fraction + this.initialValue.z : null;
 
+      if (this.attributeKey === "targetEntity") {
+        var _this$element$object;
+
+        (_this$element$object = this.element.object).lookAt.apply(_this$element$object, _toConsumableArray(Object.values(this.context.getElements(this.targetValue)[0].object.position)));
+
+        this.element.object.up.set(0, 0, 1);
+      }
+
       for (var i in this.context.elements.renders) {
         this.context.getElements(this.context.elements.renders[i].renderer)[0].object.render(this.context.getElements(this.context.elements.renders[i].scene)[0].object, this.context.getElements(this.context.elements.renders[i].camera)[0].object);
       } // if (

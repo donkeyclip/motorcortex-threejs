@@ -1,7 +1,8 @@
 const MC = require("@kissmybutton/motorcortex");
 global.THREE = require("three");
 require("three/examples/js/renderers/CSS3DRenderer");
-require("three/examples/js/controls/OrbitControls");
+// require("three/examples/js/controls/OrbitControls");
+require("three/examples/js/controls/TrackballControls");
 
 // const Helper = MC.Helper;
 const ExtendableClip = MC.API.ExtendableClip;
@@ -31,33 +32,42 @@ class Clip3D extends ExtendableClip {
     if (!checks) {
       return false;
     }
+    //initialize renders
+    const contextHanlder = new ThreejsContextHandler(this.attrs, this.props, {
+      _thisClip: this
+    });
 
-    const contextHanlder = new ThreejsContextHandler(
-      this.attrs,
-      this.props,
-      this
-    );
-
-    this.ownContext = { ...contextHanlder.context };
+    this.ownContext = contextHanlder.context;
     this.isTheClip = true;
 
     this.init(this.attrs, this.props);
     this.ownContext.window.addEventListener("resize", () => {
       for (const i in this.ownContext.elements.cameras) {
         this.ownContext.elements.cameras[i].object.aspect =
-          this.props.context.rootElement.offsetWidth /
-          this.props.context.rootElement.offsetHeight;
+          this.context.rootElement.offsetWidth /
+          this.context.rootElement.offsetHeight;
 
         this.ownContext.elements.cameras[i].object.updateProjectionMatrix();
       }
       for (const i in this.ownContext.elements.renderers) {
         this.ownContext.elements.renderers[i].object.setSize(
-          this.props.context.rootElement.offsetWidth,
-          this.props.context.rootElement.offsetHeight
+          this.context.rootElement.offsetWidth,
+          this.context.rootElement.offsetHeight
         );
       }
       // render the scene
       for (const i in this.attrs.renders) {
+        this.attrs.renders[i].scene =
+          this.attrs.renders[i].scene ||
+          "#" + this.ownContext.elements.scenes[0].id;
+
+        this.attrs.renders[i].camera =
+          this.attrs.renders[i].camera ||
+          "#" + this.ownContext.elements.cameras[0].id;
+
+        this.attrs.renders[i].renderer =
+          this.attrs.renders[i].renderer ||
+          "#" + this.ownContext.elements.renderers[0].id;
         this.ownContext
           .getElements(this.attrs.renders[i].renderer)[0]
           .object.render(
@@ -91,6 +101,16 @@ class Clip3D extends ExtendableClip {
     }
 
     for (const i in this.attrs.renders) {
+      this.attrs.renders[i].scene =
+        this.attrs.renders[i].scene ||
+        "#" + this.ownContext.elements.scenes[0].id;
+
+      this.attrs.renders[i].camera =
+        this.attrs.renders[i].camera ||
+        "#" + this.ownContext.elements.cameras[0].id;
+      this.attrs.renders[i].renderer =
+        this.attrs.renders[i].renderer ||
+        "#" + this.ownContext.elements.renderers[0].id;
       this.ownContext
         .getElements(this.attrs.renders[i].renderer)[0]
         .object.render(
@@ -125,39 +145,51 @@ class Clip3D extends ExtendableClip {
       return false;
     }
 
-    if (!attrs.hasOwnProperty("scenes")) {
+    if (
+      (attrs.scenes || {}).constructor !== Object.prototype.constructor &&
+      !(attrs.scenes instanceof Array)
+    ) {
       console.error(`Self Contained Incident expects the 'scenes' key on\
-             its constructor attributes which is missing`);
+             its constructor attributes to be an Array or an Object`);
+      return false;
+    }
+    if (
+      (attrs.lights || {}).constructor !== Object.prototype.constructor &&
+      !(attrs.lights instanceof Array)
+    ) {
+      console.error(`Self Contained Incident expects the 'lights' key on\
+             its constructor attributes to be an Array or an Object`);
       return false;
     }
 
-    if (!attrs.hasOwnProperty("lights")) {
-      console.error(`Self Contained Incident expects the 'lights' key on \
-                its constructor attributes which is missing`);
+    if (
+      (attrs.cameras || {}).constructor !== Object.prototype.constructor &&
+      !(attrs.cameras instanceof Array)
+    ) {
+      console.error(`Self Contained Incident expects the 'cameras' key on\
+             its constructor attributes to be an Array or an Object`);
       return false;
     }
 
-    if (!attrs.hasOwnProperty("cameras")) {
-      console.error(`Self Contained Incident expects the 'cameras' key on \
-                its constructor attributes which is missing`);
+    if (
+      (attrs.renderers || {}).constructor !== Object.prototype.constructor &&
+      !(attrs.renderers instanceof Array)
+    ) {
+      console.error(`Self Contained Incident expects the 'renderers' key on\
+             its constructor attributes to be an Array or an Object`);
       return false;
     }
 
-    if (!attrs.hasOwnProperty("renderers")) {
-      console.error(`Self Contained Incident expects the 'renderers' key \
-                on its constructor attributes which is missing`);
+    if (
+      (attrs.renders || {}).constructor !== Object.prototype.constructor &&
+      !(attrs.renders instanceof Array)
+    ) {
+      console.error(`Self Contained Incident expects the 'renders' key on\
+             its constructor attributes to be an Array or an Object`);
       return false;
     }
     return true;
   }
-
-  // onProgress(fraction, milliseconds, contextId, forceReset = false) {
-  //   if (this.context.loading.length > 0) {
-  //     this.setBlock();
-  //   } else {
-  //     super.onProgress(fraction, milliseconds, contextId, forceReset);
-  //   }
-  // }
 
   lastWish() {
     this.ownContext.unmount();
