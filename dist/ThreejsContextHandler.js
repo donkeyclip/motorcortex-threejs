@@ -282,7 +282,7 @@ function () {
 
               case 37:
                 _camera = this.attrs.cameras || {};
-                _camera.id = _camera.id || uuidv1();
+                _camera.id = _camera.id || "camera";
 
                 if (!this.context.getElements("#" + _camera.id)[0]) {
                   _context.next = 41;
@@ -391,7 +391,7 @@ function () {
 
               case 81:
                 _scene = {};
-                _scene.id = (this.attrs.scenes || {}).id || uuidv1();
+                _scene.id = (this.attrs.scenes || {}).id || "scene";
                 this.context.elements.scenes.push({
                   id: _scene.id,
                   groups: _scene.groups,
@@ -636,7 +636,7 @@ function () {
 
               case 186:
                 _light = this.attrs.lights || {};
-                _light.id = _light.id || uuidv1();
+                _light.id = _light.id || "light";
                 _light.applyToSelector = _light.applyToSelector || "#" + this.context.elements.scenes[0].id;
 
                 if (!this.context.getElements("#" + _light.id)[0]) {
@@ -985,15 +985,7 @@ function () {
                   };
 
                   loadGeometry().then(function (g) {
-                    _this.hasLoaded = true; // const material = new THREE[model.material.type](
-                    //   ...model.material.parameters
-                    // );
-                    // model.object = new THREE.Mesh(g, material);
-                    // this.applySettingsToObjects(model.settings, model.object);
-                    // for (const scene of this.context.getElements(model.scenes)) {
-                    //   scene.object.add(model.object);
-                    // }
-
+                    _this.hasLoaded = true;
                     var that = _this;
                     that.context.loadingElements.splice(0, 1);
 
@@ -1005,8 +997,11 @@ function () {
 
 
                     for (var i in that.context.elements.entities) {
+                      var entity = that.context.elements.entities[i];
+
                       if (that.context.elements.entities[i].geometryFromModel) {
-                        that.context.elements.entities[i].object.geometry = g;
+                        entity.object.geometry = g;
+                        entity.object.updateMorphTargets();
                       }
                     } //rerender after the loading has been completed
 
@@ -1103,15 +1098,15 @@ function () {
                 geometry = entity.geometryFromModel ? this.context.getElements(entity.geometryFromModel)[0].geometry : _construct(THREE[entity.geometry.type], _toConsumableArray(entity.geometry.parameters));
 
                 if (entity.material.parameters.side) {
-                  entities.material.parameters.side = THREE[entities.material.parameters.side];
+                  entity.material.parameters.side = THREE[entity.material.parameters.side];
                 }
 
                 if (entity.material.parameters.vertexColors) {
-                  entities.material.parameters.vertexColors = THREE[entities.material.parameters.vertexColors];
+                  entity.material.parameters.vertexColors = THREE[entity.material.parameters.vertexColors];
                 }
 
                 material = _construct(THREE[entity.material.type], _toConsumableArray(entity.material.parameters));
-                entity.object = new THREE.Mesh(geometry, material);
+                entity.object = new THREE[entity.settings.entityType || "Mesh"](geometry, material);
                 this.context.elements.entities.push(entity);
                 this.applySettingsToObjects(entity.settings, entity.object);
 
@@ -1262,10 +1257,11 @@ function () {
                   if (this.attrs.controls.appplyTo) {
                     applyElement = this.attrs.controls.applyTo;
                   } else {
-                    applyElement = window.document.body;
+                    applyElement = this.props.host;
                   }
 
-                  this.context.elements.controls[0] = new THREE.TrackballControls(this.context.getElements(this.attrs.controls.cameraId)[0].object, applyElement);
+                  this.attrs.controls.selector = this.attrs.controls.selector || "#camera";
+                  this.context.elements.controls[0] = new THREE.TrackballControls(this.context.getElements(this.attrs.controls.selector)[0].object, applyElement);
                   this.context.elements.controls[0].enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
 
                   this.context.elements.controls[0].dampingFactor = 0.5;
@@ -1347,13 +1343,12 @@ function () {
   }, {
     key: "initializeRenderer",
     value: function initializeRenderer(renderer) {
-      renderer.settings = renderer.settings || {
-        shadowMap: {
-          enabled: true,
-          type: THREE.PCFSoftShadowMap
-        }
+      renderer.settings = renderer.settings || {};
+      renderer.settings.shadowMap = renderer.settings.shadowMap || {
+        enabled: true,
+        type: THREE.PCFSoftShadowMap
       };
-      renderer.settings.setClearColor = renderer.settings.setClearColor || [0xf5f5f5], renderer.settings.type = renderer.settings.type || "WebGLRenderer";
+      renderer.settings.setClearColor = renderer.settings.setClearColor || ["lightblue"], renderer.settings.type = renderer.settings.type || "WebGLRenderer";
       renderer.parameters = renderer.parameters || [{
         alpha: true,
         antialias: true
@@ -1374,7 +1369,22 @@ function () {
 
       if (light.settings.type === "SpotLight") {
         light.settings.position = light.settings.position || {
-          set: [0, 0, 20]
+          set: [0, 0, 50]
+        };
+        light.settings.shadow = {
+          camera: {
+            near: 0.5,
+            far: 300,
+            left: -50,
+            bottom: -50,
+            right: 50,
+            top: 50
+          },
+          bias: 0.0001,
+          mapSize: {
+            x: 1024 * 6,
+            y: 1024 * 6
+          }
         };
         light.settings.penumbra = light.settings.penumbra || 0.8;
         light.parameters = light.parameters || [0xffffff, 2];
@@ -1390,24 +1400,32 @@ function () {
           },
           bias: 0.0001,
           mapSize: {
-            x: 1024 * 8,
-            y: 1024 * 8
+            x: 1024 * 6,
+            y: 1024 * 6
           }
         };
         light.settings.position = light.settings.position || {
-          set: [50, 50, 40]
+          set: [0, 0, 50]
         };
         light.parameters = light.parameters || [0xffffff, 1];
       } else if (light.settings.type === "PointLight") {
         light.parameters = light.parameters || [0xffffff, 1, 100];
         light.settings.position = light.settings.position || {
-          set: [0, 100, 100]
+          set: [0, 0, 50]
         };
-        light.settings.target = light.settings.target || {
-          position: {
-            x: 0,
-            y: 0,
-            z: 0
+        light.settings.shadow = {
+          camera: {
+            near: 0.5,
+            far: 300,
+            left: -50,
+            bottom: -50,
+            right: 50,
+            top: 50
+          },
+          bias: 0.0001,
+          mapSize: {
+            x: 512,
+            y: 512
           }
         };
       }

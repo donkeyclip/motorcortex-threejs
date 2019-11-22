@@ -1,82 +1,40 @@
 const MC = require("@kissmybutton/motorcortex");
-// const Player = require("@kissmybutton/motorcortex-player/");
-const Player = require("../../teo-motorcortex-player/src/Player");
+const Player = require("@kissmybutton/motorcortex-player/");
 const threejsPluginDefinition = require("../src/main");
 const threejsPlugin = MC.loadPlugin(threejsPluginDefinition);
-const host = document.getElementById("clip");
+const horseModelPath =
+  "https://raw.githubusercontent.com/rollup/three-jsnext/master/examples/models/animated/horse.js";
 
-const containerParams = {
-  width: "100%",
-  height: "100%"
-};
+const generateTerrain = (g /*,m, e*/) => {
+  const pos = g.getAttribute("position");
+  const pa = pos.array;
 
-const cameras = {
-  id: "camera",
-  settings: {
-    position: {
-      x: 0,
-      y: -20,
-      z: 20
+  const hVerts = g.parameters.width;
+  const wVerts = g.parameters.height;
+  for (let j = 0; j < hVerts; j++) {
+    for (let i = 0; i < wVerts; i++) {
+      pa[3 * (j * wVerts + i) + 2] = Math.random() * 3;
     }
   }
+  pos.needsUpdate = true;
+  g.computeVertexNormals();
 };
 
 const box = {
   id: "box",
-  geometry: {
-    type: "BoxBufferGeometry",
-    parameters: [2, 2, 2]
-  },
-  material: {
-    type: "MeshLambertMaterial",
-    parameters: [{ color: 0xff0000 }]
-  },
-  settings: {
-    position: {
-      x: 0,
-      y: 0,
-      z: 5
-    }
-  }
+  geometry: { type: "BoxBufferGeometry", parameters: [2, 2, 2] },
+  material: { type: "MeshLambertMaterial", parameters: [{ color: 0xff0000 }] },
+  settings: { position: { x: 0, y: 0, z: 5 } }
 };
 
 const plane = {
-  geometry: {
-    type: "PlaneBufferGeometry",
-    parameters: [1000, 1000, 100, 100],
-    dynamic: true
-  },
-  material: {
-    type: "MeshPhongMaterial",
-    parameters: [{ color: 0xffb851 }]
-  },
-  settings: {
-    receiveShadow: true,
-    castShadow: true
-  },
-  callback: (g, m, e) => {
-    const pos = g.getAttribute("position");
-    const pa = pos.array;
-
-    const hVerts = g.parameters.width;
-    const wVerts = g.parameters.height;
-    for (let j = 0; j < hVerts; j++) {
-      for (let i = 0; i < wVerts; i++) {
-        //+0 is x, +1 is y.
-        pa[3 * (j * wVerts + i) + 2] = Math.random() * 3;
-      }
-    }
-    pos.needsUpdate = true;
-    g.computeVertexNormals();
-  }
+  geometry: { type: "PlaneBufferGeometry", parameters: [1000, 1000, 100, 100] },
+  material: { type: "MeshPhongMaterial", parameters: [{ color: 0xffb851 }] },
+  settings: { receiveShadow: true, castShadow: true },
+  callback: generateTerrain
 };
 
-const horseModel = {
-  id: "horse",
-  loader: "#JSONLoader",
-  file:
-    "https://raw.githubusercontent.com/rollup/three-jsnext/master/examples/models/animated/horse.js"
-};
+const horseModel = { id: "horse", loader: "#JSONLoader", file: horseModelPath };
 
 const horseTemplate = {
   groups: "horses",
@@ -84,52 +42,35 @@ const horseTemplate = {
   material: {
     type: "MeshLambertMaterial",
     parameters: [
-      {
-        vertexColors: "FaceColors",
-        morphTargets: true
-      }
+      { color: "0xFFFFFF", vertexColors: "FaceColors", morphTargets: true }
     ]
   },
   settings: {
-    scale: {
-      set: [0.02, 0.02, 0.02]
-    },
-    rotation: {
-      x: -Math.PI / 2,
-      y: Math.PI,
-      z: Math.PI
-    }
+    scale: { set: [0.02, 0.02, 0.02] },
+    rotation: { x: -Math.PI / 2, y: Math.PI, z: Math.PI },
+    entityType: "Mesh"
   }
 };
+
 const horse_1 = JSON.parse(JSON.stringify({ ...horseTemplate, id: "horse_1" }));
 const horse_2 = JSON.parse(JSON.stringify({ ...horseTemplate, id: "horse_2" }));
 
-horse_1.settings.position = {
-  x: -10,
-  y: 0,
-  z: 3
-};
-horse_2.settings.position = {
-  x: 5,
-  y: 2,
-  z: 3
-};
-const controls = {
-  enable: true,
-  cameraId: "#camera"
-};
+horse_1.settings.position = { x: -10, y: 0, z: 3 };
+horse_2.settings.position = { x: 5, y: 2, z: 3 };
+
 const clip = new threejsPlugin.Clip(
   {
-    // renderers: { settings: { setClearColor: [0xf5f5f5] } },
+    renderers: { settings: { setClearColor: [0xf5f5f5] } },
     scenes: { fog: [0xf5f5f5, 0.1, 500] },
-    cameras,
+    lights: { settings: { position: { set: [50, 50, 40] } } },
+    cameras: { settings: { position: { x: 0, y: -20, z: 20 } } },
     entities: [box, plane, horse_1, horse_2],
     models: [horseModel],
-    controls
+    controls: { enable: true }
   },
   {
-    host,
-    containerParams
+    host: document.getElementById("clip"),
+    containerParams: { width: "100%", height: "100%" }
   }
 );
 
@@ -137,7 +78,11 @@ const boxAnimation = new threejsPlugin.Object3D(
   {
     animatedAttrs: {
       position: {
-        x: 20
+        x: 20,
+        y: 20
+      },
+      rotation: {
+        x: Math.PI * 2
       }
     }
   },
@@ -169,12 +114,12 @@ const horseMAE = new threejsPlugin.MAE(
       animationName: "gallop"
     },
     animatedAttrs: {
-      time: 1500
+      time: 4000
     }
   },
   {
-    selector: "#horse_1",
-    duration: 1500
+    selector: ".horses",
+    duration: 4000
   }
 );
 
