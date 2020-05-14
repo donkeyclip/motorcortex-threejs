@@ -1,7 +1,7 @@
-const MC = require("@kissmybutton/motorcortex");
-
+import MC from "@kissmybutton/motorcortex";
 const Incident = MC.API.MonoIncident;
-class MAE extends Incident {
+
+export default class MAE extends Incident {
   onInitialise() {
     this.loaded = false;
   }
@@ -14,6 +14,7 @@ class MAE extends Incident {
     selector = selector.substring(1, selector.length);
 
     const {
+      animationIndex,
       animationName,
       animationFrames,
       singleLoopDuration
@@ -27,24 +28,37 @@ class MAE extends Incident {
     }
     this.element.animations = this.element.animations || {};
 
-    //push the mixer in the onprogress
-    this.context.pushMixer({
-      id: `${selector}_${animationName}`,
-      object: new THREE.AnimationMixer(this.element.object),
-      clip: THREE.AnimationClip.CreateFromMorphTargetSequence(
-        animationName,
-        this.element.object.geometry.morphTargets,
-        animationFrames
-      )
-    });
-
-    const length = this.context.elements.mixers.length - 1;
-    const mixer = this.context.elements.mixers[length].object;
-    const clip = this.context.elements.mixers[length].clip;
-    mixer
-      .clipAction(clip)
-      .setDuration(singleLoopDuration / 1000)
-      .play();
+    if (animationIndex) {
+      //push the mixer in the onprogress
+      this.context.pushMixer({
+        id: `${selector}_${animationName}`,
+        object: new THREE.AnimationMixer(this.element.object)
+      });
+      const length = this.context.elements.mixers.length - 1;
+      const mixer = this.context.elements.mixers[length].object;
+      mixer
+        .clipAction(this.element.object.animations[animationIndex])
+        .setDuration(singleLoopDuration / 1000)
+        .play();
+    } else {
+      //push the mixer in the onprogress
+      this.context.pushMixer({
+        id: `${selector}_${animationName}`,
+        object: new THREE.AnimationMixer(this.element.object),
+        clip: THREE.AnimationClip.CreateFromMorphTargetSequence(
+          animationName,
+          this.element.object.geometry.morphTargets,
+          animationFrames
+        )
+      });
+      const length = this.context.elements.mixers.length - 1;
+      const mixer = this.context.elements.mixers[length].object;
+      const clip = this.context.elements.mixers[length].clip;
+      mixer
+        .clipAction(clip)
+        .setDuration(singleLoopDuration / 1000)
+        .play();
+    }
 
     this.loaded = true;
   }
@@ -92,4 +106,3 @@ class MAE extends Incident {
     }
   }
 }
-module.exports = MAE;

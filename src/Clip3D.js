@@ -1,14 +1,7 @@
-const MC = require("@kissmybutton/motorcortex");
-global.THREE = require("three");
-require("three/examples/js/renderers/CSS3DRenderer");
-// require("three/examples/js/controls/OrbitControls");
-require("three/examples/js/controls/TrackballControls");
-
-// const Helper = MC.Helper;
+import MC from "@kissmybutton/motorcortex";
+import ThreejsContextHandler from "./ThreejsContextHandler";
 const ExtendableClip = MC.API.ExtendableClip;
-// const conf = MC.conf;
-const ThreejsContextHandler = require("./ThreejsContextHandler");
-class Clip3D extends ExtendableClip {
+export default class Clip3D extends ExtendableClip {
   /**
    * @param {object} props - an object that should contain all of the
    * following keys:
@@ -195,4 +188,3 @@ class Clip3D extends ExtendableClip {
     this.ownContext.unmount();
   }
 }
-module.exports = Clip3D;

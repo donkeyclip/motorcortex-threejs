@@ -1,9 +1,9 @@
 const MC = require("@kissmybutton/motorcortex");
 const Player = require("@kissmybutton/motorcortex-player/");
-const threejsPluginDefinition = require("../src/main");
+// const threejsPluginDefinition = require("../dist/motorcortex-three.umd");
+const threejsPluginDefinition = require("../src/index");
 const threejsPlugin = MC.loadPlugin(threejsPluginDefinition);
-const horseModelPath =
-  "https://raw.githubusercontent.com/rollup/three-jsnext/master/examples/models/animated/horse.js";
+// const dancerModelPath = "./models/animated-animals/dancer.fbx";
 
 const generateTerrain = (g /*,m, e*/) => {
   const pos = g.getAttribute("position");
@@ -29,47 +29,86 @@ const box = {
 
 const plane = {
   geometry: { type: "PlaneBufferGeometry", parameters: [1000, 1000, 100, 100] },
-  material: { type: "MeshPhongMaterial", parameters: [{ color: 0xffb851 }] },
+  material: {
+    type: "MeshPhongMaterial",
+    parameters: [
+      {
+        color: 0xffb851
+      }
+    ]
+  },
   settings: { receiveShadow: true, castShadow: true },
   callback: generateTerrain
 };
 
-const horseModel = { id: "horse", loader: "#JSONLoader", file: horseModelPath };
+// const dancerModel = {
+//   id: "dancer",
+//   loader: "#FBXLoader",
+//   file: dancerModelPath
+// };
 
-const horseTemplate = {
-  groups: "horses",
-  geometryFromModel: "#horse",
-  material: {
-    type: "MeshLambertMaterial",
-    parameters: [
-      { color: "0xFFFFFF", vertexColors: "FaceColors", morphTargets: true }
-    ]
-  },
-  settings: {
-    scale: { set: [0.02, 0.02, 0.02] },
-    rotation: { x: -Math.PI / 2, y: Math.PI, z: Math.PI },
-    entityType: "Mesh"
-  }
-};
+// const dancerTemplate = {
+//   class: "busts",
+//   geometryFromModel: "#dancer",
+//   material: {
+//     type: "MeshLambertMaterial",
+//     parameters: [
+//       { color: "0xFFFFFF", vertexColors: "FaceColors", morphTargets: true }
+//     ]
+//   },
+//   settings: {
+//     scale: { set: [0.02, 0.02, 0.02] },
+//     rotation: { x: -Math.PI / 2, y: Math.PI, z: Math.PI },
+//     entityType: "Mesh"
+//   }
+// };
+// const dancer_1 = JSON.parse(
+//   JSON.stringify({ ...dancerTemplate, id: "dancer_1" })
+// );
+// dancer_1.settings.position = { x: 10, y: 2, z: 3 };
 
-const horse_1 = JSON.parse(JSON.stringify({ ...horseTemplate, id: "horse_1" }));
-const horse_2 = JSON.parse(JSON.stringify({ ...horseTemplate, id: "horse_2" }));
+const entities = [box /*plane , dancer_1 */];
 
-horse_1.settings.position = { x: -10, y: 0, z: 3 };
-horse_2.settings.position = { x: 5, y: 2, z: 3 };
+// const clip = new MC.Clip({
+//   css: "#container{width:100%;height:100%;}",
+//   html: "<div id='container'></div>",
+//   host: document.getElementById("clip"),
+//   containerParams: { width: "100%", height: "100%" }
+// });
 
 const clip = new threejsPlugin.Clip(
   {
     renderers: { settings: { setClearColor: [0xf5f5f5] } },
     scenes: { fog: [0xf5f5f5, 0.1, 500] },
-    lights: { settings: { position: { set: [50, 50, 40] } } },
+    lights: [
+      {
+        parameters: [0xffffff, 0.6],
+        settings: {
+          position: { set: [-40, 20, 80] },
+          shadow: {
+            radius: 1.2,
+            camera: {
+              near: 0.5,
+              far: 500,
+              left: -100,
+              bottom: -100,
+              right: 100,
+              top: 100
+            },
+            bias: 0.01,
+            mapSize: { x: 1024 * 6, y: 1024 * 6 }
+          }
+        }
+      }
+    ],
     cameras: { settings: { position: { x: 0, y: -20, z: 20 } } },
-    entities: [box, plane, horse_1, horse_2],
-    models: [horseModel],
+    entities,
+    // models: [dancerModel],
     controls: { enable: true }
   },
   {
     host: document.getElementById("clip"),
+    // selector: "#container",
     containerParams: { width: "100%", height: "100%" }
   }
 );
@@ -93,38 +132,71 @@ const boxAnimation = new threejsPlugin.Object3D(
   }
 );
 
-const cameraAnimation = new threejsPlugin.Object3D(
-  {
-    animatedAttrs: {
-      targetEntity: "#box"
-    }
-  },
-  {
-    id: "camera_animation",
-    selector: "#camera",
-    duration: 4000
-  }
-);
+// const dancerAnimation = new threejsPlugin.Object3D(
+//   {
+//     animatedAttrs: {
+//       rotation: {
+//         y: Math.PI * 2
+//       }
+//     }
+//   },
+//   {
+//     id: "dancer_animation",
+//     selector: "#dancer_1",
+//     duration: 4000
+//   }
+// );
+// const cameraAnimation = new threejsPlugin.Object3D(
+//   {
+//     animatedAttrs: {
+//       targetEntity: "#dancer_1"
+//     }
+//   },
+//   {
+//     id: "camera_animation",
+//     selector: "#camera",
+//     duration: 4000
+//   }
+// );
 
-const horseMAE = new threejsPlugin.MAE(
-  {
-    attrs: {
-      singleLoopDuration: 1000,
-      animationFrames: 30,
-      animationName: "gallop"
-    },
-    animatedAttrs: {
-      time: 4000
-    }
-  },
-  {
-    selector: ".horses",
-    duration: 4000
-  }
-);
+// const horseMAE = new threejsPlugin.MAE(
+//   {
+//     attrs: {
+//       singleLoopDuration: 1000,
+//       animationFrames: 30,
+//       animationName: "gallop"
+//     },
+//     animatedAttrs: {
+//       time: 4000
+//     }
+//   },
+//   {
+//     selector: ".horses",
+//     duration: 4000
+//   }
+// );
+
+// const dancerMAE = new threejsPlugin.MAE(
+//   {
+//     attrs: {
+//       singleLoopDuration: 10000,
+//       animationFrames: 30,
+//       animationIndex: "0"
+//     },
+//     animatedAttrs: {
+//       time: 6000
+//     }
+//   },
+//   {
+//     selector: ".busts",
+//     duration: 10000
+//   }
+// );
 
 clip.addIncident(boxAnimation, 0);
-clip.addIncident(cameraAnimation, 0);
-clip.addIncident(horseMAE, 0);
+// clip.addIncident(clip1, 0);
+// clip.addIncident(cameraAnimation, 0);
+// clip.addIncident(horseMAE, 0);
+// clip.addIncident(dancerMAE, 0);
 window.clip = clip;
-new Player({ clip, showIndicator: true });
+new Player({ clip });

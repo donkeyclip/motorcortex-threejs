@@ -1,12 +1,15 @@
-const MC = require("@kissmybutton/motorcortex");
+import MC from "@kissmybutton/motorcortex";
 
 // const helper = new MC.Helper();
 const Incident = MC.API.MonoIncident;
 
-class Object3D extends Incident {
-  onGetContext() {}
+export default class Object3D extends Incident {
+  onGetContext() {
+    console.log("got context");
+  }
 
   getScratchValue() {
+    console.log("asdfsadf", this.element);
     if (!this.element.settings && !this.element.object) {
       return 0;
     }
@@ -86,4 +89,3 @@ class Object3D extends Incident {
     // }
   }
 }
-module.exports = Object3D;

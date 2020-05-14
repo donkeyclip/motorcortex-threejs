@@ -1,7 +1,19 @@
 const promise = Promise;
 const uuidv1 = require("uuid/v4");
+import * as THREE from "three";
+import { TrackballControls } from "three/examples/jsm/controls/TrackballControls.js";
+// import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+// import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { CSS3DObject } from "three/examples/jsm/renderers/CSS3DRenderer.js";
+import { ColladaLoader } from "three/examples/jsm/loaders/ColladaLoader.js";
+import { JSONLoader } from "three/examples/jsm/loaders/JSONLoader.js";
+import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js";
+import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
+import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader.js";
+import { DDSLoader } from "three/examples/jsm/loaders/DDSLoader.js";
+import { ObjectLoader } from "three/examples/jsm/loaders/ObjectLoader.js";
 
-class ThreejsContextHandler {
+export default class ThreejsContextHandler {
   constructor(attrs, props, o) {
     this.props = props;
     this.attrs = attrs;
@@ -59,7 +71,44 @@ class ThreejsContextHandler {
         {
           id: "JSONLoader",
           groups: "loaders",
-          type: "JSONLoader"
+          type: "JSONLoader",
+          object: JSONLoader
+        },
+        {
+          id: "ColladaLoader",
+          groups: "loaders",
+          type: "ColladaLoader",
+          object: ColladaLoader
+        },
+        {
+          id: "FBXLoader",
+          groups: "loaders",
+          type: "FBXLoader",
+          object: FBXLoader
+        },
+        {
+          id: "OBJLoader",
+          groups: "loaders",
+          type: "OBJLoader",
+          object: OBJLoader
+        },
+        {
+          id: "MTLLoader",
+          groups: "loaders",
+          type: "MTLLoader",
+          object: MTLLoader
+        },
+        {
+          id: "DDSLoader",
+          groups: "loaders",
+          type: "DDSLoader",
+          object: DDSLoader
+        },
+        {
+          id: "ObjectLoader",
+          groups: "loaders",
+          type: "ObjectLoader",
+          object: ObjectLoader
         }
       ],
       elements: {
@@ -285,6 +334,8 @@ class ThreejsContextHandler {
 
         for (const scene of this.context.getElements(light.applyToSelector)) {
           scene.object.add(lightObj);
+          const helper = new THREE.CameraHelper(lightObj.shadow.camera);
+          scene.object.add(helper);
         }
       }
     } else {
@@ -308,7 +359,6 @@ class ThreejsContextHandler {
       this.applySettingsToObjects(light.settings, lightObj);
 
       for (const scene of this.context.getElements(light.applyToSelector)) {
-        lightObj.castShadow = true;
         scene.object.add(lightObj);
         const helper = new THREE.CameraHelper(lightObj.shadow.camera);
         scene.object.add(helper);
@@ -329,7 +379,7 @@ class ThreejsContextHandler {
         css3d.selector
       );
       for (const element of elements) {
-        css3d.object = new THREE.CSS3DObject(element);
+        css3d.object = new CSS3DObject(element);
         this.context.elements.css3d_objects.push(css3d);
 
         this.applySettingsToObjects(css3d.settings, css3d.object);
@@ -372,33 +422,90 @@ class ThreejsContextHandler {
 
       const loadGeometry = () => {
         return new promise(resolve => {
-          loader.parameters[0] = model.file;
-          loader.parameters[1] = resolve;
+          if (model.loader === "#OBJMTLLoader") {
+            const manager = new THREE.LoadingManager();
+            // manager.addHandler(/\.dds$/i, new THREE.DDSLoader());
+            new MTLLoader(manager).load(model.file[0], function(materials) {
+              materials.preload();
+              new OBJLoader(manager)
+                .setMaterials(materials)
+                .load(model.file[1], resolve);
+            });
+          } else {
+            loader.parameters[0] = model.file;
+            loader.parameters[1] = resolve;
 
-          loader.object.load(...loader.parameters);
+            loader.object.load(...loader.parameters);
+          }
         });
       };
 
       loadGeometry().then(g => {
         this.hasLoaded = true;
-
         const that = this;
         that.context.loadingElements.splice(0, 1);
         if (that.context.loadingElements.length === 0) {
           that.context.loading = false;
           that.o._thisClip.contextLoaded();
         }
-        // update all objects that use this geometry
+
         for (const i in that.context.elements.entities) {
-          const entity = that.context.elements.entities[i];
-          if (that.context.elements.entities[i].geometryFromModel) {
-            entity.object.geometry = g;
-            entity.object.updateMorphTargets();
+          if (
+            that.context.elements.entities[i].geometryFromModel ===
+            "#" + model.id
+          ) {
+            const mod = that.context.getElements(
+              that.context.elements.entities[i].geometryFromModel
+            )[0];
+            if (mod.loader === "#JSONLoader") {
+              const entity = that.context.elements.entities[i];
+              entity.object.geometry = g;
+              entity.material = undefined;
+              that.applySettingsToObjects(entity.settings, entity.object);
+              entity.object.updateMorphTargets();
+            } else if (
+              mod.loader === "#FBXLoader" ||
+              mod.loader === "#OBJMTLLoader"
+            ) {
+              const entity = that.context.elements.entities[i];
+              if (that.context.elements.entities[i].geometryFromModel) {
+                if (entity.clone) {
+                  entity.object = g.clone();
+                } else {
+                  entity.object = g;
+                }
+
+                if (entity.texturePath) {
+                  const myloader = new THREE.TextureLoader();
+                  const myTexture = myloader.load(entity.texturePath);
+                  myTexture.anisotropy = 16;
+                  const customDepthMaterial = new THREE.MeshDepthMaterial({
+                    depthPacking: THREE.RGBADepthPacking,
+
+                    alphaMap: myTexture, // or, alphaMap: myAlphaMap
+
+                    alphaTest: 0.5
+                  });
+
+                  entity.object.customDepthMaterial = customDepthMaterial;
+                }
+                that.applySettingsToObjects(entity.settings, entity.object);
+                entity.object.traverse(function(child) {
+                  if (child.isMesh) {
+                    child.castShadow = true;
+                    child.receiveShadow = true;
+                  }
+                });
+
+                that.context.elements.scenes[0].object.add(entity.object);
+              }
+            }
           }
         }
 
+        // this.elements.scenes[0].object.add(g);
         //rerender after the loading has been completed
-        this.o._thisClip.render();
+        that.o._thisClip.render();
       });
 
       const that = this;
@@ -490,7 +597,7 @@ class ThreejsContextHandler {
         applyElement = this.props.host;
       }
       this.attrs.controls.selector = this.attrs.controls.selector || "#camera";
-      this.context.elements.controls[0] = new THREE.TrackballControls(
+      this.context.elements.controls[0] = new TrackballControls(
         this.context.getElements(this.attrs.controls.selector)[0].object,
         applyElement
       );
@@ -591,11 +698,11 @@ class ThreejsContextHandler {
     light.settings = light.settings || {};
     light.settings.type = light.settings.type || "DirectionalLight";
 
-    light.settings.castShadow = light.settings.hasOwnProperty("castShadow")
-      ? light.settings.castShadow
-      : true;
-
     if (light.settings.type === "SpotLight") {
+      light.settings.castShadow = light.settings.hasOwnProperty("castShadow")
+        ? light.settings.castShadow
+        : true;
+
       light.settings.position = light.settings.position || {
         set: [0, 0, 50]
       };
@@ -614,10 +721,13 @@ class ThreejsContextHandler {
       light.settings.penumbra = light.settings.penumbra || 0.8;
       light.parameters = light.parameters || [0xffffff, 2];
     } else if (light.settings.type === "DirectionalLight") {
-      light.settings.shadow = {
+      light.settings.castShadow = light.settings.hasOwnProperty("castShadow")
+        ? light.settings.castShadow
+        : true;
+      light.settings.shadow = light.settings.shadow || {
         camera: {
           near: 0.5,
-          far: 300,
+          far: 100,
           left: -50,
           bottom: -50,
           right: 50,
@@ -633,6 +743,10 @@ class ThreejsContextHandler {
 
       light.parameters = light.parameters || [0xffffff, 1];
     } else if (light.settings.type === "PointLight") {
+      light.settings.castShadow = light.settings.hasOwnProperty("castShadow")
+        ? light.settings.castShadow
+        : true;
+
       light.parameters = light.parameters || [0xffffff, 1, 100];
       light.settings.position = light.settings.position || {
         set: [0, 0, 50]
@@ -649,6 +763,13 @@ class ThreejsContextHandler {
         },
         bias: 0.0001,
         mapSize: { x: 512, y: 512 }
+      };
+    } else if (light.settings.type === "AmbientLight") {
+      light.parameters = light.parameters || [0x404040];
+    } else if (light.settings.type === "HemisphereLight") {
+      light.parameters = light.parameters || [0xffffff, 0xffffff, 0.6];
+      light.settings.position = light.settings.position || {
+        set: [0, 0, 50]
       };
     }
   }
@@ -708,5 +829,3 @@ class ThreejsContextHandler {
     }
   }
 }
-
-module.exports = ThreejsContextHandler;
