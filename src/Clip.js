@@ -5,7 +5,6 @@ import MC from "@kissmybutton/motorcortex";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
-// import { TrackballControls } from "three/examples/jsm/controls/TrackballControls.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 const promise = Promise;
 
@@ -172,53 +171,6 @@ export default class Clip3D extends MC.API.DOMClip {
       }
     });
 
-    // /*
-    // * CSS3DOBJECTS
-    // */
-    // !(this.attributes.css3d_objects instanceof Array) &&
-    //   (this.attributes.css3d_objects = [this.attributes.css3d_objects]);
-
-    // this.attributes.css3d_objects.map(css3d => {
-    //   this.initializeMesh(css3d);
-    //   const elements = this.context.rootElement.querySelectorAll(
-    //     css3d.selector
-    //   );
-
-    //   this.setCustomEntity(
-    //     css3d.id,
-    //     {
-    //       settings: css3d.settings,
-    //       object: new CSS3DObject(element);
-    //     },
-    //     ["css3d_objects", ...renderer.class]
-    //   );
-    //   const lightObj = this.getElements(`#${css3d.id}`);
-    //   this.applySettingsToObjects(css3d.settings, lightObj);
-    //   lightObj.updateProjectionMatrix();
-    // });
-
-    // for (const css3d of this.attributes.css3d_objects || []) {
-    //   css3d.scenes = css3d.scenes || "#" + this.context.elements.scenes[0].id;
-    //   css3d.id = css3d.id || uuidv1();
-    //   if (this.context.getElements("#" + css3d.id)[0]) {
-    //     throw `This id ${css3d.id} is already in use.`;
-    //   }
-    //   this.initializeMesh(css3d);
-    //   const elements = this.context.rootElement.querySelectorAll(
-    //     css3d.selector
-    //   );
-    //   for (const element of elements) {
-    //     css3d.object = new CSS3DObject(element);
-    //     this.context.elements.css3d_objects.push(css3d);
-
-    //     this.applySettingsToObjects(css3d.settings, css3d.object);
-
-    //     for (const scene of this.context.getElements(css3d.scenes)) {
-    //       scene.object.add(css3d.object);
-    //     }
-    //   }
-    // }
-
     /*
     * entities
     */
@@ -253,10 +205,6 @@ export default class Clip3D extends MC.API.DOMClip {
             this.context.loadedModels.length ===
             this.context.loadingModels.length
           ) {
-            console.log(
-              this.context.loadedModels.length,
-              this.context.loadingModels.length
-            );
             this.context.loading = false;
             this.contextLoaded();
           }

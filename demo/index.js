@@ -210,7 +210,7 @@ const dancerMAE = new threejsPlugin.MAE(
     attrs: {
       singleLoopDuration: 10000,
       animationFrames: 30,
-      animationIndex: "0"
+      animationName: "mixamo.com"
     },
     animatedAttrs: {
       time: 6000
@@ -221,12 +221,28 @@ const dancerMAE = new threejsPlugin.MAE(
     duration: 10000
   }
 );
-
+const soldierMAE = new threejsPlugin.MAE(
+  {
+    attrs: {
+      singleLoopDuration: 1000,
+      animationFrames: 30,
+      animationName: "Walk"
+    },
+    animatedAttrs: {
+      time: 6000
+    }
+  },
+  {
+    selector: "!#soldier_1",
+    duration: 10000
+  }
+);
 clip.addIncident(boxAnimation, 0);
 // clip.addIncident(clip1, 0);
 // clip.addIncident(cameraAnimation, 0);
 // clip.addIncident(horseMAE, 0);
 clip.addIncident(dancerMAE, 0);
+clip.addIncident(soldierMAE, 0);
 // window.clip = clip;
 new Player({ clip });
 // clip.play();
