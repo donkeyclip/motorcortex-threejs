@@ -1,91 +1,59 @@
 import MC from "@kissmybutton/motorcortex";
 
-// const helper = new MC.Helper();
-const Incident = MC.API.MonoIncident;
-
-export default class Object3D extends Incident {
-  onGetContext() {
-    console.log("got context");
-  }
-
+export default class Object3D extends MC.API.MonoIncident {
   getScratchValue() {
-    console.log("asdfsadf", this.element);
-    if (!this.element.settings && !this.element.object) {
+    const element = this.element.entity.object;
+    if (!this.element.settings && !element) {
       return 0;
     }
     this.element.settings = this.element.settings || {};
     if (this.attributeKey === "rotation") {
       return {
-        x:
-          (this.element.settings.rotation || {}).x ||
-          this.element.object.rotation.x ||
-          0,
-        y:
-          (this.element.settings.rotation || {}).y ||
-          this.element.object.rotation.y ||
-          0,
-        z:
-          (this.element.settings.rotation || {}).z ||
-          this.element.object.rotation.z ||
-          0,
+        x: (this.element.settings.rotation || {}).x || element.rotation.x || 0,
+        y: (this.element.settings.rotation || {}).y || element.rotation.y || 0,
+        z: (this.element.settings.rotation || {}).z || element.rotation.z || 0,
         lookAt: this.element.settings.lookAt
       };
     } else {
       return (
         this.element.settings[this.attributeKey] ||
-        this.element.object[this.attributeKey] ||
+        element[this.attributeKey] ||
         0
       );
     }
   }
+  applyValue(element, prop, fraction) {
+    return (element[this.attributeKey][prop] =
+      (this.targetValue[prop] - this.initialValue[prop]) * fraction +
+      this.initialValue[prop]);
+  }
 
   onProgress(fraction /*, millisecond*/) {
+    const element = this.element.entity.object;
+
     typeof this.targetValue.lookAt !== "undefined"
-      ? this.element.object.lookAt(
-          new THREE.Vector3(...this.targetValue.lookAt)
-        )
+      ? element.lookAt(new THREE.Vector3(...this.targetValue.lookAt))
       : null;
+
     typeof this.targetValue.x !== "undefined"
-      ? (this.element.object[this.attributeKey].x =
-          (this.targetValue.x - this.initialValue.x) * fraction +
-          this.initialValue.x)
+      ? this.applyValue(element, "x", fraction)
       : null;
+
     typeof this.targetValue.y !== "undefined"
-      ? (this.element.object[this.attributeKey].y =
-          (this.targetValue.y - this.initialValue.y) * fraction +
-          this.initialValue.y)
+      ? this.applyValue(element, "y", fraction)
       : null;
+
     typeof this.targetValue.z !== "undefined"
-      ? (this.element.object[this.attributeKey].z =
-          (this.targetValue.z - this.initialValue.z) * fraction +
-          this.initialValue.z)
+      ? this.applyValue(element, "z", fraction)
       : null;
 
     if (this.attributeKey === "targetEntity") {
-      this.element.object.lookAt(
+      element.lookAt(
         ...Object.values(
           this.context.getElements(this.targetValue)[0].object.position
         )
       );
-      this.element.object.up.set(0, 0, 1);
+      element.up.set(0, 0, 1);
     }
-    for (const i in this.context.elements.renders) {
-      this.context
-        .getElements(this.context.elements.renders[i].renderer)[0]
-        .object.render(
-          this.context.getElements(this.context.elements.renders[i].scene)[0]
-            .object,
-          this.context.getElements(this.context.elements.renders[i].camera)[0]
-            .object
-        );
-    }
-
-    // if (
-    //   (((this.context.elements.controls[0] || {}).domElement || {}).style || {})
-    //     .pointerEvents !== "none" &&
-    //   this.context.elements.controls.length !== 0
-    // ) {
-    //   this.context.elements.controls[0].update();
-    // }
   }
 }

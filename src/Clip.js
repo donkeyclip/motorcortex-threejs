@@ -1,37 +1,41 @@
 import uuidv1 from "uuid/v4";
 import * as THREE from "three";
+import { SkeletonUtils } from "three/examples/jsm/utils/SkeletonUtils.js";
 import MC from "@kissmybutton/motorcortex";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
-import { TrackballControls } from "three/examples/jsm/controls/TrackballControls.js";
+// import { TrackballControls } from "three/examples/jsm/controls/TrackballControls.js";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 const promise = Promise;
 
 export default class Clip3D extends MC.API.DOMClip {
   onAfterRender() {
-    this.attributes = JSON.parse(JSON.stringify(this.attrs));
+    this.attributes = {
+      ...JSON.parse(JSON.stringify(this.attrs)),
+      entities: this.attrs.entities,
+      controls: this.attrs.controls
+    };
     this.append = false;
-    this.loaders = [
-      {
-        type: "FBXLoader",
-        callback: (url, _f) => {
-          const loader = new FBXLoader();
-          loader.load(url, _f);
-        }
+    this.loaders = {
+      FBXLoader: (url, _f) => {
+        const loader = new FBXLoader();
+        loader.load(url, _f);
       },
-      {
-        type: "GLTFLoader",
-        callback: (url, _f) => {
-          const loader = new GLTFLoader();
-          const dracoLoader = new DRACOLoader();
-          loader.setDRACOLoader(dracoLoader);
-          loader.load(url, _f);
-        }
+      GLTFLoader: (url, _f) => {
+        const loader = new GLTFLoader();
+        const dracoLoader = new DRACOLoader();
+        loader.setDRACOLoader(dracoLoader);
+        loader.load(url, gltf => {
+          gltf.scene.animations = gltf.animations;
+          return _f(gltf.scene);
+        });
       }
-    ];
+    };
 
     this.context.loading = false;
-    this.context.loadingElements = [];
+    this.context.loadedModels = [];
+    this.context.loadingModels = [];
     this.init();
     this.handleWindoResize();
   }
@@ -42,6 +46,40 @@ export default class Clip3D extends MC.API.DOMClip {
       : this.context.getElements(`!${selector}`);
   }
 
+  async loadTheModel(entity) {
+    //check if model is previously loaded
+    const theModel = this.getElements(`#${entity.model.id}`);
+    if (theModel) {
+      if (theModel.entity.loader === "GLTFLoader") {
+        return SkeletonUtils.clone(theModel.entity.object.scene);
+      } else {
+        return theModel.entity.object.clone();
+      }
+    }
+
+    entity.model.id = entity.model.id || uuidv1();
+    entity.model.class = entity.model.class || [];
+    const loader = this.loaders[entity.model.loader];
+    const loadModel = () => {
+      return new promise(resolve => {
+        loader(entity.model.file, obj => resolve(obj));
+      });
+    };
+
+    this.context.loadingModels.push(1);
+    return loadModel(entity)
+      .then(obj => {
+        this.setCustomEntity(
+          entity.model.id,
+          {
+            object: obj
+          },
+          ["models"]
+        );
+        return obj;
+      })
+      .catch(e => console.error(e));
+  }
   async init() {
     /*
     * SCENES
@@ -129,6 +167,8 @@ export default class Clip3D extends MC.API.DOMClip {
       this.applySettingsToObjects(light.settings, lightObj);
       for (const scene of this.getElements(light.selector)) {
         scene.entity.object.add(lightObj);
+        // const helper = new THREE.DirectionalLightHelper(lightObj, 5);
+        // scene.entity.object.add(helper);
       }
     });
 
@@ -180,150 +220,53 @@ export default class Clip3D extends MC.API.DOMClip {
     // }
 
     /*
-    * LOADERS
-    */
-    // for (const loader of this.context.loaders) {
-    //   loader.id = loader.id;
-
-    //   this.initializeLoader(loader);
-    //   if (!THREE[loader.type]) {
-    //     try {
-    //       require("three/examples/js/loaders/" + loader.type);
-    //     } catch (e) {
-    //       throw e;
-    //     }
-    //   }
-
-    //   loader.object = new THREE[loader.type]();
-    //   this.context.elements.loaders.push(loader);
-    // }
-    // /*
-    // * MODELS
-    // */
-    // for (const model of this.attributes.models) {
-    //   // model.scenes = model.scenes || "#" + this.context.elements.scenes[0].id;
-    //   model.id = model.id || uuidv1();
-    //   if (this.context.getElements("#" + model.id)[0]) {
-    //     throw `This id ${model.id} is already in use.`;
-    //   }
-    //   // this.initializeModel(model);
-    //   const loader = this.context.getElements(model.loader)[0];
-
-    //   const loadGeometry = () => {
-    //     return new promise(resolve => {
-    //       if (model.loader === "#OBJMTLLoader") {
-    //         const manager = new THREE.LoadingManager();
-    //         // manager.addHandler(/\.dds$/i, new THREE.DDSLoader());
-    //         new MTLLoader(manager).load(model.file[0], function(materials) {
-    //           materials.preload();
-    //           new OBJLoader(manager)
-    //             .setMaterials(materials)
-    //             .load(model.file[1], resolve);
-    //         });
-    //       } else {
-    //         loader.parameters[0] = model.file;
-    //         loader.parameters[1] = resolve;
-
-    //         loader.object.load(...loader.parameters);
-    //       }
-    //     });
-    //   };
-
-    //   loadGeometry().then(g => {
-    //     this.hasLoaded = true;
-    //     const that = this;
-    //     that.context.loadingElements.splice(0, 1);
-    //     if (that.context.loadingElements.length === 0) {
-    //       that.context.loading = false;
-    //       that.o._thisClip.contextLoaded();
-    //     }
-
-    //     for (const i in that.context.elements.entities) {
-    //       if (
-    //         that.context.elements.entities[i].geometryFromModel ===
-    //         "#" + model.id
-    //       ) {
-    //         const mod = that.context.getElements(
-    //           that.context.elements.entities[i].geometryFromModel
-    //         )[0];
-    //         if (mod.loader === "#JSONLoader") {
-    //           const entity = that.context.elements.entities[i];
-    //           entity.object.geometry = g;
-    //           entity.material = undefined;
-    //           that.applySettingsToObjects(entity.settings, entity.object);
-    //           entity.object.updateMorphTargets();
-    //         } else if (
-    //           mod.loader === "#FBXLoader" ||
-    //           mod.loader === "#OBJMTLLoader"
-    //         ) {
-    //           const entity = that.context.elements.entities[i];
-    //           if (that.context.elements.entities[i].geometryFromModel) {
-    //             if (entity.clone) {
-    //               entity.object = g.clone();
-    //             } else {
-    //               entity.object = g;
-    //             }
-
-    //             if (entity.texturePath) {
-    //               const myloader = new THREE.TextureLoader();
-    //               const myTexture = myloader.load(entity.texturePath);
-    //               myTexture.anisotropy = 16;
-    //               const customDepthMaterial = new THREE.MeshDepthMaterial({
-    //                 depthPacking: THREE.RGBADepthPacking,
-
-    //                 alphaMap: myTexture, // or, alphaMap: myAlphaMap
-
-    //                 alphaTest: 0.5
-    //               });
-
-    //               entity.object.customDepthMaterial = customDepthMaterial;
-    //             }
-    //             that.applySettingsToObjects(entity.settings, entity.object);
-    //             entity.object.traverse(function(child) {
-    //               if (child.isMesh) {
-    //                 child.castShadow = true;
-    //                 child.receiveShadow = true;
-    //               }
-    //             });
-
-    //             that.context.elements.scenes[0].object.add(entity.object);
-    //           }
-    //         }
-    //       }
-    //     }
-
-    //     // this.elements.scenes[0].object.add(g);
-    //     //rerender after the loading has been completed
-    //     that.o._thisClip.render();
-    //   });
-
-    //   const that = this;
-    //   that.context.loadingElements.push(1);
-    //   if (that.context.loadingElements.length === 1 && !that.hasLoaded) {
-    //     that.context.loading = true;
-    //     that.o._thisClip.contextLoading();
-    //   }
-    //   // create pseudo point as element
-    //   const geometry = new THREE.BufferGeometry();
-    //   // const material = new THREE.PointsMaterial();
-    //   // const pseudoModel = new THREE.Points(geometry, material);
-    //   // pseudoModel.name = model.id;
-    //   // model.object = pseudoModel;
-    //   model.geometry = geometry;
-    //   // this.applySettingsToObjects(model.settings, model.object);
-
-    //   this.context.elements.models.push(model);
-    // }
-    /*
     * entities
     */
+    this.attributes.models = [];
 
     for (const entity of this.attributes.entities) {
       this.initializeMesh(entity);
+      if (entity.model) {
+        if (!this.context.loading) {
+          this.context.loading = true;
+          this.contextLoading();
+        }
+        this.setCustomEntity(
+          entity.id,
+          {
+            model: entity.model,
+            settings: entity.settings,
+            object: {}
+          },
+          ["entities", ...entity.class]
+        );
+        this.loadTheModel(entity).then(model => {
+          this.applySettingsToObjects(entity.settings, model);
+          const theEntity = this.getElements(`#${entity.id}`);
+          theEntity.entity.object = model;
+          for (const scene of this.getElements(entity.selector)) {
+            scene.entity.object.add(model);
+          }
 
-      const geometry = entity.geometryFromModel
-        ? this.getElements(entity.geometryFromModel).geometry
-        : new THREE[entity.geometry.type](...entity.geometry.parameters);
+          this.context.loadedModels.push(1);
+          if (
+            this.context.loadedModels.length ===
+            this.context.loadingModels.length
+          ) {
+            console.log(
+              this.context.loadedModels.length,
+              this.context.loadingModels.length
+            );
+            this.context.loading = false;
+            this.contextLoaded();
+          }
+        });
+
+        continue;
+      }
+      const geometry = new THREE[entity.geometry.type](
+        ...entity.geometry.parameters
+      );
 
       if (entity.material.parameters.side) {
         entity.material.parameters.side =
@@ -348,7 +291,7 @@ export default class Clip3D extends MC.API.DOMClip {
             material
           )
         },
-        ["lights", ...entity.class]
+        ["entities", ...entity.class]
       );
       const entityObj = this.getElements(`#${entity.id}`).entity.object;
 
@@ -380,9 +323,10 @@ export default class Clip3D extends MC.API.DOMClip {
     /*
     * CONTROLS
     */
-    if (this.attributes.controls) {
+    if (this.attributes.controls && !this.attributes.controls.applied) {
       let applyElement;
-      if (this.attributes.controls.appplyTo) {
+      if (this.attributes.controls.applyTo) {
+        this.attrs.controls.applied = true;
         applyElement = this.attributes.controls.applyTo;
       } else {
         applyElement = this.props.host;
@@ -392,7 +336,7 @@ export default class Clip3D extends MC.API.DOMClip {
       const cameraElement = this.getElements(
         this.attributes.controls.selector
       )[0];
-      const controls = new TrackballControls(
+      const controls = new OrbitControls(
         cameraElement.entity.object,
         applyElement
       );

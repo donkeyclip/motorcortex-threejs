@@ -3,7 +3,8 @@ const Player = require("@kissmybutton/motorcortex-player/");
 // const threejsPluginDefinition = require("../dist/motorcortex-three.umd");
 const threejsPluginDefinition = require("../src/index");
 const threejsPlugin = MC.loadPlugin(threejsPluginDefinition);
-// const dancerModelPath = "./models/animated-animals/dancer.fbx";
+const dancerModelPath = "./models/animated-animals/dancer.fbx";
+const soldierModelPath = "./models/Soldier.glb";
 
 const generateTerrain = (g /*,m, e*/) => {
   const pos = g.getAttribute("position");
@@ -23,11 +24,20 @@ const generateTerrain = (g /*,m, e*/) => {
 const box = {
   id: "box",
   geometry: { type: "BoxBufferGeometry", parameters: [2, 2, 2] },
-  material: { type: "MeshLambertMaterial", parameters: [{ color: 0xff0000 }] },
+  material: {
+    type: "MeshBasicMaterial",
+    parameters: [
+      {
+        color: 0xff0000,
+        side: "DoubleSide"
+      }
+    ]
+  },
   settings: { position: { x: 0, y: 0, z: 5 } }
 };
 
 const plane = {
+  id: "plane",
   geometry: { type: "PlaneBufferGeometry", parameters: [1000, 1000, 100, 100] },
   material: {
     type: "MeshPhongMaterial",
@@ -41,33 +51,51 @@ const plane = {
   callback: generateTerrain
 };
 
-// const dancerModel = {
-//   id: "dancer",
-//   loader: "#FBXLoader",
-//   file: dancerModelPath
-// };
+const dancerModel = {
+  id: "dancer",
+  loader: "FBXLoader",
+  file: dancerModelPath
+};
 
-// const dancerTemplate = {
-//   class: "busts",
-//   geometryFromModel: "#dancer",
-//   material: {
-//     type: "MeshLambertMaterial",
-//     parameters: [
-//       { color: "0xFFFFFF", vertexColors: "FaceColors", morphTargets: true }
-//     ]
-//   },
-//   settings: {
-//     scale: { set: [0.02, 0.02, 0.02] },
-//     rotation: { x: -Math.PI / 2, y: Math.PI, z: Math.PI },
-//     entityType: "Mesh"
-//   }
-// };
-// const dancer_1 = JSON.parse(
-//   JSON.stringify({ ...dancerTemplate, id: "dancer_1" })
-// );
-// dancer_1.settings.position = { x: 10, y: 2, z: 3 };
+const soldierModel = {
+  id: "soldier",
+  loader: "GLTFLoader",
+  file: soldierModelPath
+};
 
-const entities = [box /*plane , dancer_1 */];
+const dancerTemplate = {
+  model: dancerModel,
+  settings: {
+    scale: { set: [0.02, 0.02, 0.02] },
+    rotation: { x: -Math.PI / 2, y: Math.PI, z: Math.PI }
+  }
+};
+
+const dancer_1 = JSON.parse(
+  JSON.stringify({
+    ...dancerTemplate,
+    id: "dancer_1"
+  })
+);
+dancer_1.settings.position = { x: 10, y: 2, z: 3 };
+
+const soldierTemplate = {
+  model: soldierModel,
+  settings: {
+    scale: { set: [2, 2, 2] },
+    rotation: { x: -Math.PI / 2, y: Math.PI, z: Math.PI }
+  }
+};
+
+const soldier_1 = JSON.parse(
+  JSON.stringify({
+    ...soldierTemplate,
+    id: "soldier_1"
+  })
+);
+soldier_1.settings.position = { x: -10, y: 2, z: 3 };
+
+const entities = [box, plane, dancer_1, soldier_1];
 
 // const clip = new MC.Clip({
 //   css: "#container{width:100%;height:100%;}",
@@ -82,7 +110,7 @@ const clip = new threejsPlugin.Clip(
     scenes: { fog: [0xf5f5f5, 0.1, 500] },
     lights: [
       {
-        parameters: [0xffffff, 0.6],
+        parameters: [0xffffff, 1],
         settings: {
           position: { set: [-40, 20, 80] },
           shadow: {
@@ -101,9 +129,10 @@ const clip = new threejsPlugin.Clip(
         }
       }
     ],
-    cameras: { settings: { position: { x: 0, y: -20, z: 20 } } },
+    cameras: {
+      settings: { position: { x: 0, y: -20, z: 20 }, up: { set: [0, 0, 1] } }
+    },
     entities,
-    // models: [dancerModel],
     controls: { enable: true }
   },
   {
@@ -127,7 +156,7 @@ const boxAnimation = new threejsPlugin.Object3D(
   },
   {
     id: "box_animation",
-    selector: "#box",
+    selector: "!#box",
     duration: 4000
   }
 );
@@ -176,27 +205,28 @@ const boxAnimation = new threejsPlugin.Object3D(
 //   }
 // );
 
-// const dancerMAE = new threejsPlugin.MAE(
-//   {
-//     attrs: {
-//       singleLoopDuration: 10000,
-//       animationFrames: 30,
-//       animationIndex: "0"
-//     },
-//     animatedAttrs: {
-//       time: 6000
-//     }
-//   },
-//   {
-//     selector: ".busts",
-//     duration: 10000
-//   }
-// );
+const dancerMAE = new threejsPlugin.MAE(
+  {
+    attrs: {
+      singleLoopDuration: 10000,
+      animationFrames: 30,
+      animationIndex: "0"
+    },
+    animatedAttrs: {
+      time: 6000
+    }
+  },
+  {
+    selector: "!#dancer_1",
+    duration: 10000
+  }
+);
 
 clip.addIncident(boxAnimation, 0);
 // clip.addIncident(clip1, 0);
 // clip.addIncident(cameraAnimation, 0);
 // clip.addIncident(horseMAE, 0);
-// clip.addIncident(dancerMAE, 0);
-window.clip = clip;
+clip.addIncident(dancerMAE, 0);
+// window.clip = clip;
 new Player({ clip });
+// clip.play();
