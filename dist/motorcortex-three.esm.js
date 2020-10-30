@@ -12034,7 +12034,7 @@ function (_MC$API$DOMClip) {
       regeneratorRuntime.mark(function _callee2() {
         var _this2 = this;
 
-        var _iteratorNormalCompletion2, _didIteratorError2, _iteratorError2, _loop, _iterator2, _step2, _ret, _iteratorNormalCompletion3, _didIteratorError3, _iteratorError3, _iterator3, _step3, _render, applyElement, cameraElement, controls, render, raycaster, animate;
+        var _iteratorNormalCompletion2, _didIteratorError2, _iteratorError2, _loop, _iterator2, _step2, _ret, _iteratorNormalCompletion3, _didIteratorError3, _iteratorError3, _iterator3, _step3, _render, applyElement, cameraElement, controls, render, raycaster, mouse, onMouseMove, animate;
 
         return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
@@ -12415,7 +12415,20 @@ function (_MC$API$DOMClip) {
                   };
 
                   raycaster = new Raycaster();
+                  mouse = new Vector2();
 
+                  onMouseMove = function onMouseMove(event) {
+                    // calculate mouse position in normalized device coordinates
+                    // (-1 to +1) for both components
+                    mouse.x = event.clientX / window.innerWidth * 2 - 1;
+                    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+                    raycaster.setFromCamera(mouse, _this2.getElements(_this2.attributes.renders[0].camera).entity.object); // calculate objects intersecting the picking ray
+
+                    var intersects = raycaster.intersectObjects(_this2.getElements(_this2.attributes.renders[0].scene).entity.object.children, true);
+                    console.log((intersects[0] || {}).point);
+                  };
+
+                  window.addEventListener("click", onMouseMove, false);
 
                   animate = function animate() {
                     requestAnimationFrame(animate); // controls.update(); // only required if controls.enableDamping = true, or if controls.autoRotate = true

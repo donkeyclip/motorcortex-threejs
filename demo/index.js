@@ -9,6 +9,9 @@ const soldierModelPath =
   "https://kissmybutton.github.io/motorcortex-threejs/demo/models/Soldier.glb";
 const deathValleyPath =
   "https://kissmybutton.github.io/motorcortex-threejs/demo/models/mountainous_valley/scene.gltf";
+const towerPath =
+  "https://kissmybutton.github.io/motorcortex-threejs/demo/models/tower/scene.gltf";
+
 const rad2Grad = 63.6619772367581; // 1 rad ~= 63 grads
 const ThemeliodesProblima_2 = (Xa, Ya, Xb, Yb) => {
   const absDX = Math.abs(Xb - Xa);
@@ -98,6 +101,29 @@ const deathValley_1 = JSON.parse(
     id: "deathValley_1"
   })
 );
+
+const towerModel = {
+  id: "deathValley",
+  loader: "GLTFLoader",
+  file: towerPath
+};
+
+const towerTemplate = {
+  model: towerModel
+};
+
+const tower_1 = JSON.parse(
+  JSON.stringify({
+    ...towerTemplate,
+    id: "deathValley_1"
+  })
+);
+
+// Vector3 {x: -1.0938934870262997, y: 39.6476360020323, z: -83.63681332688691}
+tower_1.settings = {
+  castShadow: true,
+  position: { x: -1, y: 39, z: -83 }
+};
 deathValley_1.settings = {
   receiveShadow: true
 };
@@ -105,7 +131,7 @@ const containerParams = {
   width: "100%",
   height: "100%"
 };
-const entities = [deathValley_1, soldier_1];
+const entities = [deathValley_1, soldier_1, tower_1];
 const scene = new MC.Clip({
   html: `
     <div id="scene">
@@ -219,7 +245,7 @@ const clip = new threejsPlugin.Clip(
   }
 );
 
-const fadeoutcurtain = new Anime.Anime(
+const fadeincurtain = new Anime.Anime(
   {
     animatedAttrs: {
       opacity: 0
@@ -534,7 +560,7 @@ const cameraAnimation5 = new threejsPlugin.Object3D(
 const soldierMAE6 = new threejsPlugin.MAE(
   {
     attrs: {
-      singleLoopDuration: 600,
+      singleLoopDuration: 1000,
       animationFrames: 30,
       animationName: "Idle"
     },
@@ -568,7 +594,7 @@ const cameraAnimation6 = new threejsPlugin.Object3D(
 const songPlayback = new MC.AudioPlayback({
   selector: "~#sound",
   startFrom: 0,
-  duration: 70000
+  duration: 100000
 });
 
 clip.addIncident(cameraAnimation, 0);
@@ -598,7 +624,7 @@ clip.addIncident(soldierMAE6, 75000);
 
 scene.addIncident(songPlayback, 0);
 
-scene.addIncident(fadeoutcurtain, 2000);
+scene.addIncident(fadeincurtain, 2000);
 scene.addIncident(clip, 2000);
 
 //error when loading anime after clip
