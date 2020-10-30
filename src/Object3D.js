@@ -1,4 +1,6 @@
 import MC from "@kissmybutton/motorcortex";
+import * as THREE from "three";
+const mouse = new THREE.Vector2();
 
 export default class Object3D extends MC.API.MonoIncident {
   getScratchValue() {
@@ -43,15 +45,32 @@ export default class Object3D extends MC.API.MonoIncident {
       ? this.applyValue(element, "y", fraction)
       : null;
 
-    typeof this.targetValue.z !== "undefined"
+    typeof this.targetValue.z !== "undefined" &&
+    typeof this.targetValue.z !== "string"
       ? this.applyValue(element, "z", fraction)
       : null;
 
+    if (typeof this.targetValue.z === "string") {
+      const origin = new THREE.Vector3(
+        element.position.x,
+        element.position.y,
+        element.position.z + 10
+      );
+      const raycaster = new THREE.Raycaster(
+        origin,
+        new THREE.Vector3(0, 0, -1)
+      );
+      const intersects = raycaster.intersectObjects(
+        this.context.getElements(this.targetValue.z)[0].entity.object.children,
+        true
+      );
+      element.position.z = intersects[0].point.z;
+      console.log(element.position.z);
+    }
+
     if (this.attributeKey === "targetEntity") {
       element.lookAt(
-        ...Object.values(
-          this.context.getElements(this.targetValue)[0].object.position
-        )
+        this.context.getElements(this.targetValue)[0].entity.object.position
       );
       element.up.set(0, 0, 1);
     }

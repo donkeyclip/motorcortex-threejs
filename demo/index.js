@@ -4,9 +4,14 @@ const Player = require("../../teo-motorcortex-player/dist/motorcortex-player.umd
 const threejsPluginDefinition = require("../src/index");
 const threejsPlugin = MC.loadPlugin(threejsPluginDefinition);
 const soldierModelPath =
-  "https://github.com/kissmybutton/motorcortex-threejs/blob/master/demo/models/Soldier.glb";
+  "https://kissmybutton.github.io/motorcortex-threejs/demo/models/Soldier.glb";
 const deathValleyPath =
-  "https://github.com/kissmybutton/motorcortex-threejs/blob/master/demo/models/mountainous_valley/scene.gltf";
+  "https://kissmybutton.github.io/motorcortex-threejs/demo/models/mountainous_valley/scene.gltf";
+
+// const soldierPath = [
+//   [-31, -5, 16],
+//   [-52, 34, 19][(-62, 80, 21)][(-57, 87, 22)]
+// ];
 
 // const box = {
 //   id: "box",
@@ -43,7 +48,7 @@ const soldier_1 = JSON.parse(
     id: "soldier_1"
   })
 );
-soldier_1.settings.position = { x: -10, y: 2, z: 3 };
+soldier_1.settings.position = { x: -40, y: -21, z: 14 };
 
 const deathValleyModel = {
   id: "deathValley",
@@ -68,8 +73,22 @@ const entities = [soldier_1, deathValley_1];
 
 const clip = new threejsPlugin.Clip(
   {
-    renderers: { settings: { setClearColor: [0xf5f5f5] } },
-    scenes: { fog: [0xf5f5f5, 0.1, 500] },
+    audioSources: [
+      {
+        src:
+          "https://kissmybutton.github.io/motorcortex-threejs/demo/sound.mp3",
+        id: "sound",
+        classes: ["sound"],
+        base64: false,
+        startValues: {
+          pan: -1,
+          gain: 0
+        }
+      }
+    ],
+
+    renderers: { settings: { setClearColor: ["#342a22"] } },
+    scenes: { id: "scene", fog: ["#342a22", 0.1, 500] },
     lights: [
       {
         parameters: [0xffffff, 1],
@@ -92,27 +111,49 @@ const clip = new threejsPlugin.Clip(
       }
     ],
     cameras: {
-      settings: { position: { x: 0, y: -20, z: 20 }, up: { set: [0, 0, 1] } }
+      id: "camera_1",
+      settings: {
+        position: { x: -400, y: -30, z: 230 },
+        up: { set: [0, 0, 1] },
+        lookAt: [-40, -21, 14]
+      }
     },
     entities,
-    controls: { enable: true }
+    controls: { enable: false }
   },
   {
     host: document.getElementById("clip"),
     // selector: "#container",
-    containerParams: { width: "100%", height: "100%" }
+    containerParams: { width: "100%", height: "70%" }
+  }
+);
+
+const cameraAnimation = new threejsPlugin.Object3D(
+  {
+    animatedAttrs: {
+      targetEntity: "!#soldier_1",
+      position: {
+        x: -50,
+        y: -45,
+        z: 20
+      }
+    }
+  },
+  {
+    selector: "!#camera_1",
+    duration: 10000
   }
 );
 
 const soldierMAE = new threejsPlugin.MAE(
   {
     attrs: {
-      singleLoopDuration: 1000,
+      singleLoopDuration: 1200,
       animationFrames: 30,
-      animationName: "Walk"
+      animationName: "Idle"
     },
     animatedAttrs: {
-      time: 6000
+      time: 10000
     }
   },
   {
@@ -120,6 +161,106 @@ const soldierMAE = new threejsPlugin.MAE(
     duration: 10000
   }
 );
+const cameraAnimation1 = new threejsPlugin.Object3D(
+  {
+    animatedAttrs: {
+      targetEntity: "!#soldier_1",
+      position: {
+        x: -70,
+        y: 60,
+        z: 35
+      }
+    }
+  },
+  {
+    selector: "!#camera_1",
+    duration: 20000
+  }
+);
+const soldierAnimation1 = new threejsPlugin.Object3D(
+  {
+    animatedAttrs: {
+      position: {
+        x: -52,
+        y: 34,
+        z: "!#deathValley_1"
+      },
+      rotation: {
+        lookAt: [-52, 34, 19]
+      }
+    }
+  },
+  {
+    selector: "!#soldier_1",
+    duration: 20000
+  }
+);
 
+const soldierMAE1 = new threejsPlugin.MAE(
+  {
+    attrs: {
+      singleLoopDuration: 1200,
+      animationFrames: 30,
+      animationName: "Walk"
+    },
+    animatedAttrs: {
+      time: 20000
+    }
+  },
+  {
+    selector: "!#soldier_1",
+    duration: 20000
+  }
+);
+
+const soldierMAE2 = new threejsPlugin.MAE(
+  {
+    attrs: {
+      singleLoopDuration: 1200,
+      animationFrames: 30,
+      animationName: "Idle"
+    },
+    animatedAttrs: {
+      time: 5000
+    }
+  },
+  {
+    selector: "!#soldier_1",
+    duration: 5000
+  }
+);
+const cameraAnimation2 = new threejsPlugin.Object3D(
+  {
+    animatedAttrs: {
+      targetEntity: "!#soldier_1",
+      position: {
+        x: -70,
+        y: 80,
+        z: 40
+      }
+    }
+  },
+  {
+    selector: "!#camera_1",
+    duration: 5000
+  }
+);
+const songPlayback = new MC.AudioPlayback({
+  selector: "~#sound",
+  startFrom: 0,
+  duration: 45
+});
+
+clip.addIncident(songPlayback, 0);
+
+clip.addIncident(cameraAnimation, 0);
 clip.addIncident(soldierMAE, 0);
+
+clip.addIncident(cameraAnimation1, 10000);
+clip.addIncident(soldierAnimation1, 10000);
+clip.addIncident(soldierMAE1, 10000);
+
+clip.addIncident(soldierMAE2, 30000);
+clip.addIncident(cameraAnimation2, 30000);
+
 new Player({ clip });

@@ -4,6 +4,7 @@ import { AnimationMixer } from "three";
 export default class MAE extends MC.API.MonoIncident {
   onGetContext() {
     this.mixer = new AnimationMixer(this.element.entity.object);
+    console.log(this.element.entity.object.animations);
     this.mixer
       .clipAction(
         this.element.entity.object.animations.filter(

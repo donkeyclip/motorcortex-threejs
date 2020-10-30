@@ -100,8 +100,8 @@ export default class Clip3D extends MC.API.DOMClip {
       );
 
       const sceneObj = this.getElements(`#${scene.id}`);
-      if (scene.settings.fog) {
-        sceneObj.fog = new THREE.Fog(...scene.settings.fog);
+      if (scene.fog) {
+        sceneObj.entity.object.fog = new THREE.Fog(...scene.fog);
       }
     });
 
@@ -114,7 +114,7 @@ export default class Clip3D extends MC.API.DOMClip {
     this.attributes.cameras.map(camera => {
       this.initializeCamera(camera);
       this.setCustomEntity(
-        camera.id,
+        camera.id || "camera",
         {
           settings: camera.settings,
           object: new THREE[camera.settings.type](...camera.parameters)
@@ -124,6 +124,7 @@ export default class Clip3D extends MC.API.DOMClip {
       const cameraObj = this.getElements(`#${camera.id}`).entity.object;
       this.applySettingsToObjects(camera.settings, cameraObj);
       cameraObj.updateProjectionMatrix();
+      cameraObj.lookAt(-40, -21, 14);
     });
 
     /*
@@ -201,6 +202,7 @@ export default class Clip3D extends MC.API.DOMClip {
           }
 
           this.context.loadedModels.push(1);
+
           if (
             this.context.loadedModels.length ===
             this.context.loadingModels.length
@@ -296,12 +298,12 @@ export default class Clip3D extends MC.API.DOMClip {
       controls.maxPolarAngle = Math.PI / 2;
 
       const render = () => {
-        if (
-          (((controls || {}).domElement || {}).style || {}).pointerEvents ===
-          "none"
-        ) {
-          return;
-        }
+        // if (
+        //   (((controls || {}).domElement || {}).style || {}).pointerEvents ===
+        //   "none"
+        // ) {
+        //   return;
+        // }
         for (const i in this.attributes.renders) {
           this.getElements(
             this.attributes.renders[i].renderer
@@ -311,9 +313,31 @@ export default class Clip3D extends MC.API.DOMClip {
           );
         }
       };
+      const raycaster = new THREE.Raycaster();
+      const mouse = new THREE.Vector2();
+      const onMouseMove = event => {
+        // calculate mouse position in normalized device coordinates
+        // (-1 to +1) for both components
+
+        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        raycaster.setFromCamera(
+          mouse,
+          this.getElements(this.attributes.renders[0].camera).entity.object
+        );
+
+        // calculate objects intersecting the picking ray
+        const intersects = raycaster.intersectObjects(
+          this.getElements(this.attributes.renders[0].scene).entity.object
+            .children,
+          true
+        );
+        console.log(intersects);
+      };
+      window.addEventListener("click", onMouseMove, false);
       const animate = () => {
         requestAnimationFrame(animate);
-        controls.update(); // only required if controls.enableDamping = true, or if controls.autoRotate = true
+        // controls.update(); // only required if controls.enableDamping = true, or if controls.autoRotate = true
         render();
       };
       animate();

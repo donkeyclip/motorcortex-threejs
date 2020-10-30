@@ -3774,7 +3774,7 @@ function JSONLoader(){console.error('THREE.JSONLoader has been removed.');}//
 var SceneUtils={createMultiMaterialObject:function()/* geometry, materials */{console.error('THREE.SceneUtils has been moved to /examples/jsm/utils/SceneUtils.js');},detach:function()/* child, parent, scene */{console.error('THREE.SceneUtils has been moved to /examples/jsm/utils/SceneUtils.js');},attach:function()/* child, scene, parent */{console.error('THREE.SceneUtils has been moved to /examples/jsm/utils/SceneUtils.js');}};//
 function LensFlare(){console.error('THREE.LensFlare has been moved to /examples/jsm/objects/Lensflare.js');}if(typeof __THREE_DEVTOOLS__!=='undefined'){/* eslint-disable no-undef */__THREE_DEVTOOLS__.dispatchEvent(new CustomEvent('register',{detail:{revision:REVISION}}));/* eslint-enable no-undef */}
 
-var THREE$1 = /*#__PURE__*/Object.freeze({
+var THREE = /*#__PURE__*/Object.freeze({
   __proto__: null,
   ACESFilmicToneMapping: ACESFilmicToneMapping,
   AddEquation: AddEquation,
@@ -12038,7 +12038,7 @@ function (_MC$API$DOMClip) {
       regeneratorRuntime.mark(function _callee2() {
         var _this2 = this;
 
-        var _iteratorNormalCompletion2, _didIteratorError2, _iteratorError2, _loop, _iterator2, _step2, _ret, _iteratorNormalCompletion3, _didIteratorError3, _iteratorError3, _iterator3, _step3, _render, applyElement, cameraElement, controls, render, animate;
+        var _iteratorNormalCompletion2, _didIteratorError2, _iteratorError2, _loop, _iterator2, _step2, _ret, _iteratorNormalCompletion3, _didIteratorError3, _iteratorError3, _iterator3, _step3, _render, applyElement, cameraElement, controls, render, raycaster, mouse, onMouseMove, animate;
 
         return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
@@ -12060,8 +12060,8 @@ function (_MC$API$DOMClip) {
 
                   var sceneObj = _this2.getElements("#".concat(scene.id));
 
-                  if (scene.settings.fog) {
-                    sceneObj.fog = _construct(Fog, _toConsumableArray(scene.settings.fog));
+                  if (scene.fog) {
+                    sceneObj.entity.object.fog = _construct(Fog, _toConsumableArray(scene.fog));
                   }
                 });
                 /*
@@ -12072,9 +12072,9 @@ function (_MC$API$DOMClip) {
                 this.attributes.cameras.map(function (camera) {
                   _this2.initializeCamera(camera);
 
-                  _this2.setCustomEntity(camera.id, {
+                  _this2.setCustomEntity(camera.id || "camera", {
                     settings: camera.settings,
-                    object: _construct(THREE$1[camera.settings.type], _toConsumableArray(camera.parameters))
+                    object: _construct(THREE[camera.settings.type], _toConsumableArray(camera.parameters))
                   }, ["cameras"].concat(_toConsumableArray(camera.class)));
 
                   var cameraObj = _this2.getElements("#".concat(camera.id)).entity.object;
@@ -12082,6 +12082,7 @@ function (_MC$API$DOMClip) {
                   _this2.applySettingsToObjects(camera.settings, cameraObj);
 
                   cameraObj.updateProjectionMatrix();
+                  cameraObj.lookAt(-40, -21, 14);
                 });
                 /*
                 * RENDERERS
@@ -12093,7 +12094,7 @@ function (_MC$API$DOMClip) {
 
                   _this2.setCustomEntity(renderer.id, {
                     settings: renderer.settings,
-                    object: _construct(THREE$1[renderer.settings.type], _toConsumableArray(renderer.parameters))
+                    object: _construct(THREE[renderer.settings.type], _toConsumableArray(renderer.parameters))
                   }, ["renderers"].concat(_toConsumableArray(renderer.class)));
 
                   var rendererObj = _this2.getElements("#".concat(renderer.id)).entity.object;
@@ -12110,7 +12111,7 @@ function (_MC$API$DOMClip) {
 
                   _this2.setCustomEntity(light.id, {
                     settings: light.settings,
-                    object: _construct(THREE$1[light.settings.type], _toConsumableArray(light.parameters))
+                    object: _construct(THREE[light.settings.type], _toConsumableArray(light.parameters))
                   }, ["lights"].concat(_toConsumableArray(light.class)));
 
                   var lightObj = _this2.getElements("#".concat(light.id)).entity.object;
@@ -12212,21 +12213,21 @@ function (_MC$API$DOMClip) {
                     return "continue";
                   }
 
-                  var geometry = _construct(THREE$1[entity.geometry.type], _toConsumableArray(entity.geometry.parameters));
+                  var geometry = _construct(THREE[entity.geometry.type], _toConsumableArray(entity.geometry.parameters));
 
                   if (entity.material.parameters.side) {
-                    entity.material.parameters.side = THREE$1[entity.material.parameters.side];
+                    entity.material.parameters.side = THREE[entity.material.parameters.side];
                   }
 
                   if (entity.material.parameters.vertexColors) {
-                    entity.material.parameters.vertexColors = THREE$1[entity.material.parameters.vertexColors];
+                    entity.material.parameters.vertexColors = THREE[entity.material.parameters.vertexColors];
                   }
 
-                  var material = _construct(THREE$1[entity.material.type], _toConsumableArray(entity.material.parameters));
+                  var material = _construct(THREE[entity.material.type], _toConsumableArray(entity.material.parameters));
 
                   _this2.setCustomEntity(entity.id, {
                     settings: entity.settings,
-                    object: new THREE$1[entity.settings.entityType || "Mesh"](geometry, material)
+                    object: new THREE[entity.settings.entityType || "Mesh"](geometry, material)
                   }, ["entities"].concat(_toConsumableArray(entity.class)));
 
                   var entityObj = _this2.getElements("#".concat(entity.id)).entity.object;
@@ -12394,18 +12395,35 @@ function (_MC$API$DOMClip) {
                   controls.maxPolarAngle = Math.PI / 2;
 
                   render = function render() {
-                    if ((((controls || {}).domElement || {}).style || {}).pointerEvents === "none") {
-                      return;
-                    }
-
+                    // if (
+                    //   (((controls || {}).domElement || {}).style || {}).pointerEvents ===
+                    //   "none"
+                    // ) {
+                    //   return;
+                    // }
                     for (var i in _this2.attributes.renders) {
                       _this2.getElements(_this2.attributes.renders[i].renderer).entity.object.render(_this2.getElements(_this2.attributes.renders[i].scene).entity.object, _this2.getElements(_this2.attributes.renders[i].camera).entity.object);
                     }
                   };
 
+                  raycaster = new Raycaster();
+                  mouse = new Vector2();
+
+                  onMouseMove = function onMouseMove(event) {
+                    // calculate mouse position in normalized device coordinates
+                    // (-1 to +1) for both components
+                    mouse.x = event.clientX / window.innerWidth * 2 - 1;
+                    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+                    raycaster.setFromCamera(mouse, _this2.getElements(_this2.attributes.renders[0].camera).entity.object); // calculate objects intersecting the picking ray
+
+                    var intersects = raycaster.intersectObjects(_this2.getElements(_this2.attributes.renders[0].scene).entity.object.children, true);
+                    console.log(intersects);
+                  };
+
+                  window.addEventListener("click", onMouseMove, false);
+
                   animate = function animate() {
-                    requestAnimationFrame(animate);
-                    controls.update(); // only required if controls.enableDamping = true, or if controls.autoRotate = true
+                    requestAnimationFrame(animate); // controls.update(); // only required if controls.enableDamping = true, or if controls.autoRotate = true
 
                     render();
                   };
@@ -12771,13 +12789,21 @@ function (_MC$API$MonoIncident) {
     /*, millisecond*/
     ) {
       var element = this.element.entity.object;
-      typeof this.targetValue.lookAt !== "undefined" ? element.lookAt(_construct(THREE.Vector3, _toConsumableArray(this.targetValue.lookAt))) : null;
+      typeof this.targetValue.lookAt !== "undefined" ? element.lookAt(_construct(Vector3, _toConsumableArray(this.targetValue.lookAt))) : null;
       typeof this.targetValue.x !== "undefined" ? this.applyValue(element, "x", fraction) : null;
       typeof this.targetValue.y !== "undefined" ? this.applyValue(element, "y", fraction) : null;
-      typeof this.targetValue.z !== "undefined" ? this.applyValue(element, "z", fraction) : null;
+      typeof this.targetValue.z !== "undefined" && typeof this.targetValue.z !== "string" ? this.applyValue(element, "z", fraction) : null;
+
+      if (typeof this.targetValue.z === "string") {
+        var origin = new Vector3(element.position.x, element.position.y, element.position.z + 10);
+        var raycaster = new Raycaster(origin, new Vector3(0, 0, -1));
+        var intersects = raycaster.intersectObjects(this.context.getElements(this.targetValue.z)[0].entity.object.children, true);
+        element.position.z = intersects[0].point.z;
+        console.log(element.position.z);
+      }
 
       if (this.attributeKey === "targetEntity") {
-        element.lookAt.apply(element, _toConsumableArray(Object.values(this.context.getElements(this.targetValue)[0].object.position)));
+        element.lookAt(this.context.getElements(this.targetValue)[0].entity.object.position);
         element.up.set(0, 0, 1);
       }
     }
@@ -12803,6 +12829,7 @@ function (_MC$API$MonoIncident) {
       var _this = this;
 
       this.mixer = new AnimationMixer(this.element.entity.object);
+      console.log(this.element.entity.object.animations);
       this.mixer.clipAction(this.element.entity.object.animations.filter(function (animation) {
         return animation.name == _this.attrs.attrs.animationName;
       })[0]).setDuration(this.attrs.attrs.singleLoopDuration / 1000).play();
