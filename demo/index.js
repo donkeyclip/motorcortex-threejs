@@ -69,24 +69,34 @@ const deathValley_1 = JSON.parse(
     id: "deathValley_1"
   })
 );
+const containerParams = {
+  width: "100%",
+  height: "100%"
+};
 const entities = [soldier_1, deathValley_1];
+const scene = new MC.Clip({
+  html: `<div id="scene"></div>`,
+  css: `#scene{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+        width: 100%;
+    height: 100%;
+  }`,
+  audioSources: [
+    {
+      src: "./sound.mp3",
+      id: "sound",
+      classes: ["sound"],
+      base64: false
+    }
+  ],
+  host: document.getElementById("clip"),
+  containerParams
+});
 
 const clip = new threejsPlugin.Clip(
   {
-    audioSources: [
-      {
-        src:
-          "https://kissmybutton.github.io/motorcortex-threejs/demo/sound.mp3",
-        id: "sound",
-        classes: ["sound"],
-        base64: false,
-        startValues: {
-          pan: -1,
-          gain: 0
-        }
-      }
-    ],
-
     renderers: { settings: { setClearColor: ["#342a22"] } },
     scenes: { id: "scene", fog: ["#342a22", 0.1, 500] },
     lights: [
@@ -122,7 +132,7 @@ const clip = new threejsPlugin.Clip(
     controls: { enable: false }
   },
   {
-    host: document.getElementById("clip"),
+    selector: "#scene",
     // selector: "#container",
     containerParams: { width: "100%", height: "70%" }
   }
@@ -141,7 +151,7 @@ const cameraAnimation = new threejsPlugin.Object3D(
   },
   {
     selector: "!#camera_1",
-    duration: 10000
+    duration: 20000
   }
 );
 
@@ -167,7 +177,7 @@ const cameraAnimation1 = new threejsPlugin.Object3D(
       targetEntity: "!#soldier_1",
       position: {
         x: -70,
-        y: 60,
+        y: 70,
         z: 35
       }
     }
@@ -221,12 +231,12 @@ const soldierMAE2 = new threejsPlugin.MAE(
       animationName: "Idle"
     },
     animatedAttrs: {
-      time: 5000
+      time: 10000
     }
   },
   {
     selector: "!#soldier_1",
-    duration: 5000
+    duration: 10000
   }
 );
 const cameraAnimation2 = new threejsPlugin.Object3D(
@@ -242,7 +252,7 @@ const cameraAnimation2 = new threejsPlugin.Object3D(
   },
   {
     selector: "!#camera_1",
-    duration: 5000
+    duration: 10000
   }
 );
 const songPlayback = new MC.AudioPlayback({
@@ -256,11 +266,11 @@ clip.addIncident(songPlayback, 0);
 clip.addIncident(cameraAnimation, 0);
 clip.addIncident(soldierMAE, 0);
 
-clip.addIncident(cameraAnimation1, 10000);
-clip.addIncident(soldierAnimation1, 10000);
-clip.addIncident(soldierMAE1, 10000);
+clip.addIncident(cameraAnimation1, 20000);
+clip.addIncident(soldierAnimation1, 20000);
+clip.addIncident(soldierMAE1, 20000);
 
-clip.addIncident(soldierMAE2, 30000);
-clip.addIncident(cameraAnimation2, 30000);
-
-new Player({ clip });
+clip.addIncident(soldierMAE2, 40000);
+clip.addIncident(cameraAnimation2, 40000);
+scene.addIncident(clip, 0);
+new Player({ clip: scene });
