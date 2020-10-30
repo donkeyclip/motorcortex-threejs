@@ -1,83 +1,33 @@
 const MC = require("@kissmybutton/motorcortex");
-const Player = require("@kissmybutton/motorcortex-player/");
-// const threejsPluginDefinition = require("../dist/motorcortex-three.umd");
+// const Player = require("@kissmybutton/motorcortex-player/");
+const Player = require("../../teo-motorcortex-player/dist/motorcortex-player.umd");
 const threejsPluginDefinition = require("../src/index");
 const threejsPlugin = MC.loadPlugin(threejsPluginDefinition);
-const dancerModelPath = "./models/animated-animals/dancer.fbx";
-const soldierModelPath = "./models/Soldier.glb";
+const soldierModelPath =
+  "https://github.com/kissmybutton/motorcortex-threejs/blob/master/demo/models/Soldier.glb";
+const deathValleyPath =
+  "https://github.com/kissmybutton/motorcortex-threejs/blob/master/demo/models/mountainous_valley/scene.gltf";
 
-const generateTerrain = (g /*,m, e*/) => {
-  const pos = g.getAttribute("position");
-  const pa = pos.array;
-
-  const hVerts = g.parameters.width;
-  const wVerts = g.parameters.height;
-  for (let j = 0; j < hVerts; j++) {
-    for (let i = 0; i < wVerts; i++) {
-      pa[3 * (j * wVerts + i) + 2] = Math.random() * 3;
-    }
-  }
-  pos.needsUpdate = true;
-  g.computeVertexNormals();
-};
-
-const box = {
-  id: "box",
-  geometry: { type: "BoxBufferGeometry", parameters: [2, 2, 2] },
-  material: {
-    type: "MeshBasicMaterial",
-    parameters: [
-      {
-        color: 0xff0000,
-        side: "DoubleSide"
-      }
-    ]
-  },
-  settings: { position: { x: 0, y: 0, z: 5 } }
-};
-
-const plane = {
-  id: "plane",
-  geometry: { type: "PlaneBufferGeometry", parameters: [1000, 1000, 100, 100] },
-  material: {
-    type: "MeshPhongMaterial",
-    parameters: [
-      {
-        color: 0xffb851
-      }
-    ]
-  },
-  settings: { receiveShadow: true, castShadow: true },
-  callback: generateTerrain
-};
-
-const dancerModel = {
-  id: "dancer",
-  loader: "FBXLoader",
-  file: dancerModelPath
-};
+// const box = {
+//   id: "box",
+//   geometry: { type: "BoxBufferGeometry", parameters: [2, 2, 2] },
+//   material: {
+//     type: "MeshBasicMaterial",
+//     parameters: [
+//       {
+//         color: 0xff0000,
+//         side: "DoubleSide"
+//       }
+//     ]
+//   },
+//   settings: { position: { x: 0, y: 0, z: 5 } }
+// };
 
 const soldierModel = {
   id: "soldier",
   loader: "GLTFLoader",
   file: soldierModelPath
 };
-
-const dancerTemplate = {
-  model: dancerModel,
-  settings: {
-    scale: { set: [0.02, 0.02, 0.02] },
-    rotation: { x: -Math.PI / 2, y: Math.PI, z: Math.PI }
-  }
-};
-
-const dancer_1 = JSON.parse(
-  JSON.stringify({
-    ...dancerTemplate,
-    id: "dancer_1"
-  })
-);
-dancer_1.settings.position = { x: 10, y: 2, z: 3 };
 
 const soldierTemplate = {
   model: soldierModel,
@@ -95,14 +45,26 @@ const soldier_1 = JSON.parse(
 );
 soldier_1.settings.position = { x: -10, y: 2, z: 3 };
 
-const entities = [box, plane, dancer_1, soldier_1];
+const deathValleyModel = {
+  id: "deathValley",
+  loader: "GLTFLoader",
+  file: deathValleyPath
+};
 
-// const clip = new MC.Clip({
-//   css: "#container{width:100%;height:100%;}",
-//   html: "<div id='container'></div>",
-//   host: document.getElementById("clip"),
-//   containerParams: { width: "100%", height: "100%" }
-// });
+const deathValleyTemplate = {
+  model: deathValleyModel,
+  settings: {
+    rotation: { x: -Math.PI / 2, y: Math.PI, z: Math.PI }
+  }
+};
+
+const deathValley_1 = JSON.parse(
+  JSON.stringify({
+    ...deathValleyTemplate,
+    id: "deathValley_1"
+  })
+);
+const entities = [soldier_1, deathValley_1];
 
 const clip = new threejsPlugin.Clip(
   {
@@ -142,85 +104,6 @@ const clip = new threejsPlugin.Clip(
   }
 );
 
-const boxAnimation = new threejsPlugin.Object3D(
-  {
-    animatedAttrs: {
-      position: {
-        x: 20,
-        y: 20
-      },
-      rotation: {
-        x: Math.PI * 2
-      }
-    }
-  },
-  {
-    id: "box_animation",
-    selector: "!#box",
-    duration: 4000
-  }
-);
-
-// const dancerAnimation = new threejsPlugin.Object3D(
-//   {
-//     animatedAttrs: {
-//       rotation: {
-//         y: Math.PI * 2
-//       }
-//     }
-//   },
-//   {
-//     id: "dancer_animation",
-//     selector: "#dancer_1",
-//     duration: 4000
-//   }
-// );
-// const cameraAnimation = new threejsPlugin.Object3D(
-//   {
-//     animatedAttrs: {
-//       targetEntity: "#dancer_1"
-//     }
-//   },
-//   {
-//     id: "camera_animation",
-//     selector: "#camera",
-//     duration: 4000
-//   }
-// );
-
-// const horseMAE = new threejsPlugin.MAE(
-//   {
-//     attrs: {
-//       singleLoopDuration: 1000,
-//       animationFrames: 30,
-//       animationName: "gallop"
-//     },
-//     animatedAttrs: {
-//       time: 4000
-//     }
-//   },
-//   {
-//     selector: ".horses",
-//     duration: 4000
-//   }
-// );
-
-const dancerMAE = new threejsPlugin.MAE(
-  {
-    attrs: {
-      singleLoopDuration: 10000,
-      animationFrames: 30,
-      animationName: "mixamo.com"
-    },
-    animatedAttrs: {
-      time: 6000
-    }
-  },
-  {
-    selector: "!#dancer_1",
-    duration: 10000
-  }
-);
 const soldierMAE = new threejsPlugin.MAE(
   {
     attrs: {
@@ -237,12 +120,6 @@ const soldierMAE = new threejsPlugin.MAE(
     duration: 10000
   }
 );
-clip.addIncident(boxAnimation, 0);
-// clip.addIncident(clip1, 0);
-// clip.addIncident(cameraAnimation, 0);
-// clip.addIncident(horseMAE, 0);
-clip.addIncident(dancerMAE, 0);
+
 clip.addIncident(soldierMAE, 0);
-// window.clip = clip;
 new Player({ clip });
-// clip.play();
