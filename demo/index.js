@@ -77,7 +77,13 @@ const containerParams = {
 };
 const entities = [soldier_1, deathValley_1];
 const scene = new MC.Clip({
-  html: `<div id="scene"><div id="curtains">MotorCortex Productions Presents</div></div>`,
+  html: `
+    <div id="scene">
+      <div id="curtains">
+        <p>MotorCortex Productions Presents</p>
+        <img width=200 height=150 src="https://github.com/kissmybutton/motorcortex-threejs/blob/master/three.png?raw=true"/>
+      </div>
+    </div>`,
   css: `#scene{
     display:flex;
     justify-content:center;
@@ -86,10 +92,11 @@ const scene = new MC.Clip({
     height: 100%;
   }
   #curtains{
-    font-size:20px;
+    font-size:25px;
     font-family:Arial;
     display:flex;
     align-items:center;
+    flex-direction:column;
     justify-content:center;
     color:white;
     position:absolute;
@@ -110,7 +117,7 @@ const scene = new MC.Clip({
     }
   ],
   host: document.getElementById("clip"),
-  containerParams
+  containerParams: { width: "100%", height: "70%" }
 });
 
 const clip = new threejsPlugin.Clip(
@@ -286,7 +293,7 @@ const cameraAnimation2 = new threejsPlugin.Object3D(
 const songPlayback = new MC.AudioPlayback({
   selector: "~#sound",
   startFrom: 0,
-  duration: 45000
+  duration: 51000
 });
 
 scene.addIncident(songPlayback, 0);
@@ -304,4 +311,9 @@ scene.addIncident(fadeoutcurtain, 0);
 scene.addIncident(clip, 1000);
 
 //error when loading anime after clip
-new Player({ clip: scene, scaleToFit: true });
+new Player({
+  theme: "mc-green",
+  clip: scene,
+  scaleToFit: true,
+  showVolume: true
+});
