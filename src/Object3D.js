@@ -33,46 +33,44 @@ export default class Object3D extends MC.API.MonoIncident {
   onProgress(fraction /*, millisecond*/) {
     const element = this.element.entity.object;
 
-    typeof this.targetValue.lookAt !== "undefined"
-      ? element.lookAt(new THREE.Vector3(...this.targetValue.lookAt))
-      : null;
+    if (typeof this.targetValue.lookAt !== "undefined") {
+      element.children[0].lookAt(new THREE.Vector3(...this.targetValue.lookAt));
+    }
 
     typeof this.targetValue.x !== "undefined"
       ? this.applyValue(element, "x", fraction)
       : null;
 
-    typeof this.targetValue.y !== "undefined"
+    typeof this.targetValue.y !== "undefined" &&
+    typeof this.targetValue.y !== "string"
       ? this.applyValue(element, "y", fraction)
       : null;
 
-    typeof this.targetValue.z !== "undefined" &&
-    typeof this.targetValue.z !== "string"
+    typeof this.targetValue.z !== "undefined"
       ? this.applyValue(element, "z", fraction)
       : null;
 
-    if (typeof this.targetValue.z === "string") {
+    if (typeof this.targetValue.y === "string") {
       const origin = new THREE.Vector3(
         element.position.x,
-        element.position.y,
-        element.position.z + 10
+        element.position.y + 10,
+        element.position.z
       );
       const raycaster = new THREE.Raycaster(
         origin,
-        new THREE.Vector3(0, 0, -1)
+        new THREE.Vector3(0, -1, 0)
       );
       const intersects = raycaster.intersectObjects(
-        this.context.getElements(this.targetValue.z)[0].entity.object.children,
+        this.context.getElements(this.targetValue.y)[0].entity.object.children,
         true
       );
-      element.position.z = intersects[0].point.z;
-      console.log(element.position.z);
+      element.position.y = ((intersects[0] || {}).point || {}).y;
     }
 
     if (this.attributeKey === "targetEntity") {
       element.lookAt(
         this.context.getElements(this.targetValue)[0].entity.object.position
       );
-      element.up.set(0, 0, 1);
     }
   }
 }

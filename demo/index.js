@@ -37,11 +37,7 @@ const soldierModel = {
 };
 
 const soldierTemplate = {
-  model: soldierModel,
-  settings: {
-    scale: { set: [2, 2, 2] },
-    rotation: { x: -Math.PI / 2, y: Math.PI, z: Math.PI }
-  }
+  model: soldierModel
 };
 
 const soldier_1 = JSON.parse(
@@ -50,7 +46,9 @@ const soldier_1 = JSON.parse(
     id: "soldier_1"
   })
 );
-soldier_1.settings.position = { x: -40, y: -21, z: 14 };
+soldier_1.settings = {
+  position: { x: -33, y: 14, z: 30 }
+};
 
 const deathValleyModel = {
   id: "deathValley",
@@ -59,10 +57,7 @@ const deathValleyModel = {
 };
 
 const deathValleyTemplate = {
-  model: deathValleyModel,
-  settings: {
-    rotation: { x: -Math.PI / 2, y: Math.PI, z: Math.PI }
-  }
+  model: deathValleyModel
 };
 
 const deathValley_1 = JSON.parse(
@@ -75,7 +70,7 @@ const containerParams = {
   width: "100%",
   height: "100%"
 };
-const entities = [soldier_1, deathValley_1];
+const entities = [deathValley_1, soldier_1];
 const scene = new MC.Clip({
   html: `
     <div id="scene">
@@ -126,9 +121,9 @@ const clip = new threejsPlugin.Clip(
     scenes: { id: "scene", fog: ["#342a22", 0.1, 500] },
     lights: [
       {
-        parameters: [0xffffff, 1],
+        parameters: [0xffffff, 3],
         settings: {
-          position: { set: [-40, 20, 80] },
+          position: { set: [-40, 80, 20] },
           shadow: {
             radius: 1.2,
             camera: {
@@ -148,13 +143,12 @@ const clip = new threejsPlugin.Clip(
     cameras: {
       id: "camera_1",
       settings: {
-        position: { x: -400, y: -30, z: 230 },
-        up: { set: [0, 0, 1] },
-        lookAt: [-40, -21, 14]
+        position: { x: -290, y: 70, z: 150 },
+        lookAt: [-33, 14, 30]
       }
     },
     entities,
-    controls: { enable: false }
+    controls: { enable: true }
   },
   {
     selector: "#scene",
@@ -162,6 +156,7 @@ const clip = new threejsPlugin.Clip(
     containerParams
   }
 );
+
 const fadeoutcurtain = new Anime.Anime(
   {
     animatedAttrs: {
@@ -169,7 +164,7 @@ const fadeoutcurtain = new Anime.Anime(
     }
   },
   {
-    duration: 5000,
+    duration: 3000,
     selector: `#curtains`
   }
 );
@@ -178,9 +173,9 @@ const cameraAnimation = new threejsPlugin.Object3D(
     animatedAttrs: {
       targetEntity: "!#soldier_1",
       position: {
-        x: -50,
-        y: -105,
-        z: 20
+        x: -150,
+        y: 20,
+        z: 80
       }
     }
   },
@@ -206,32 +201,17 @@ const soldierMAE = new threejsPlugin.MAE(
     duration: 10000
   }
 );
-const cameraAnimation1 = new threejsPlugin.Object3D(
-  {
-    animatedAttrs: {
-      targetEntity: "!#soldier_1",
-      position: {
-        x: -70,
-        y: 70,
-        z: 35
-      }
-    }
-  },
-  {
-    selector: "!#camera_1",
-    duration: 20000
-  }
-);
+
 const soldierAnimation1 = new threejsPlugin.Object3D(
   {
     animatedAttrs: {
       position: {
-        x: -52,
-        y: 34,
-        z: "!#deathValley_1"
+        x: -36,
+        y: "!#deathValley_1",
+        z: 9
       },
       rotation: {
-        lookAt: [-52, 34, 19]
+        // lookAt: [-17, 17, 14]
       }
     }
   },
@@ -240,6 +220,33 @@ const soldierAnimation1 = new threejsPlugin.Object3D(
     duration: 20000
   }
 );
+
+const cameraAnimation1 = new threejsPlugin.Object3D(
+  {
+    animatedAttrs: {
+      targetEntity: "!#soldier_1",
+      position: {
+        x: -46,
+        y: 25,
+        z: -20
+      }
+    }
+  },
+  {
+    selector: "!#camera_1",
+    duration: 20000
+  }
+);
+
+// Vector3 {x: -33.05862710874124, y: 14.2412998275283, z: 30.540445980956793}
+// Clip.js?ec19:348 undefined
+// Clip.js?ec19:348 Vector3 {x: -36.00494356512677, y: 17.676858007396643, z: -9.374431879098442}
+// Clip.js?ec19:348 undefined
+// Clip.js?ec19:348 Vector3 {x: -60.86447867115839, y: 19.720236862743278, z: -51.98990126098527}
+// Clip.js?ec19:348 undefined
+// Clip.js?ec19:348 Vector3 {x: -60.253242693492545, y: 21.783746471905896, z: -88.8038843646755}
+// Clip.js?ec19:348 undefined
+// Clip.js?ec19:348 Vector3 {x: -46.541444386336615, y: 23.834236872385162, z: -92.37887143938472}
 
 const soldierMAE1 = new threejsPlugin.MAE(
   {
@@ -258,20 +265,39 @@ const soldierMAE1 = new threejsPlugin.MAE(
   }
 );
 
-const soldierMAE2 = new threejsPlugin.MAE(
+const soldierAnimation2 = new threejsPlugin.Object3D(
   {
-    attrs: {
-      singleLoopDuration: 1200,
-      animationFrames: 30,
-      animationName: "Idle"
-    },
     animatedAttrs: {
-      time: 10000
+      position: {
+        x: -60,
+        y: "!#deathValley_1",
+        z: -51
+      },
+      rotation: {
+        // lookAt: [-62, 21, 80]
+      }
     }
   },
   {
     selector: "!#soldier_1",
-    duration: 10000
+    duration: 17000
+  }
+);
+
+const soldierMAE2 = new threejsPlugin.MAE(
+  {
+    attrs: {
+      singleLoopDuration: 1000,
+      animationFrames: 30,
+      animationName: "Run"
+    },
+    animatedAttrs: {
+      time: 17000
+    }
+  },
+  {
+    selector: "!#soldier_1",
+    duration: 17000
   }
 );
 const cameraAnimation2 = new threejsPlugin.Object3D(
@@ -279,15 +305,15 @@ const cameraAnimation2 = new threejsPlugin.Object3D(
     animatedAttrs: {
       targetEntity: "!#soldier_1",
       position: {
-        x: -70,
-        y: 80,
-        z: 40
+        x: -66,
+        y: 24,
+        z: -17
       }
     }
   },
   {
     selector: "!#camera_1",
-    duration: 10000
+    duration: 17000
   }
 );
 const songPlayback = new MC.AudioPlayback({
@@ -296,8 +322,6 @@ const songPlayback = new MC.AudioPlayback({
   duration: 51000
 });
 
-scene.addIncident(songPlayback, 0);
-
 clip.addIncident(cameraAnimation, 0);
 clip.addIncident(soldierMAE, 0);
 
@@ -305,10 +329,14 @@ clip.addIncident(cameraAnimation1, 20000);
 clip.addIncident(soldierAnimation1, 20000);
 clip.addIncident(soldierMAE1, 20000);
 
+clip.addIncident(soldierAnimation2, 40000);
 clip.addIncident(soldierMAE2, 40000);
 clip.addIncident(cameraAnimation2, 40000);
-scene.addIncident(fadeoutcurtain, 0);
-scene.addIncident(clip, 1000);
+
+scene.addIncident(songPlayback, 0);
+
+scene.addIncident(fadeoutcurtain, 2000);
+scene.addIncident(clip, 2000);
 
 //error when loading anime after clip
 new Player({

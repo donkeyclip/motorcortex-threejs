@@ -12078,7 +12078,6 @@ function (_MC$API$DOMClip) {
                   _this2.applySettingsToObjects(camera.settings, cameraObj);
 
                   cameraObj.updateProjectionMatrix();
-                  cameraObj.lookAt(-40, -21, 14);
                 });
                 /*
                 * RENDERERS
@@ -12155,24 +12154,30 @@ function (_MC$API$DOMClip) {
                   _this2.initializeMesh(entity);
 
                   if (entity.model) {
+                    // check if context previously loading
                     if (!_this2.context.loading) {
                       _this2.context.loading = true;
 
                       _this2.contextLoading();
-                    }
+                    } //create the custume entity reference
+
 
                     _this2.setCustomEntity(entity.id, {
                       model: entity.model,
                       settings: entity.settings,
                       object: {}
-                    }, ["entities"].concat(_toConsumableArray(entity.class)));
+                    }, ["entities"].concat(_toConsumableArray(entity.class))); // run the loadTheModel function
+                    // and push in loadingModels Array one
+
 
                     _this2.loadTheModel(entity).then(function (model) {
+                      //apply settings
                       _this2.applySettingsToObjects(entity.settings, model);
 
                       var theEntity = _this2.getElements("#".concat(entity.id));
 
-                      theEntity.entity.object = model;
+                      theEntity.entity.object = model; // add to the scene
+
                       var _iteratorNormalCompletion4 = true;
                       var _didIteratorError4 = false;
                       var _iteratorError4 = undefined;
@@ -12199,8 +12204,12 @@ function (_MC$API$DOMClip) {
 
                       _this2.context.loadedModels.push(1);
 
+                      console.log("LOADING", _this2.context.loadingModels);
+                      console.log("LOADED", _this2.context.loadedModels);
+
                       if (_this2.context.loadedModels.length === _this2.context.loadingModels.length) {
                         _this2.context.loading = false;
+                        console.log("THIS", _this2); //eslint-ingore-line
 
                         _this2.contextLoaded();
                       }
@@ -12376,7 +12385,7 @@ function (_MC$API$DOMClip) {
                     this.attrs.controls.applied = true;
                     applyElement = this.attributes.controls.applyTo;
                   } else {
-                    applyElement = this.props.host;
+                    applyElement = this.props.host || this.props.rootElement;
                   }
 
                   this.attributes.controls.selector = this.attributes.controls.selector || ".cameras";
@@ -12413,7 +12422,7 @@ function (_MC$API$DOMClip) {
                     raycaster.setFromCamera(mouse, _this2.getElements(_this2.attributes.renders[0].camera).entity.object); // calculate objects intersecting the picking ray
 
                     var intersects = raycaster.intersectObjects(_this2.getElements(_this2.attributes.renders[0].scene).entity.object.children, true);
-                    console.log(intersects);
+                    console.log((intersects[0] || {}).point);
                   };
 
                   window.addEventListener("click", onMouseMove, false);
@@ -12478,7 +12487,7 @@ function (_MC$API$DOMClip) {
       camera.settings.position.x = camera.settings.position.x || 0;
       camera.settings.position.y = camera.settings.position.y || 0;
       camera.settings.position.z = camera.settings.position.z || 10;
-      camera.settings.lookAt = camera.settings.lookAt || [0, 0, 0];
+      camera.settings.lookAt = _construct(Vector3, _toConsumableArray(camera.settings.lookAt || [0, 0, 0]));
     }
   }, {
     key: "initializeRenderer",
@@ -12785,22 +12794,24 @@ function (_MC$API$MonoIncident) {
     /*, millisecond*/
     ) {
       var element = this.element.entity.object;
-      typeof this.targetValue.lookAt !== "undefined" ? element.lookAt(_construct(Vector3, _toConsumableArray(this.targetValue.lookAt))) : null;
-      typeof this.targetValue.x !== "undefined" ? this.applyValue(element, "x", fraction) : null;
-      typeof this.targetValue.y !== "undefined" ? this.applyValue(element, "y", fraction) : null;
-      typeof this.targetValue.z !== "undefined" && typeof this.targetValue.z !== "string" ? this.applyValue(element, "z", fraction) : null;
 
-      if (typeof this.targetValue.z === "string") {
-        var origin = new Vector3(element.position.x, element.position.y, element.position.z + 10);
-        var raycaster = new Raycaster(origin, new Vector3(0, 0, -1));
-        var intersects = raycaster.intersectObjects(this.context.getElements(this.targetValue.z)[0].entity.object.children, true);
-        element.position.z = intersects[0].point.z;
-        console.log(element.position.z);
+      if (typeof this.targetValue.lookAt !== "undefined") {
+        element.children[0].lookAt(_construct(Vector3, _toConsumableArray(this.targetValue.lookAt)));
+      }
+
+      typeof this.targetValue.x !== "undefined" ? this.applyValue(element, "x", fraction) : null;
+      typeof this.targetValue.y !== "undefined" && typeof this.targetValue.y !== "string" ? this.applyValue(element, "y", fraction) : null;
+      typeof this.targetValue.z !== "undefined" ? this.applyValue(element, "z", fraction) : null;
+
+      if (typeof this.targetValue.y === "string") {
+        var origin = new Vector3(element.position.x, element.position.y + 10, element.position.z);
+        var raycaster = new Raycaster(origin, new Vector3(0, -1, 0));
+        var intersects = raycaster.intersectObjects(this.context.getElements(this.targetValue.y)[0].entity.object.children, true);
+        element.position.y = ((intersects[0] || {}).point || {}).y;
       }
 
       if (this.attributeKey === "targetEntity") {
         element.lookAt(this.context.getElements(this.targetValue)[0].entity.object.position);
-        element.up.set(0, 0, 1);
       }
     }
   }]);

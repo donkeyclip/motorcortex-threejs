@@ -66,6 +66,7 @@ export default class Clip3D extends MC.API.DOMClip {
     };
 
     this.context.loadingModels.push(1);
+
     return loadModel(entity)
       .then(obj => {
         this.setCustomEntity(
@@ -124,7 +125,6 @@ export default class Clip3D extends MC.API.DOMClip {
       const cameraObj = this.getElements(`#${camera.id}`).entity.object;
       this.applySettingsToObjects(camera.settings, cameraObj);
       cameraObj.updateProjectionMatrix();
-      cameraObj.lookAt(-40, -21, 14);
     });
 
     /*
@@ -180,10 +180,13 @@ export default class Clip3D extends MC.API.DOMClip {
     for (const entity of this.attributes.entities) {
       this.initializeMesh(entity);
       if (entity.model) {
+        // check if context previously loading
         if (!this.context.loading) {
           this.context.loading = true;
           this.contextLoading();
         }
+
+        //create the custume entity reference
         this.setCustomEntity(
           entity.id,
           {
@@ -193,21 +196,31 @@ export default class Clip3D extends MC.API.DOMClip {
           },
           ["entities", ...entity.class]
         );
+
+        // run the loadTheModel function
+        // and push in loadingModels Array one
+
         this.loadTheModel(entity).then(model => {
+          //apply settings
           this.applySettingsToObjects(entity.settings, model);
           const theEntity = this.getElements(`#${entity.id}`);
           theEntity.entity.object = model;
+
+          // add to the scene
           for (const scene of this.getElements(entity.selector)) {
             scene.entity.object.add(model);
           }
 
           this.context.loadedModels.push(1);
-
+          console.log("LOADING", this.context.loadingModels);
+          console.log("LOADED", this.context.loadedModels);
           if (
             this.context.loadedModels.length ===
             this.context.loadingModels.length
           ) {
             this.context.loading = false;
+            console.log("THIS", this);
+            //eslint-ingore-line
             this.contextLoaded();
           }
         });
@@ -279,7 +292,7 @@ export default class Clip3D extends MC.API.DOMClip {
         this.attrs.controls.applied = true;
         applyElement = this.attributes.controls.applyTo;
       } else {
-        applyElement = this.props.host;
+        applyElement = this.props.host || this.props.rootElement;
       }
       this.attributes.controls.selector =
         this.attributes.controls.selector || ".cameras";
@@ -332,7 +345,7 @@ export default class Clip3D extends MC.API.DOMClip {
             .children,
           true
         );
-        console.log(intersects);
+        console.log((intersects[0] || {}).point);
       };
       window.addEventListener("click", onMouseMove, false);
       const animate = () => {
@@ -378,7 +391,9 @@ export default class Clip3D extends MC.API.DOMClip {
     camera.settings.position.x = camera.settings.position.x || 0;
     camera.settings.position.y = camera.settings.position.y || 0;
     camera.settings.position.z = camera.settings.position.z || 10;
-    camera.settings.lookAt = camera.settings.lookAt || [0, 0, 0];
+    camera.settings.lookAt = new THREE.Vector3(
+      ...(camera.settings.lookAt || [0, 0, 0])
+    );
   }
 
   initializeRenderer(renderer) {
