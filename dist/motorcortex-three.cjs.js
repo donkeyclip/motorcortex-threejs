@@ -12038,7 +12038,7 @@ function (_MC$API$DOMClip) {
       regeneratorRuntime.mark(function _callee2() {
         var _this2 = this;
 
-        var _iteratorNormalCompletion2, _didIteratorError2, _iteratorError2, _loop, _iterator2, _step2, _ret, _iteratorNormalCompletion3, _didIteratorError3, _iteratorError3, _iterator3, _step3, _render, applyElement, cameraElement, controls, render, raycaster, mouse, onMouseMove, animate;
+        var _iteratorNormalCompletion2, _didIteratorError2, _iteratorError2, _loop, _iterator2, _step2, _ret, _iteratorNormalCompletion3, _didIteratorError3, _iteratorError3, _iterator3, _step3, _render, applyElement, cameraElement, controls, render, raycaster, animate;
 
         return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
@@ -12182,6 +12182,13 @@ function (_MC$API$DOMClip) {
 
                       theEntity.entity.object = model; // add to the scene
 
+                      console.log(entity.settings);
+                      model.traverse(function (child) {
+                        if (child.isMesh) {
+                          child.castShadow = entity.settings.castShadow;
+                          child.receiveShadow = entity.settings.receiveShadow;
+                        }
+                      });
                       var _iteratorNormalCompletion4 = true;
                       var _didIteratorError4 = false;
                       var _iteratorError4 = undefined;
@@ -12208,12 +12215,8 @@ function (_MC$API$DOMClip) {
 
                       _this2.context.loadedModels.push(1);
 
-                      console.log("LOADING", _this2.context.loadingModels);
-                      console.log("LOADED", _this2.context.loadedModels);
-
                       if (_this2.context.loadedModels.length === _this2.context.loadingModels.length) {
-                        _this2.context.loading = false;
-                        console.log("THIS", _this2); //eslint-ingore-line
+                        _this2.context.loading = false; //eslint-ingore-line
 
                         _this2.contextLoaded();
                       }
@@ -12416,20 +12419,7 @@ function (_MC$API$DOMClip) {
                   };
 
                   raycaster = new Raycaster();
-                  mouse = new Vector2();
 
-                  onMouseMove = function onMouseMove(event) {
-                    // calculate mouse position in normalized device coordinates
-                    // (-1 to +1) for both components
-                    mouse.x = event.clientX / window.innerWidth * 2 - 1;
-                    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-                    raycaster.setFromCamera(mouse, _this2.getElements(_this2.attributes.renders[0].camera).entity.object); // calculate objects intersecting the picking ray
-
-                    var intersects = raycaster.intersectObjects(_this2.getElements(_this2.attributes.renders[0].scene).entity.object.children, true);
-                    console.log((intersects[0] || {}).point);
-                  };
-
-                  window.addEventListener("click", onMouseMove, false);
 
                   animate = function animate() {
                     requestAnimationFrame(animate); // controls.update(); // only required if controls.enableDamping = true, or if controls.autoRotate = true
@@ -12604,8 +12594,8 @@ function (_MC$API$DOMClip) {
       entity.class = entity.class || [];
       entity.selector = entity.selector || ".scenes";
       entity.settings = entity.settings || {};
-      entity.settings.castShadow = true;
-      entity.settings.receiveShadow = true;
+      entity.settings.castShadow = entity.settings.castShadow || false;
+      entity.settings.receiveShadow = entity.settings.receiveShadow || false;
       entity.settings.position = entity.settings.position || {};
       entity.settings.position.x = entity.settings.position.x || 0;
       entity.settings.position.y = entity.settings.position.y || 0;
@@ -12790,7 +12780,7 @@ function (_MC$API$MonoIncident) {
   }, {
     key: "applyValue",
     value: function applyValue(element, prop, fraction) {
-      return element[this.attributeKey][prop] = (this.targetValue[prop] - this.initialValue[prop]) * fraction + this.initialValue[prop];
+      return element[this.attributeKey][prop] = Number(((this.targetValue[prop] - this.initialValue[prop]) * fraction).toFixed(5)) + this.initialValue[prop];
     }
   }, {
     key: "onProgress",
@@ -12800,7 +12790,13 @@ function (_MC$API$MonoIncident) {
       var element = this.element.entity.object;
 
       if (typeof this.targetValue.lookAt !== "undefined") {
-        element.children[0].lookAt(_construct(Vector3, _toConsumableArray(this.targetValue.lookAt)));
+        var target = _construct(Vector3, _toConsumableArray(this.targetValue.lookAt));
+
+        element.children[0].lookAt(target);
+      }
+
+      if (this.attributeKey == "rotationSetY") {
+        element.rotation.y = this.targetValue;
       }
 
       typeof this.targetValue.x !== "undefined" ? this.applyValue(element, "x", fraction) : null;
@@ -12840,7 +12836,6 @@ function (_MC$API$MonoIncident) {
       var _this = this;
 
       this.mixer = new AnimationMixer(this.element.entity.object);
-      console.log(this.element.entity.object.animations);
       this.mixer.clipAction(this.element.entity.object.animations.filter(function (animation) {
         return animation.name == _this.attrs.attrs.animationName;
       })[0]).setDuration(this.attrs.attrs.singleLoopDuration / 1000).play();

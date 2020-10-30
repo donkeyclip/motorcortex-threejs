@@ -205,21 +205,24 @@ export default class Clip3D extends MC.API.DOMClip {
           this.applySettingsToObjects(entity.settings, model);
           const theEntity = this.getElements(`#${entity.id}`);
           theEntity.entity.object = model;
-
           // add to the scene
+          console.log(entity.settings);
+          model.traverse(child => {
+            if (child.isMesh) {
+              child.castShadow = entity.settings.castShadow;
+              child.receiveShadow = entity.settings.receiveShadow;
+            }
+          });
           for (const scene of this.getElements(entity.selector)) {
             scene.entity.object.add(model);
           }
 
           this.context.loadedModels.push(1);
-          console.log("LOADING", this.context.loadingModels);
-          console.log("LOADED", this.context.loadedModels);
           if (
             this.context.loadedModels.length ===
             this.context.loadingModels.length
           ) {
             this.context.loading = false;
-            console.log("THIS", this);
             //eslint-ingore-line
             this.contextLoaded();
           }
@@ -345,9 +348,9 @@ export default class Clip3D extends MC.API.DOMClip {
             .children,
           true
         );
-        console.log((intersects[0] || {}).point);
+        // console.log((intersects[0] || {}).point);
       };
-      window.addEventListener("click", onMouseMove, false);
+      // window.addEventListener("click", onMouseMove, false);
       const animate = () => {
         requestAnimationFrame(animate);
         // controls.update(); // only required if controls.enableDamping = true, or if controls.autoRotate = true
@@ -514,8 +517,8 @@ export default class Clip3D extends MC.API.DOMClip {
     entity.class = entity.class || [];
     entity.selector = entity.selector || ".scenes";
     entity.settings = entity.settings || {};
-    entity.settings.castShadow = true;
-    entity.settings.receiveShadow = true;
+    entity.settings.castShadow = entity.settings.castShadow || false;
+    entity.settings.receiveShadow = entity.settings.receiveShadow || false;
     entity.settings.position = entity.settings.position || {};
     entity.settings.position.x = entity.settings.position.x || 0;
     entity.settings.position.y = entity.settings.position.y || 0;

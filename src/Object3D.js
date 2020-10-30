@@ -26,17 +26,24 @@ export default class Object3D extends MC.API.MonoIncident {
   }
   applyValue(element, prop, fraction) {
     return (element[this.attributeKey][prop] =
-      (this.targetValue[prop] - this.initialValue[prop]) * fraction +
-      this.initialValue[prop]);
+      Number(
+        ((this.targetValue[prop] - this.initialValue[prop]) * fraction).toFixed(
+          5
+        )
+      ) + this.initialValue[prop]);
   }
 
   onProgress(fraction /*, millisecond*/) {
     const element = this.element.entity.object;
 
     if (typeof this.targetValue.lookAt !== "undefined") {
-      element.children[0].lookAt(new THREE.Vector3(...this.targetValue.lookAt));
+      const target = new THREE.Vector3(...this.targetValue.lookAt);
+      element.children[0].lookAt(target);
     }
 
+    if (this.attributeKey == "rotationSetY") {
+      element.rotation.y = this.targetValue;
+    }
     typeof this.targetValue.x !== "undefined"
       ? this.applyValue(element, "x", fraction)
       : null;

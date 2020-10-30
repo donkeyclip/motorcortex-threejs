@@ -9,6 +9,37 @@ const soldierModelPath =
   "https://kissmybutton.github.io/motorcortex-threejs/demo/models/Soldier.glb";
 const deathValleyPath =
   "https://kissmybutton.github.io/motorcortex-threejs/demo/models/mountainous_valley/scene.gltf";
+const rad2Grad = 63.6619772367581; // 1 rad ~= 63 grads
+const ThemeliodesProblima_2 = (Xa, Ya, Xb, Yb) => {
+  const absDX = Math.abs(Xb - Xa);
+  const absDY = Math.abs(Yb - Ya);
+  const Sab = Math.sqrt(Math.pow(absDX, 2) + Math.pow(absDY, 2));
+  const DX = Xb - Xa;
+  const DY = Yb - Ya;
+  const theta = Math.atan(absDX / absDY) * rad2Grad; //http://www.translatorscafe.com/cafe/EN/units-converter/angle/2-3/radian-grad/
+  let Gab;
+  if (DX > 0 && DY > 0) {
+    Gab = theta;
+  } else if (DX > 0 && DY < 0) {
+    Gab = 200 - theta;
+  } else if (DX < 0 && DY < 0) {
+    Gab = 200 + theta;
+  } else if (DX < 0 && DY > 0) {
+    Gab = 400 - theta;
+  } else if (DX === 0 && DY > 0) {
+    Gab = 0;
+  } else if (DX === 0 && DY < 0) {
+    Gab = 200;
+  } else if (DX > 0 && DY === 0) {
+    Gab = 100;
+  } else if (DX < 0 && DY === 0) {
+    Gab = 300;
+  } else if (DX === 0 && DY === 0) {
+    Gab = 0;
+  }
+
+  return { Gab: Gab.toFixed(4) / rad2Grad, Sab: Sab.toFixed(4) };
+};
 
 // const soldierPath = [
 //   [-31, -5, 16],
@@ -47,7 +78,8 @@ const soldier_1 = JSON.parse(
   })
 );
 soldier_1.settings = {
-  position: { x: -33, y: 14, z: 30 }
+  position: { x: -33, y: 14, z: 30 },
+  castShadow: true
 };
 
 const deathValleyModel = {
@@ -66,6 +98,9 @@ const deathValley_1 = JSON.parse(
     id: "deathValley_1"
   })
 );
+deathValley_1.settings = {
+  receiveShadow: true
+};
 const containerParams = {
   width: "100%",
   height: "100%"
@@ -117,12 +152,13 @@ const scene = new MC.Clip({
 
 const clip = new threejsPlugin.Clip(
   {
-    renderers: { settings: { setClearColor: ["#342a22"] } },
-    scenes: { id: "scene", fog: ["#342a22", 0.1, 500] },
+    renderers: { settings: { setClearColor: ["#999"] } },
+    scenes: { id: "scene", fog: ["#999", 0.1, 500] },
     lights: [
       {
-        parameters: [0xffffff, 3],
+        parameters: ["#457", 1],
         settings: {
+          type: "SpotLight",
           position: { set: [-40, 80, 20] },
           shadow: {
             radius: 1.2,
@@ -137,6 +173,32 @@ const clip = new threejsPlugin.Clip(
             bias: 0.01,
             mapSize: { x: 1024 * 6, y: 1024 * 6 }
           }
+        }
+      },
+      {
+        parameters: ["#999", 1],
+        settings: {
+          type: "PointLight",
+          position: { set: [-40, 80, 20] },
+          shadow: {
+            radius: 1.2,
+            camera: {
+              near: 0.5,
+              far: 500,
+              left: -100,
+              bottom: -100,
+              right: 100,
+              top: 100
+            },
+            bias: 0.01,
+            mapSize: { x: 1024 * 6, y: 1024 * 6 }
+          }
+        }
+      },
+      {
+        settings: {
+          type: "HemisphereLight",
+          position: { set: [-40, 180, 20] }
         }
       }
     ],
@@ -188,7 +250,7 @@ const cameraAnimation = new threejsPlugin.Object3D(
 const soldierMAE = new threejsPlugin.MAE(
   {
     attrs: {
-      singleLoopDuration: 1200,
+      singleLoopDuration: 1000,
       animationFrames: 30,
       animationName: "Idle"
     },
@@ -201,7 +263,7 @@ const soldierMAE = new threejsPlugin.MAE(
     duration: 10000
   }
 );
-
+const rot = ThemeliodesProblima_2(-33, 30, -36, 9).Gab;
 const soldierAnimation1 = new threejsPlugin.Object3D(
   {
     animatedAttrs: {
@@ -210,14 +272,12 @@ const soldierAnimation1 = new threejsPlugin.Object3D(
         y: "!#deathValley_1",
         z: 9
       },
-      rotation: {
-        // lookAt: [-17, 17, 14]
-      }
+      rotationSetY: Math.PI + rot
     }
   },
   {
     selector: "!#soldier_1",
-    duration: 20000
+    duration: 15000
   }
 );
 
@@ -234,7 +294,7 @@ const cameraAnimation1 = new threejsPlugin.Object3D(
   },
   {
     selector: "!#camera_1",
-    duration: 20000
+    duration: 15000
   }
 );
 
@@ -247,23 +307,24 @@ const cameraAnimation1 = new threejsPlugin.Object3D(
 // Clip.js?ec19:348 Vector3 {x: -60.253242693492545, y: 21.783746471905896, z: -88.8038843646755}
 // Clip.js?ec19:348 undefined
 // Clip.js?ec19:348 Vector3 {x: -46.541444386336615, y: 23.834236872385162, z: -92.37887143938472}
-
+// Vector3 {x: 9.854846878733191, y: 30.191371479607458, z: -101.69151163546336}
 const soldierMAE1 = new threejsPlugin.MAE(
   {
     attrs: {
-      singleLoopDuration: 1200,
+      singleLoopDuration: 900,
       animationFrames: 30,
       animationName: "Walk"
     },
     animatedAttrs: {
-      time: 20000
+      time: 15000
     }
   },
   {
     selector: "!#soldier_1",
-    duration: 20000
+    duration: 15000
   }
 );
+const rot1 = ThemeliodesProblima_2(-36, 9, -60, -51).Gab;
 
 const soldierAnimation2 = new threejsPlugin.Object3D(
   {
@@ -273,31 +334,29 @@ const soldierAnimation2 = new threejsPlugin.Object3D(
         y: "!#deathValley_1",
         z: -51
       },
-      rotation: {
-        // lookAt: [-62, 21, 80]
-      }
+      rotationSetY: Math.PI + rot1
     }
   },
   {
     selector: "!#soldier_1",
-    duration: 17000
+    duration: 15000
   }
 );
 
 const soldierMAE2 = new threejsPlugin.MAE(
   {
     attrs: {
-      singleLoopDuration: 1000,
+      singleLoopDuration: 700,
       animationFrames: 30,
       animationName: "Run"
     },
     animatedAttrs: {
-      time: 17000
+      time: 15000
     }
   },
   {
     selector: "!#soldier_1",
-    duration: 17000
+    duration: 15000
   }
 );
 const cameraAnimation2 = new threejsPlugin.Object3D(
@@ -313,13 +372,203 @@ const cameraAnimation2 = new threejsPlugin.Object3D(
   },
   {
     selector: "!#camera_1",
-    duration: 17000
+    duration: 15000
   }
 );
+
+const rot3 = ThemeliodesProblima_2(-60, -51, -60, -88).Gab;
+
+const soldierAnimation3 = new threejsPlugin.Object3D(
+  {
+    animatedAttrs: {
+      position: {
+        x: -60,
+        y: "!#deathValley_1",
+        z: -88
+      },
+      rotationSetY: Math.PI + rot3
+    }
+  },
+  {
+    selector: "!#soldier_1",
+    duration: 10000
+  }
+);
+
+const soldierMAE3 = new threejsPlugin.MAE(
+  {
+    attrs: {
+      singleLoopDuration: 600,
+      animationFrames: 30,
+      animationName: "Run"
+    },
+    animatedAttrs: {
+      time: 10000
+    }
+  },
+  {
+    selector: "!#soldier_1",
+    duration: 10000
+  }
+);
+const cameraAnimation3 = new threejsPlugin.Object3D(
+  {
+    animatedAttrs: {
+      targetEntity: "!#soldier_1",
+      position: {
+        x: -130,
+        y: 51,
+        z: -150
+      }
+    }
+  },
+  {
+    selector: "!#camera_1",
+    duration: 10000
+  }
+);
+
+const rot4 = ThemeliodesProblima_2(-60, -88, -46, -92).Gab;
+
+const soldierAnimation4 = new threejsPlugin.Object3D(
+  {
+    animatedAttrs: {
+      position: {
+        x: -46,
+        y: "!#deathValley_1",
+        z: -92
+      },
+      rotationSetY: Math.PI + rot4
+    }
+  },
+  {
+    selector: "!#soldier_1",
+    duration: 5000
+  }
+);
+
+const soldierMAE4 = new threejsPlugin.MAE(
+  {
+    attrs: {
+      singleLoopDuration: 600,
+      animationFrames: 30,
+      animationName: "Run"
+    },
+    animatedAttrs: {
+      time: 5000
+    }
+  },
+  {
+    selector: "!#soldier_1",
+    duration: 5000
+  }
+);
+const cameraAnimation4 = new threejsPlugin.Object3D(
+  {
+    animatedAttrs: {
+      targetEntity: "!#soldier_1",
+      position: {
+        x: -130,
+        y: 51,
+        z: -150
+      }
+    }
+  },
+  {
+    selector: "!#camera_1",
+    duration: 5000
+  }
+);
+
+const rot5 = ThemeliodesProblima_2(-46, -92, -6, -109).Gab;
+
+const soldierAnimation5 = new threejsPlugin.Object3D(
+  {
+    animatedAttrs: {
+      position: {
+        x: -6,
+        y: "!#deathValley_1",
+        z: -109
+      },
+      rotationSetY: Math.PI + rot5
+    }
+  },
+  {
+    selector: "!#soldier_1",
+    duration: 10000
+  }
+);
+
+const soldierMAE5 = new threejsPlugin.MAE(
+  {
+    attrs: {
+      singleLoopDuration: 600,
+      animationFrames: 30,
+      animationName: "Run"
+    },
+    animatedAttrs: {
+      time: 10000
+    }
+  },
+  {
+    selector: "!#soldier_1",
+    duration: 10000
+  }
+);
+const cameraAnimation5 = new threejsPlugin.Object3D(
+  {
+    animatedAttrs: {
+      targetEntity: "!#soldier_1",
+      position: {
+        x: 0,
+        y: 40,
+        z: -110
+      }
+    }
+  },
+  {
+    selector: "!#camera_1",
+    duration: 15000
+  }
+);
+const soldierMAE6 = new threejsPlugin.MAE(
+  {
+    attrs: {
+      singleLoopDuration: 600,
+      animationFrames: 30,
+      animationName: "Idle"
+    },
+    animatedAttrs: {
+      time: 15000
+    }
+  },
+  {
+    selector: "!#soldier_1",
+    duration: 15000
+  }
+);
+const cameraAnimation6 = new threejsPlugin.Object3D(
+  {
+    animatedAttrs: {
+      targetEntity: "!#soldier_1",
+      position: {
+        x: 142,
+        y: 40,
+        z: -215
+      }
+    }
+  },
+  {
+    selector: "!#camera_1",
+    duration: 15000
+  }
+);
+// Vector3 {x: -6.448264786082455, y: 37.61849341670934, z: -109.47186367589241}
+
 const songPlayback = new MC.AudioPlayback({
   selector: "~#sound",
   startFrom: 0,
-  duration: 51000
+  duration: 70000
 });
 
 clip.addIncident(cameraAnimation, 0);
@@ -329,9 +578,23 @@ clip.addIncident(cameraAnimation1, 20000);
 clip.addIncident(soldierAnimation1, 20000);
 clip.addIncident(soldierMAE1, 20000);
 
-clip.addIncident(soldierAnimation2, 40000);
-clip.addIncident(soldierMAE2, 40000);
-clip.addIncident(cameraAnimation2, 40000);
+clip.addIncident(soldierAnimation2, 35000);
+clip.addIncident(soldierMAE2, 35000);
+clip.addIncident(cameraAnimation2, 35000);
+
+clip.addIncident(soldierAnimation3, 50000);
+clip.addIncident(soldierMAE3, 50000);
+clip.addIncident(cameraAnimation3, 50000);
+
+clip.addIncident(soldierAnimation4, 60000);
+clip.addIncident(soldierMAE4, 60000);
+clip.addIncident(cameraAnimation4, 60000);
+
+clip.addIncident(soldierAnimation5, 65000);
+clip.addIncident(soldierMAE5, 65000);
+clip.addIncident(cameraAnimation5, 65000);
+clip.addIncident(cameraAnimation6, 80000);
+clip.addIncident(soldierMAE6, 75000);
 
 scene.addIncident(songPlayback, 0);
 
