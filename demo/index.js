@@ -1,4 +1,4 @@
-const MC = require("@kissmybutton/motorcortex");
+const MC = require("@kissmybutton/motorcortex").default;
 // const Player = require("@kissmybutton/motorcortex-player/");
 const Player = require("../../teo-motorcortex-player/dist/motorcortex-player.umd");
 const threejsPluginDefinition = require("../src/index");
@@ -210,6 +210,20 @@ const scene = new MC.Clip({
       id: "soundtrack",
       classes: ["sound"],
       base64: false
+    },
+    {
+      src:
+        "https://raw.githubusercontent.com/kissmybutton/motorcortex-threejs/master/demo/output.mp3",
+      id: "monologue",
+      classes: ["sound"],
+      base64: false
+    },
+    {
+      src:
+        "https://raw.githubusercontent.com/kissmybutton/motorcortex-threejs/master/demo/mono3.mp3",
+      id: "monologue2",
+      classes: ["sound"],
+      base64: false
     }
   ],
   host: document.getElementById("clip"),
@@ -314,7 +328,7 @@ const subtitle = new Subtitles.SRT(
         I run
 
         5
-        00:00:60,000 --> 00:00:65,000
+        00:00:66,000 --> 00:00:65,000
         I still wonder if I am alive
 
         7
@@ -722,35 +736,49 @@ const songPlayback = new MC.AudioPlayback({
   startFrom: 0,
   duration: 100000
 });
+
 const soundtrackPlayback = new MC.AudioPlayback({
   selector: "~#soundtrack",
   startFrom: 0,
   duration: 58000
 });
+
+const monologue = new MC.AudioPlayback({
+  selector: "~#monologue",
+  startFrom: 0,
+  duration: 31000
+});
+
+const monologue2 = new MC.AudioPlayback({
+  selector: "~#monologue2",
+  startFrom: 0,
+  duration: 10000
+});
+
 window.mc = MC;
 
-// const effect = new MC.AudioEffect(
-//   {
-//     animatedAttrs: {
-//       gain: 0.2
-//     }
-//   },
-//   {
-//     selector: "soundtrack",
-//     duration: 30000
-//   }
-// );
-// const effect1 = new MC.AudioEffect(
-//   {
-//     animatedAttrs: {
-//       gain: 0.8
-//     }
-//   },
-//   {
-//     selector: "soundtrack",
-//     duration: 20000
-//   }
-// );
+const effect = new MC.AudioEffect(
+  {
+    animatedAttrs: {
+      gain: 0.1
+    }
+  },
+  {
+    selector: "~#soundtrack",
+    duration: 2
+  }
+);
+const effect1 = new MC.AudioEffect(
+  {
+    animatedAttrs: {
+      gain: 0.8
+    }
+  },
+  {
+    selector: "~#soundtrack",
+    duration: 2
+  }
+);
 clip.addIncident(cameraAnimation, 0);
 clip.addIncident(soldierMAE, 0);
 
@@ -778,8 +806,10 @@ clip.addIncident(soldierMAE6, 73000);
 
 scene.addIncident(songPlayback, 0);
 scene.addIncident(soundtrackPlayback, 36500);
-// scene.addIncident(effect, 36500);
-// scene.addIncident(effect1, 66500);
+scene.addIncident(monologue, 8000);
+scene.addIncident(monologue2, 67000);
+scene.addIncident(effect, 36500);
+scene.addIncident(effect1, 66500);
 
 scene.addIncident(fadeincurtain, 2000);
 
