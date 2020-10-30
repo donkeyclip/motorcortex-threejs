@@ -147,7 +147,6 @@ const scene = new MC.Clip({
       <div id="date">18 April 3046</div>
       <div id="location">Thessaloniki | Hortiatis</div>
       <div id="subs-container"></div>
-
     </div>`,
   css: `
   #subs-container{
@@ -155,6 +154,7 @@ const scene = new MC.Clip({
     bottom:80px;
     left:50%;
     transform:translateX(-50%);
+    text-align:center
   }
   #scene{
     display:flex;
@@ -201,6 +201,13 @@ const scene = new MC.Clip({
       src:
         "https://raw.githubusercontent.com/kissmybutton/motorcortex-threejs/master/demo/sound.mp3",
       id: "sound",
+      classes: ["sound"],
+      base64: false
+    },
+    {
+      src:
+        "https://raw.githubusercontent.com/kissmybutton/motorcortex-threejs/master/demo/soundtrack.mp4",
+      id: "soundtrack",
       classes: ["sound"],
       base64: false
     }
@@ -286,32 +293,32 @@ const subtitle = new Subtitles.SRT(
     animatedAttrs: {
       text: `
         1
-        00:00:00,000 --> 00:00:05,000
+        00:00:13,000 --> 00:00:15,000
         You think you are alone?
 
         2
-        00:00:05,000 --> 00:00:10,000
-        I've been walking the same old roads 
-        from as long as I can remember
+        00:00:18,000 --> 00:00:23,000
+        Nothing has survived since we fucked things up 
 
         3
-        00:00:10,000 --> 00:00:15,000
-        When I feel like running
+        00:00:24,000 --> 00:00:30,000
+        I've been alone walking the same old roads 
+        for as long as I can remember
 
         4
-        00:00:15,000 --> 00:00:20,000
+        00:00:32,000 --> 00:00:35,000
+        When I feel like running
+
+        5
+        00:00:37,000 --> 00:00:40,000
         I run
 
         5
-        00:00:20,000 --> 00:00:25,000
-        Nothing has survived since we fucked things up 
-
-        6
-        00:00:30,000 --> 00:00:35,000
+        00:00:60,000 --> 00:00:65,000
         I still wonder if I am alive
 
         7
-        00:00:40,000 --> 00:00:45,000
+        00:00:70,000 --> 00:00:75,000
         or is this just my view on paradise
         `
     }
@@ -640,24 +647,24 @@ const soldierAnimation5 = new threejsPlugin.Object3D(
   },
   {
     selector: "!#soldier_1",
-    duration: 10000
+    duration: 8000
   }
 );
 
 const soldierMAE5 = new threejsPlugin.MAE(
   {
     attrs: {
-      singleLoopDuration: 600,
+      singleLoopDuration: 400,
       animationFrames: 30,
       animationName: "Run"
     },
     animatedAttrs: {
-      time: 10000
+      time: 8000
     }
   },
   {
     selector: "!#soldier_1",
-    duration: 10000
+    duration: 8000
   }
 );
 const cameraAnimation5 = new threejsPlugin.Object3D(
@@ -673,7 +680,7 @@ const cameraAnimation5 = new threejsPlugin.Object3D(
   },
   {
     selector: "!#camera_1",
-    duration: 15000
+    duration: 9000
   }
 );
 const soldierMAE6 = new threejsPlugin.MAE(
@@ -705,7 +712,7 @@ const cameraAnimation6 = new threejsPlugin.Object3D(
   },
   {
     selector: "!#camera_1",
-    duration: 15000
+    duration: 25000
   }
 );
 // Vector3 {x: -6.448264786082455, y: 37.61849341670934, z: -109.47186367589241}
@@ -715,7 +722,35 @@ const songPlayback = new MC.AudioPlayback({
   startFrom: 0,
   duration: 100000
 });
+const soundtrackPlayback = new MC.AudioPlayback({
+  selector: "~#soundtrack",
+  startFrom: 0,
+  duration: 58000
+});
+window.mc = MC;
 
+// const effect = new MC.AudioEffect(
+//   {
+//     animatedAttrs: {
+//       gain: 0.2
+//     }
+//   },
+//   {
+//     selector: "soundtrack",
+//     duration: 30000
+//   }
+// );
+// const effect1 = new MC.AudioEffect(
+//   {
+//     animatedAttrs: {
+//       gain: 0.8
+//     }
+//   },
+//   {
+//     selector: "soundtrack",
+//     duration: 20000
+//   }
+// );
 clip.addIncident(cameraAnimation, 0);
 clip.addIncident(soldierMAE, 0);
 
@@ -738,10 +773,13 @@ clip.addIncident(cameraAnimation4, 60000);
 clip.addIncident(soldierAnimation5, 65000);
 clip.addIncident(soldierMAE5, 65000);
 clip.addIncident(cameraAnimation5, 65000);
-clip.addIncident(cameraAnimation6, 80000);
-clip.addIncident(soldierMAE6, 75000);
+clip.addIncident(cameraAnimation6, 74000);
+clip.addIncident(soldierMAE6, 73000);
 
 scene.addIncident(songPlayback, 0);
+scene.addIncident(soundtrackPlayback, 36500);
+// scene.addIncident(effect, 36500);
+// scene.addIncident(effect1, 66500);
 
 scene.addIncident(fadeincurtain, 2000);
 
