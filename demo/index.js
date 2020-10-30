@@ -3,6 +3,8 @@ const MC = require("@kissmybutton/motorcortex");
 const Player = require("../../teo-motorcortex-player/dist/motorcortex-player.umd");
 const threejsPluginDefinition = require("../src/index");
 const threejsPlugin = MC.loadPlugin(threejsPluginDefinition);
+const animeDef = require("@kissmybutton/motorcortex-anime");
+const Anime = MC.loadPlugin(animeDef);
 const soldierModelPath =
   "https://kissmybutton.github.io/motorcortex-threejs/demo/models/Soldier.glb";
 const deathValleyPath =
@@ -75,17 +77,33 @@ const containerParams = {
 };
 const entities = [soldier_1, deathValley_1];
 const scene = new MC.Clip({
-  html: `<div id="scene"></div>`,
+  html: `<div id="scene"><div id="curtains">MotorCortex Productions Presents</div></div>`,
   css: `#scene{
     display:flex;
     justify-content:center;
     align-items:center;
-        width: 100%;
+    width: 100%;
     height: 100%;
-  }`,
+  }
+  #curtains{
+    font-size:20px;
+    font-family:Arial;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:white;
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:black;
+  }
+    `,
   audioSources: [
     {
-      src: "./sound.mp3",
+      src:
+        "https://raw.githubusercontent.com/kissmybutton/motorcortex-threejs/master/demo/sound.mp3",
       id: "sound",
       classes: ["sound"],
       base64: false
@@ -134,17 +152,27 @@ const clip = new threejsPlugin.Clip(
   {
     selector: "#scene",
     // selector: "#container",
-    containerParams: { width: "100%", height: "70%" }
+    containerParams
   }
 );
-
+const fadeoutcurtain = new Anime.Anime(
+  {
+    animatedAttrs: {
+      opacity: 0
+    }
+  },
+  {
+    duration: 5000,
+    selector: `#curtains`
+  }
+);
 const cameraAnimation = new threejsPlugin.Object3D(
   {
     animatedAttrs: {
       targetEntity: "!#soldier_1",
       position: {
         x: -50,
-        y: -45,
+        y: -105,
         z: 20
       }
     }
@@ -258,10 +286,10 @@ const cameraAnimation2 = new threejsPlugin.Object3D(
 const songPlayback = new MC.AudioPlayback({
   selector: "~#sound",
   startFrom: 0,
-  duration: 45
+  duration: 45000
 });
 
-clip.addIncident(songPlayback, 0);
+scene.addIncident(songPlayback, 0);
 
 clip.addIncident(cameraAnimation, 0);
 clip.addIncident(soldierMAE, 0);
@@ -272,5 +300,8 @@ clip.addIncident(soldierMAE1, 20000);
 
 clip.addIncident(soldierMAE2, 40000);
 clip.addIncident(cameraAnimation2, 40000);
-scene.addIncident(clip, 0);
-new Player({ clip: scene });
+scene.addIncident(fadeoutcurtain, 0);
+scene.addIncident(clip, 1000);
+
+//error when loading anime after clip
+new Player({ clip: scene, scaleToFit: true });
