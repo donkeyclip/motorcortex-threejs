@@ -6,8 +6,8 @@ const threejsPlugin = MC.loadPlugin(threejsPluginDefinition);
 const animeDef = require("@kissmybutton/motorcortex-anime");
 const Anime = MC.loadPlugin(animeDef);
 
-const TypewriteDefinition = require("@kissmybutton/motorcortex-typewriting");
-const Typewrite = MC.loadPlugin(TypewriteDefinition);
+const SubtitlesDefinition = require("@kissmybutton/motorcortex-subtitles");
+const Subtitles = MC.loadPlugin(SubtitlesDefinition);
 
 const soldierModelPath =
   "https://kissmybutton.github.io/motorcortex-threejs/demo/models/Soldier.glb";
@@ -125,6 +125,7 @@ const tower_1 = JSON.parse(
 
 // Vector3 {x: -1.0938934870262997, y: 39.6476360020323, z: -83.63681332688691}
 tower_1.settings = {
+  scale: { set: [0.002, 0.002, 0.002] },
   castShadow: true,
   position: { x: -1, y: 39, z: -83 }
 };
@@ -135,7 +136,7 @@ const containerParams = {
   width: "100%",
   height: "100%"
 };
-const entities = [deathValley_1, soldier_1, tower_1];
+const entities = [deathValley_1, soldier_1];
 const scene = new MC.Clip({
   html: `
     <div id="scene">
@@ -143,19 +144,40 @@ const scene = new MC.Clip({
         <p>MotorCortex Productions Presents</p>
         <img width=200 height=150 src="https://github.com/kissmybutton/motorcortex-threejs/blob/master/three.png?raw=true"/>
       </div>
-      <div id="date"></div>
+      <div id="date">18 April 3046</div>
+      <div id="location">Thessaloniki | Hortiatis</div>
+      <div id="subs-container"></div>
+
     </div>`,
-  css: `#scene{
+  css: `
+  #subs-container{
+    position:absolute;
+    bottom:80px;
+    left:50%;
+    transform:translateX(-50%);
+  }
+  #scene{
     display:flex;
     justify-content:center;
     align-items:center;
     width: 100%;
     height: 100%;
   }
-  #date{
+  #date,
+  #location{
     position:absolute;
-    left:10%;
-    bottom:30%;
+    left:40px;
+    color:white;
+    opacity:0;
+    bottom: 40px;
+    z-index: 3;
+    text-transform: uppercase;
+    font-family: 'Roboto', sans-serif;
+    font-weight:100;
+    font-size:30px
+  }
+  #location{
+    bottom:10px
   }
   #curtains{
     font-size:25px;
@@ -170,6 +192,7 @@ const scene = new MC.Clip({
     left:0;
     width:100%;
     height:100%;
+    opacity:0.98;
     background:black;
   }
     `,
@@ -255,6 +278,47 @@ const clip = new threejsPlugin.Clip(
   }
 );
 
+const subtitle = new Subtitles.SRT(
+  {
+    attrs: {
+      css: `color:white;font-size:20px`
+    },
+    animatedAttrs: {
+      text: `
+        1
+        00:00:00,000 --> 00:00:05,000
+        You think you are alone?
+
+        2
+        00:00:05,000 --> 00:00:10,000
+        I've been walking the same old roads 
+        from as long as I can remember
+
+        3
+        00:00:10,000 --> 00:00:15,000
+        When I feel like running
+
+        4
+        00:00:15,000 --> 00:00:20,000
+        I run
+
+        5
+        00:00:20,000 --> 00:00:25,000
+        Nothing has survived since we fucked things up 
+
+        6
+        00:00:30,000 --> 00:00:35,000
+        I still wonder if I am alive
+
+        7
+        00:00:40,000 --> 00:00:45,000
+        or is this just my view on paradise
+        `
+    }
+  },
+  { duration: 100000, selector: "#subs-container" }
+);
+
 const fadeincurtain = new Anime.Anime(
   {
     animatedAttrs: {
@@ -263,24 +327,52 @@ const fadeincurtain = new Anime.Anime(
   },
   {
     duration: 3000,
-    selector: `#curtains`
+    selector: `#curtains`,
+    easing: "linear"
   }
 );
-const textwriting = new Typewrite.TypeWriting(
+const fadeindate = new Anime.Anime(
   {
-    size: 2,
-    textColor: "#fff",
-    cursorColor: [255, 255, 0],
-    title: "18 April 2342",
-    erase: 4,
-    eraseAll: true,
-    delayIfEraseAll: 0,
-    blinking: true,
-    blinkingDuration: 400,
-    blinkDelay: 100
+    animatedAttrs: {
+      opacity: 1
+    }
   },
   {
-    selector: ".date"
+    duration: 3000,
+    selector: `#date`
+  }
+);
+const fadeoutdate = new Anime.Anime(
+  {
+    animatedAttrs: {
+      opacity: 0
+    }
+  },
+  {
+    duration: 3000,
+    selector: `#date`
+  }
+);
+const fadeinlocation = new Anime.Anime(
+  {
+    animatedAttrs: {
+      opacity: 1
+    }
+  },
+  {
+    duration: 3000,
+    selector: `#location`
+  }
+);
+const fadeoutlocation = new Anime.Anime(
+  {
+    animatedAttrs: {
+      opacity: 0
+    }
+  },
+  {
+    duration: 3000,
+    selector: `#location`
   }
 );
 const cameraAnimation = new threejsPlugin.Object3D(
@@ -652,7 +744,13 @@ clip.addIncident(soldierMAE6, 75000);
 scene.addIncident(songPlayback, 0);
 
 scene.addIncident(fadeincurtain, 2000);
-scene.addIncident(textwriting, 4000);
+
+scene.addIncident(fadeindate, 6000);
+scene.addIncident(fadeoutdate, 14000);
+
+scene.addIncident(fadeinlocation, 8000);
+scene.addIncident(fadeoutlocation, 16000);
+scene.addIncident(subtitle, 0);
 scene.addIncident(clip, 2000);
 
 //error when loading anime after clip

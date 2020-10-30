@@ -348,9 +348,9 @@ export default class Clip3D extends MC.API.DOMClip {
             .children,
           true
         );
-        console.log((intersects[0] || {}).point);
+        // console.log((intersects[0] || {}).point);
       };
-      window.addEventListener("click", onMouseMove, false);
+      // window.addEventListener("click", onMouseMove, false);
       const animate = () => {
         requestAnimationFrame(animate);
         // controls.update(); // only required if controls.enableDamping = true, or if controls.autoRotate = true
