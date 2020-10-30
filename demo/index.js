@@ -5,6 +5,10 @@ const threejsPluginDefinition = require("../src/index");
 const threejsPlugin = MC.loadPlugin(threejsPluginDefinition);
 const animeDef = require("@kissmybutton/motorcortex-anime");
 const Anime = MC.loadPlugin(animeDef);
+
+const TypewriteDefinition = require("@kissmybutton/motorcortex-typewriting");
+const Typewrite = MC.loadPlugin(TypewriteDefinition);
+
 const soldierModelPath =
   "https://kissmybutton.github.io/motorcortex-threejs/demo/models/Soldier.glb";
 const deathValleyPath =
@@ -139,6 +143,7 @@ const scene = new MC.Clip({
         <p>MotorCortex Productions Presents</p>
         <img width=200 height=150 src="https://github.com/kissmybutton/motorcortex-threejs/blob/master/three.png?raw=true"/>
       </div>
+      <div id="date"></div>
     </div>`,
   css: `#scene{
     display:flex;
@@ -146,6 +151,11 @@ const scene = new MC.Clip({
     align-items:center;
     width: 100%;
     height: 100%;
+  }
+  #date{
+    position:absolute;
+    left:10%;
+    bottom:30%;
   }
   #curtains{
     font-size:25px;
@@ -254,6 +264,23 @@ const fadeincurtain = new Anime.Anime(
   {
     duration: 3000,
     selector: `#curtains`
+  }
+);
+const textwriting = new Typewrite.TypeWriting(
+  {
+    size: 2,
+    textColor: "#fff",
+    cursorColor: [255, 255, 0],
+    title: "18 April 2342",
+    erase: 4,
+    eraseAll: true,
+    delayIfEraseAll: 0,
+    blinking: true,
+    blinkingDuration: 400,
+    blinkDelay: 100
+  },
+  {
+    selector: ".date"
   }
 );
 const cameraAnimation = new threejsPlugin.Object3D(
@@ -625,6 +652,7 @@ clip.addIncident(soldierMAE6, 75000);
 scene.addIncident(songPlayback, 0);
 
 scene.addIncident(fadeincurtain, 2000);
+scene.addIncident(textwriting, 4000);
 scene.addIncident(clip, 2000);
 
 //error when loading anime after clip

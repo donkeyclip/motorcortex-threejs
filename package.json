@@ -79,6 +79,7 @@
   },
   "dependencies": {
     "@kissmybutton/motorcortex-anime": "^1.4.14",
+    "@kissmybutton/motorcortex-typewriting": "^1.0.3",
     "exports-loader": "^0.7.0",
     "imports-loader": "^0.8.0",
     "three": "^0.116.1",
