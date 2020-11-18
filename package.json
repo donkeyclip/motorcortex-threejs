@@ -120,7 +120,7 @@
     "prettier": "^1.4.4",
     "rimraf": "^2.6.1",
     "sass-loader": "^7.0.1",
-    "semantic-release": "^15.6.0",
+    "semantic-release": "^17.2.3",
     "shelljs": "^0.8.2",
     "stylelint": "^9.3.0",
     "stylelint-config-prettier": "^3.3.0",
