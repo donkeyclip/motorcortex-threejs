@@ -1,7 +1,7 @@
 import MC from "@kissmybutton/motorcortex";
 import { AnimationMixer } from "three";
 
-export default class MAE extends MC.API.MonoIncident {
+export default class MAE extends MC.Effect {
   onGetContext() {
     this.mixer = new AnimationMixer(this.element.entity.object);
     this.mixer

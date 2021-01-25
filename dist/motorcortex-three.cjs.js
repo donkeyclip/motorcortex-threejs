@@ -11918,8 +11918,8 @@ var promise = Promise;
 
 var Clip3D =
 /*#__PURE__*/
-function (_MC$API$DOMClip) {
-  _inherits(Clip3D, _MC$API$DOMClip);
+function (_MC$BrowserClip) {
+  _inherits(Clip3D, _MC$BrowserClip);
 
   function Clip3D() {
     _classCallCheck(this, Clip3D);
@@ -11953,8 +11953,8 @@ function (_MC$API$DOMClip) {
       this.context.loading = false;
       this.context.loadedModels = [];
       this.context.loadingModels = [];
-      this.init();
       this.handleWindoResize();
+      this.init();
     }
   }, {
     key: "getElements",
@@ -12162,7 +12162,9 @@ function (_MC$API$DOMClip) {
                     if (!_this2.context.loading) {
                       _this2.context.loading = true;
 
-                      _this2.contextLoading();
+                      _this2.contextLoading(); // console.log(this);
+                      //   debugger;//eslint-disable-line
+
                     } //create the custume entity reference
 
 
@@ -12217,6 +12219,8 @@ function (_MC$API$DOMClip) {
 
                       if (_this2.context.loadedModels.length === _this2.context.loadingModels.length) {
                         _this2.context.loading = false; //eslint-ingore-line
+                        // console.log(this);
+                        // debugger;//eslint-disable-line
 
                         _this2.contextLoaded();
                       }
@@ -12742,12 +12746,12 @@ function (_MC$API$DOMClip) {
   }]);
 
   return Clip3D;
-}(MC.API.DOMClip);
+}(MC.BrowserClip);
 
 var Object3D$1 =
 /*#__PURE__*/
-function (_MC$API$MonoIncident) {
-  _inherits(Object3D, _MC$API$MonoIncident);
+function (_MC$Effect) {
+  _inherits(Object3D, _MC$Effect);
 
   function Object3D() {
     _classCallCheck(this, Object3D);
@@ -12817,12 +12821,12 @@ function (_MC$API$MonoIncident) {
   }]);
 
   return Object3D;
-}(MC.API.MonoIncident);
+}(MC.Effect);
 
 var MAE =
 /*#__PURE__*/
-function (_MC$API$MonoIncident) {
-  _inherits(MAE, _MC$API$MonoIncident);
+function (_MC$Effect) {
+  _inherits(MAE, _MC$Effect);
 
   function MAE() {
     _classCallCheck(this, MAE);
@@ -12866,7 +12870,7 @@ function (_MC$API$MonoIncident) {
   }]);
 
   return MAE;
-}(MC.API.MonoIncident);
+}(MC.Effect);
 
 var compositeAttributes = {
   rotation: ["x", "y", "z", "lookAt"],

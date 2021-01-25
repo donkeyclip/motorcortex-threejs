@@ -2,7 +2,7 @@ import MC from "@kissmybutton/motorcortex";
 import * as THREE from "three";
 const mouse = new THREE.Vector2();
 
-export default class Object3D extends MC.API.MonoIncident {
+export default class Object3D extends MC.Effect {
   getScratchValue() {
     const element = this.element.entity.object;
     if (!this.element.settings && !element) {

@@ -6,8 +6,8 @@ const threejsPlugin = MC.loadPlugin(threejsPluginDefinition);
 const animeDef = require("@kissmybutton/motorcortex-anime");
 const Anime = MC.loadPlugin(animeDef);
 
-const SubtitlesDefinition = require("@kissmybutton/motorcortex-subtitles");
-const Subtitles = MC.loadPlugin(SubtitlesDefinition);
+// const SubtitlesDefinition = require("@kissmybutton/motorcortex-subtitles");
+// const Subtitles = MC.loadPlugin(SubtitlesDefinition);
 
 const soldierModelPath =
   "https://kissmybutton.github.io/motorcortex-threejs/demo/models/Soldier.glb";
@@ -137,7 +137,7 @@ const containerParams = {
   height: "100%"
 };
 const entities = [deathValley_1, soldier_1];
-const scene = new MC.Clip({
+const scene = new MC.HTMLClip({
   html: `
     <div id="scene">
       <div id="curtains">
@@ -299,46 +299,46 @@ const clip = new threejsPlugin.Clip(
   }
 );
 
-const subtitle = new Subtitles.SRT(
-  {
-    attrs: {
-      css: `color:white;font-size:20px`
-    },
-    animatedAttrs: {
-      text: `
-        1
-        00:00:13,000 --> 00:00:15,000
-        You think you are alone?
+// const subtitle = new Subtitles.SRT(
+//   {
+//     attrs: {
+//       css: `color:white;font-size:20px`
+//     },
+//     animatedAttrs: {
+//       text: `
+//         1
+//         00:00:13,000 --> 00:00:15,000
+//         You think you are alone?
 
-        2
-        00:00:18,000 --> 00:00:23,000
-        Nothing has survived since we fucked things up 
+//         2
+//         00:00:18,000 --> 00:00:23,000
+//         Nothing has survived since we fucked things up
 
-        3
-        00:00:24,000 --> 00:00:30,000
-        I've been alone walking the same old roads 
-        for as long as I can remember
+//         3
+//         00:00:24,000 --> 00:00:30,000
+//         I've been alone walking the same old roads
+//         for as long as I can remember
 
-        4
-        00:00:32,000 --> 00:00:35,000
-        When I feel like running
+//         4
+//         00:00:32,000 --> 00:00:35,000
+//         When I feel like running
 
-        5
-        00:00:37,000 --> 00:00:40,000
-        I run
+//         5
+//         00:00:37,000 --> 00:00:40,000
+//         I run
 
-        5
-        00:00:66,000 --> 00:00:65,000
-        I still wonder if I am alive
+//         5
+//         00:00:66,000 --> 00:00:65,000
+//         I still wonder if I am alive
 
-        7
-        00:00:70,000 --> 00:00:75,000
-        or is this just my view on paradise
-        `
-    }
-  },
-  { duration: 100000, selector: "#subs-container" }
-);
+//         7
+//         00:00:70,000 --> 00:00:75,000
+//         or is this just my view on paradise
+//         `
+//     }
+//   },
+//   { duration: 100000, selector: "#subs-container" }
+// );
 
 const fadeincurtain = new Anime.Anime(
   {
@@ -804,6 +804,8 @@ clip.addIncident(cameraAnimation5, 65000);
 clip.addIncident(cameraAnimation6, 74000);
 clip.addIncident(soldierMAE6, 73000);
 
+scene.addIncident(clip, 2000);
+
 scene.addIncident(songPlayback, 0);
 scene.addIncident(soundtrackPlayback, 36500);
 scene.addIncident(monologue, 8000);
@@ -818,8 +820,7 @@ scene.addIncident(fadeoutdate, 14000);
 
 scene.addIncident(fadeinlocation, 8000);
 scene.addIncident(fadeoutlocation, 16000);
-scene.addIncident(subtitle, 0);
-scene.addIncident(clip, 2000);
+// scene.addIncident(subtitle, 0);
 
 //error when loading anime after clip
 new Player({

@@ -19,7 +19,6 @@ module.exports = {
 
     path: path.resolve(__dirname, "./" /*"./dist"*/)
   },
-
   devtool: "cheap-module-eval-source-map",
   mode: "development",
 

@@ -8,7 +8,7 @@ import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 const promise = Promise;
 
-export default class Clip3D extends MC.API.DOMClip {
+export default class Clip3D extends MC.BrowserClip {
   onAfterRender() {
     this.attributes = {
       ...JSON.parse(JSON.stringify(this.attrs)),
@@ -35,8 +35,8 @@ export default class Clip3D extends MC.API.DOMClip {
     this.context.loading = false;
     this.context.loadedModels = [];
     this.context.loadingModels = [];
-    this.init();
     this.handleWindoResize();
+    this.init();
   }
 
   getElements(selector) {
@@ -184,6 +184,8 @@ export default class Clip3D extends MC.API.DOMClip {
         if (!this.context.loading) {
           this.context.loading = true;
           this.contextLoading();
+          // console.log(this);
+          //   debugger;//eslint-disable-line
         }
 
         //create the custume entity reference
@@ -224,6 +226,8 @@ export default class Clip3D extends MC.API.DOMClip {
           ) {
             this.context.loading = false;
             //eslint-ingore-line
+            // console.log(this);
+            // debugger;//eslint-disable-line
             this.contextLoaded();
           }
         });
