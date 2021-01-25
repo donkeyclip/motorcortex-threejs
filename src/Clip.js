@@ -1,4 +1,4 @@
-import uuidv1 from "uuid/v4";
+import { v4 as uuidv4 } from "uuid";
 import * as THREE from "three";
 import { SkeletonUtils } from "three/examples/jsm/utils/SkeletonUtils.js";
 import MC from "@kissmybutton/motorcortex";
@@ -13,7 +13,7 @@ export default class Clip3D extends MC.BrowserClip {
     this.attributes = {
       ...JSON.parse(JSON.stringify(this.attrs)),
       entities: this.attrs.entities,
-      controls: this.attrs.controls
+      controls: this.attrs.controls,
     };
     this.append = false;
     this.loaders = {
@@ -25,11 +25,11 @@ export default class Clip3D extends MC.BrowserClip {
         const loader = new GLTFLoader();
         const dracoLoader = new DRACOLoader();
         loader.setDRACOLoader(dracoLoader);
-        loader.load(url, gltf => {
+        loader.load(url, (gltf) => {
           gltf.scene.animations = gltf.animations;
           return _f(gltf.scene);
         });
-      }
+      },
     };
 
     this.context.loading = false;
@@ -56,46 +56,46 @@ export default class Clip3D extends MC.BrowserClip {
       }
     }
 
-    entity.model.id = entity.model.id || uuidv1();
+    entity.model.id = entity.model.id || uuidv4();
     entity.model.class = entity.model.class || [];
     const loader = this.loaders[entity.model.loader];
     const loadModel = () => {
-      return new promise(resolve => {
-        loader(entity.model.file, obj => resolve(obj));
+      return new promise((resolve) => {
+        loader(entity.model.file, (obj) => resolve(obj));
       });
     };
 
     this.context.loadingModels.push(1);
 
     return loadModel(entity)
-      .then(obj => {
+      .then((obj) => {
         this.setCustomEntity(
           entity.model.id,
           {
-            object: obj
+            object: obj,
           },
           ["models"]
         );
         return obj;
       })
-      .catch(e => console.error(e));
+      .catch((e) => console.error(e));
   }
   async init() {
     /*
-    * SCENES
-    */
+     * SCENES
+     */
     !(this.attributes.scenes instanceof Array) &&
       (this.attributes.scenes = [this.attributes.scenes]);
 
-    this.attributes.scenes.map(scene => {
-      scene.id = scene.id || uuidv1();
+    this.attributes.scenes.map((scene) => {
+      scene.id = scene.id || uuidv4();
       scene.class = scene.class || [];
       scene.settings = scene.settings || {};
       this.setCustomEntity(
         scene.id,
         {
           settings: scene.settings,
-          object: new THREE.Scene()
+          object: new THREE.Scene(),
         },
         ["scenes", ...scene.class]
       );
@@ -107,18 +107,18 @@ export default class Clip3D extends MC.BrowserClip {
     });
 
     /*
-    * CAMERAS
-    */
+     * CAMERAS
+     */
     !(this.attributes.cameras instanceof Array) &&
       (this.attributes.cameras = [this.attributes.cameras]);
 
-    this.attributes.cameras.map(camera => {
+    this.attributes.cameras.map((camera) => {
       this.initializeCamera(camera);
       this.setCustomEntity(
         camera.id || "camera",
         {
           settings: camera.settings,
-          object: new THREE[camera.settings.type](...camera.parameters)
+          object: new THREE[camera.settings.type](...camera.parameters),
         },
         ["cameras", ...camera.class]
       );
@@ -128,18 +128,18 @@ export default class Clip3D extends MC.BrowserClip {
     });
 
     /*
-    * RENDERERS
-    */
+     * RENDERERS
+     */
     !(this.attributes.renderers instanceof Array) &&
       (this.attributes.renderers = [this.attributes.renderers]);
 
-    this.attributes.renderers.map(renderer => {
+    this.attributes.renderers.map((renderer) => {
       this.initializeRenderer(renderer);
       this.setCustomEntity(
         renderer.id,
         {
           settings: renderer.settings,
-          object: new THREE[renderer.settings.type](...renderer.parameters)
+          object: new THREE[renderer.settings.type](...renderer.parameters),
         },
         ["renderers", ...renderer.class]
       );
@@ -148,18 +148,18 @@ export default class Clip3D extends MC.BrowserClip {
     });
 
     /*
-    * LIGHTS
-    */
+     * LIGHTS
+     */
     !(this.attributes.lights instanceof Array) &&
       (this.attributes.lights = [this.attributes.lights]);
 
-    this.attributes.lights.map(light => {
+    this.attributes.lights.map((light) => {
       this.initializeLight(light);
       this.setCustomEntity(
         light.id,
         {
           settings: light.settings,
-          object: new THREE[light.settings.type](...light.parameters)
+          object: new THREE[light.settings.type](...light.parameters),
         },
         ["lights", ...light.class]
       );
@@ -173,8 +173,8 @@ export default class Clip3D extends MC.BrowserClip {
     });
 
     /*
-    * entities
-    */
+     * entities
+     */
     this.attributes.models = [];
 
     for (const entity of this.attributes.entities) {
@@ -194,7 +194,7 @@ export default class Clip3D extends MC.BrowserClip {
           {
             model: entity.model,
             settings: entity.settings,
-            object: {}
+            object: {},
           },
           ["entities", ...entity.class]
         );
@@ -202,14 +202,14 @@ export default class Clip3D extends MC.BrowserClip {
         // run the loadTheModel function
         // and push in loadingModels Array one
 
-        this.loadTheModel(entity).then(model => {
+        this.loadTheModel(entity).then((model) => {
           //apply settings
           this.applySettingsToObjects(entity.settings, model);
           const theEntity = this.getElements(`#${entity.id}`);
           theEntity.entity.object = model;
           // add to the scene
           console.log(entity.settings);
-          model.traverse(child => {
+          model.traverse((child) => {
             if (child.isMesh) {
               child.castShadow = entity.settings.castShadow;
               child.receiveShadow = entity.settings.receiveShadow;
@@ -259,7 +259,7 @@ export default class Clip3D extends MC.BrowserClip {
           object: new THREE[entity.settings.entityType || "Mesh"](
             geometry,
             material
-          )
+          ),
         },
         ["entities", ...entity.class]
       );
@@ -277,8 +277,8 @@ export default class Clip3D extends MC.BrowserClip {
     }
 
     /*
-    * renders
-    */
+     * renders
+     */
     this.attributes.renders = this.attributes.renders || [{}];
 
     for (const render of this.attributes.renders) {
@@ -287,12 +287,12 @@ export default class Clip3D extends MC.BrowserClip {
       render.renderer =
         render.renderer || "#" + this.getElements(".renderers")[0].id;
 
-      this.setCustomEntity(uuidv1(), render, ["renders"]);
+      this.setCustomEntity(uuidv4(), render, ["renders"]);
     }
 
     /*
-    * CONTROLS
-    */
+     * CONTROLS
+     */
     if (this.attributes.controls && !this.attributes.controls.applied) {
       let applyElement;
       if (this.attributes.controls.applyTo) {
@@ -335,7 +335,7 @@ export default class Clip3D extends MC.BrowserClip {
       };
       const raycaster = new THREE.Raycaster();
       const mouse = new THREE.Vector2();
-      const onMouseMove = event => {
+      const onMouseMove = (event) => {
         // calculate mouse position in normalized device coordinates
         // (-1 to +1) for both components
 
@@ -370,7 +370,7 @@ export default class Clip3D extends MC.BrowserClip {
   }
 
   initializeCamera(camera) {
-    camera.id = camera.id || uuidv1();
+    camera.id = camera.id || uuidv4();
     camera.class = camera.class || [];
     camera.settings = camera.settings || {};
     camera.class = camera.class || [];
@@ -404,37 +404,37 @@ export default class Clip3D extends MC.BrowserClip {
   }
 
   initializeRenderer(renderer) {
-    renderer.id = renderer.id || uuidv1();
+    renderer.id = renderer.id || uuidv4();
     renderer.class = renderer.class || [];
     renderer.settings = renderer.settings || {};
     renderer.settings.shadowMap = renderer.settings.shadowMap || {
       enabled: true,
-      type: THREE.PCFSoftShadowMap
+      type: THREE.PCFSoftShadowMap,
     };
     (renderer.settings.setClearColor = renderer.settings.setClearColor || [
-      "lightblue"
+      "lightblue",
     ]),
       (renderer.settings.type = renderer.settings.type || "WebGLRenderer");
     renderer.parameters = renderer.parameters || [
       {
         alpha: true,
-        antialias: true
-      }
+        antialias: true,
+      },
     ];
     if (renderer.settings.type === "WebGLRenderer") {
       renderer.settings.setPixelRatio = renderer.settings.setPixelRatio || [
-        this.context.window.devicePixelRatio
+        this.context.window.devicePixelRatio,
       ];
     }
 
     renderer.settings.setSize = renderer.settings.setSize || [
       this.context.rootElement.offsetWidth,
-      this.context.rootElement.offsetHeight
+      this.context.rootElement.offsetHeight,
     ];
   }
 
   initializeLight(light) {
-    light.id = light.id || uuidv1();
+    light.id = light.id || uuidv4();
     light.selector = light.selector || ".scenes";
     light.class = light.class || [];
     light.settings = light.settings || {};
@@ -446,7 +446,7 @@ export default class Clip3D extends MC.BrowserClip {
         : true;
 
       light.settings.position = light.settings.position || {
-        set: [0, 0, 50]
+        set: [0, 0, 50],
       };
       light.settings.shadow = {
         camera: {
@@ -455,10 +455,10 @@ export default class Clip3D extends MC.BrowserClip {
           left: -50,
           bottom: -50,
           right: 50,
-          top: 50
+          top: 50,
         },
         bias: 0.0001,
-        mapSize: { x: 1024 * 6, y: 1024 * 6 }
+        mapSize: { x: 1024 * 6, y: 1024 * 6 },
       };
       light.settings.penumbra = light.settings.penumbra || 0.8;
       light.parameters = light.parameters || [0xffffff, 2];
@@ -473,14 +473,14 @@ export default class Clip3D extends MC.BrowserClip {
           left: -50,
           bottom: -50,
           right: 50,
-          top: 50
+          top: 50,
         },
         bias: 0.0001,
-        mapSize: { x: 1024 * 6, y: 1024 * 6 }
+        mapSize: { x: 1024 * 6, y: 1024 * 6 },
       };
 
       light.settings.position = light.settings.position || {
-        set: [0, 0, 50]
+        set: [0, 0, 50],
       };
 
       light.parameters = light.parameters || [0xffffff, 1];
@@ -491,7 +491,7 @@ export default class Clip3D extends MC.BrowserClip {
 
       light.parameters = light.parameters || [0xffffff, 1, 100];
       light.settings.position = light.settings.position || {
-        set: [0, 0, 50]
+        set: [0, 0, 50],
       };
 
       light.settings.shadow = {
@@ -501,23 +501,23 @@ export default class Clip3D extends MC.BrowserClip {
           left: -50,
           bottom: -50,
           right: 50,
-          top: 50
+          top: 50,
         },
         bias: 0.0001,
-        mapSize: { x: 512, y: 512 }
+        mapSize: { x: 512, y: 512 },
       };
     } else if (light.settings.type === "AmbientLight") {
       light.parameters = light.parameters || [0x404040];
     } else if (light.settings.type === "HemisphereLight") {
       light.parameters = light.parameters || [0xffffff, 0xffffff, 0.6];
       light.settings.position = light.settings.position || {
-        set: [0, 0, 50]
+        set: [0, 0, 50],
       };
     }
   }
 
   initializeMesh(entity) {
-    entity.id = entity.id || uuidv1();
+    entity.id = entity.id || uuidv4();
     entity.class = entity.class || [];
     entity.selector = entity.selector || ".scenes";
     entity.settings = entity.settings || {};
@@ -530,7 +530,7 @@ export default class Clip3D extends MC.BrowserClip {
   }
 
   initializeCSS3DObject(css3d) {
-    css3d.id = css3d.id || uuidv1();
+    css3d.id = css3d.id || uuidv4();
     css3d.class = css3d.class || [];
     css3d.selector = css3d.selector || ".scenes";
     css3d.settings = css3d.settings || {};
@@ -541,17 +541,17 @@ export default class Clip3D extends MC.BrowserClip {
   }
 
   initializeLoader(loader) {
-    loader.id = loader.id || uuidv1();
+    loader.id = loader.id || uuidv4();
     loader.class = loader.class || [];
     loader.parameters = loader.parameters || [];
     if (loader.parameters.length < 2) {
       loader.parameters.push(
         null,
         null,
-        function(/*xhr*/) {
+        function (/*xhr*/) {
           // console.log((xhr.loaded / xhr.total) * 100 + "%loaded");
         },
-        function(error) {
+        function (error) {
           throw error;
         }
       );
@@ -559,7 +559,7 @@ export default class Clip3D extends MC.BrowserClip {
   }
 
   initializeModel(model) {
-    model.id = model.id || uuidv1();
+    model.id = model.id || uuidv4();
     model.class = model.class || [];
     model.settings = model.settings || {};
     model.settings.position = model.settings.position || {};

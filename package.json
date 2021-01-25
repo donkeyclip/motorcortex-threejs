@@ -1,6 +1,6 @@
 {
   "name": "@kissmybutton/motorcortex-threejs",
-  "version": "1.3.0",
+  "version": "1.3.2",
   "description": "Threejs library for MotorCortex",
   "main": "dist/motorcortex-three.cjs.js",
   "module": "dist/motorcortex-three.esm.js",
@@ -18,26 +18,22 @@
     "node": ">=8.3.2"
   },
   "scripts": {
+    "update-force:packages": "npm-check-updates -u && npm i",
+    "update:packages": "npm update --save/--save-dev",
     "concurrently": "concurrently -c \"cyan.bold,magenta.bold\" --names \"JS,Styles\"",
     "lint:styles": "stylelint  \"src/**.css\" \"src/**/*.scss\" --config .stylelintrc.json",
-    "lint:js": "eslint -c .eslintrc src/**/*.{js,jsx} ",
-    "lint": "npm run concurrently \"npm run lint:js\" \"npm run lint:styles\" ",
-    "lint:fix": "npm run concurrently  \"npm run lint:js -- --fix\" \"npm run lint:styles -- --fix\"",
+    "lint:js": "./node_modules/eslint/bin/eslint.js -c .eslintrc src/**/*.js",
+    "lint": "npm run concurrently \"npm run lint:js\"",
+    "lint:fix": "npm run concurrently  \"npm run lint:js -- --fix\" ",
     "build": "npm run build:lib && npm run build:demo",
     "build:lib": "rollup -c",
-    "start": "npm run build:lib && concurrently -c \"cyan.bold,magenta.bold\" \"npm:build:lib -- -w\"  \"npm:start:demo\" ",
-    "start:demo": "webpack-dev-server --mode=development --config ./demo/webpack.config.js",
-    "build:demo": "webpack --mode=production --config ./demo/webpack.config.js",
+    "start": "webpack serve --inline --hot --config ./demo/webpack.config.js",
+    "build:demo": "webpack --config ./demo/webpack.config.js",
     "test": "HERE GOES YOUR TEST TASK",
     "test:prod": "npm run lint",
     "report-coverage": "cat ./coverage/lcov.info | coveralls",
     "commit": "git-cz",
-    "prebuild": "rimraf dist",
-    "precommit": "lint-staged",
-    "prepush": "npm run test:prod",
-    "commitmsg": "commitlint -E GIT_PARAMS",
-    "update-force:packages": "npm-check-updates -u && npm i",
-    "update:packages": "npm update --save/--save-dev"
+    "prebuild": "rimraf dist"
   },
   "keywords": [
     "motorcortex",
@@ -45,22 +41,6 @@
     "threejs",
     "3d"
   ],
-  "lint-staged": {
-    "linters": {
-      "*.json": [
-        "prettier --write",
-        "git add"
-      ],
-      "*.{css,scss}": [
-        "stylelint  \"src/**.css\" \"src/**/*.scss\" --config .stylelintrc.json --fix",
-        "git add"
-      ],
-      "*.{js,jsx}": [
-        "eslint --fix",
-        "git add"
-      ]
-    }
-  },
   "release": {
     "verifyConditions": [
       "@semantic-release/changelog",
@@ -80,76 +60,78 @@
     }
   },
   "dependencies": {
-    "@kissmybutton/motorcortex-anime": "^2.1.4",
-    "@kissmybutton/motorcortex-subtitles": "^1.0.5",
-    "@kissmybutton/motorcortex-typewriting": "^1.0.8",
-    "exports-loader": "^2.0.0",
-    "imports-loader": "^1.2.0",
-    "three": "^0.124.0",
-    "whatwg-fetch": "^3.5.0",
-    "zlib": "^1.0.5",
-    "zlib.es": "^0.6.0"
+    "three": "^0.124.0"
   },
   "peerDependencies": {
-    "@kissmybutton/motorcortex": "^6.1.4"
+    "@kissmybutton/motorcortex": "^6.1.3"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.10",
     "@babel/core": "^7.12.10",
+    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.12.1",
     "@babel/preset-env": "^7.12.11",
     "@commitlint/cli": "^11.0.0",
     "@commitlint/config-conventional": "^11.0.0",
-    "@kissmybutton/motorcortex": "^6.1.4",
+    "@kissmybutton/motorcortex": "^6.1.3",
+    "@kissmybutton/motorcortex-anime": "^2.1.4",
     "@kissmybutton/motorcortex-player": "^1.7.3",
+    "@kissmybutton/motorcortex-subtitles": "^1.0.5",
+    "@kissmybutton/motorcortex-typewriting": "^1.0.8",
     "@semantic-release/changelog": "^5.0.1",
     "@semantic-release/git": "^9.0.0",
     "@semantic-release/github": "^7.2.0",
-    "@semantic-release/npm": "^7.0.10",
+    "@semantic-release/npm": "^7.0.9",
+    "babel-core": "^6.26.3",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.2.2",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
     "babel-preset-es2015-node5": "^1.2.0",
-    "commitizen": "^4.2.3",
+    "babel-preset-stage-0": "^6.24.1",
+    "commitizen": "^4.2.2",
     "concurrently": "^5.3.0",
     "coveralls": "^3.1.0",
-    "css-loader": "^5.0.1",
     "cz-conventional-changelog": "^3.3.0",
-    "es6-promise": "^4.2.8",
-    "eslint": "^7.18.0",
-    "eslint-config-prettier": "^7.2.0",
+    "eslint": "^7.17.0",
+    "eslint-config-prettier": "^7.1.0",
     "eslint-config-standard": "^16.0.2",
     "eslint-plugin-babel": "^5.3.1",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.1.0",
-    "husky": "^4.3.8",
+    "eslint-plugin-standard": "^5.0.0",
+    "exports-loader": "^2.0.0",
+    "husky": "^4.3.7",
+    "imports-loader": "^1.2.0",
     "json-stringify-safe": "^5.0.1",
     "lint-staged": "^10.5.3",
-    "node-sass": "^5.0.0",
-    "npm-check-updates": "^11.1.0",
-    "npx": "*",
+    "npx": "^10.2.2",
+    "path-browserify": "^1.0.1",
     "prettier": "^2.2.1",
     "rimraf": "^3.0.2",
-    "rollup": "^2.38.0",
+    "rollup": "^2.36.1",
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-terser": "^7.0.2",
     "sass-loader": "^10.1.1",
-    "semantic-release": "^17.3.7",
+    "semantic-release": "^17.3.2",
     "shelljs": "^0.8.4",
-    "static-site-generator-webpack-plugin": "^3.4.2",
-    "stylelint": "^13.9.0",
-    "stylelint-config-prettier": "^8.0.2",
+    "stylelint": "^13.8.0",
     "stylelint-config-recommended": "^3.0.0",
-    "stylelint-config-recommended-scss": "^4.2.0",
-    "stylelint-config-sass-guidelines": "^7.1.0",
     "stylelint-config-standard": "^20.0.0",
-    "stylelint-scss": "^3.18.0",
     "uuid": "^8.3.2",
-    "webpack": "^5.17.0",
-    "webpack-cli": "^4.4.0",
-    "webpack-dev-server": "^3.11.2"
+    "webpack": "^5.14.0",
+    "webpack-cli": "^4.3.1",
+    "webpack-dev-server": "^3.11.2",
+    "whatwg-fetch": "^3.5.0"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "lint-staged",
+      "pre-push": "npm run test:prod"
+    }
   }
 }
