@@ -183,6 +183,7 @@ export default class Clip3D extends MC.BrowserClip {
         // check if context previously loading
         if (!this.context.loading) {
           this.context.loading = true;
+          console.log("context is loading");
           this.contextLoading();
           // console.log(this);
           //   debugger;//eslint-disable-line
@@ -208,7 +209,6 @@ export default class Clip3D extends MC.BrowserClip {
           const theEntity = this.getElements(`#${entity.id}`);
           theEntity.entity.object = model;
           // add to the scene
-          console.log(entity.settings);
           model.traverse((child) => {
             if (child.isMesh) {
               child.castShadow = entity.settings.castShadow;
@@ -225,9 +225,8 @@ export default class Clip3D extends MC.BrowserClip {
             this.context.loadingModels.length
           ) {
             this.context.loading = false;
-            //eslint-ingore-line
-            // console.log(this);
-            // debugger;//eslint-disable-line
+            debugger;//eslint-disable-line
+            console.log(this.context);
             this.contextLoaded();
           }
         });

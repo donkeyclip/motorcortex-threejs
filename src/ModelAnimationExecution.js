@@ -4,16 +4,14 @@ import { AnimationMixer } from "three";
 export default class MAE extends MC.Effect {
   onGetContext() {
     this.mixer = new AnimationMixer(this.element.entity.object);
-    debugger
+    const theAnimation = this.element.entity.object.animations.filter(
+      (animation) => animation.name == this.attrs.attrs.animationName
+    )[0];
     this.element.entity.object.animations &&
-    this.mixer
-      .clipAction(
-        this.element.entity.object.animations.filter(
-          animation => animation.name == this.attrs.attrs.animationName
-        )[0]
-      )
-      .setDuration(this.attrs.attrs.singleLoopDuration / 1000)
-      .play();
+      this.mixer
+        .clipAction(theAnimation)
+        .setDuration(this.attrs.attrs.singleLoopDuration / 1000)
+        .play();
   }
 
   getScratchValue() {
