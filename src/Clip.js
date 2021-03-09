@@ -206,7 +206,9 @@ export default class Clip3D extends MC.BrowserClip {
         this.loadTheModel(entity).then((model) => {
           //apply settings
           this.applySettingsToObjects(entity.settings, model);
+
           const theEntity = this.getElements(`#${entity.id}`);
+
           theEntity.entity.object = model;
           // add to the scene
           model.traverse((child) => {

@@ -2,10 +2,9 @@ import MC from "@kissmybutton/motorcortex";
 import { AnimationMixer } from "three";
 
 export default class MAE extends MC.Effect {
-  onGetContext() {
-    this.mixer = new AnimationMixer(this.element.entity.object);
+  onGetContext({ unblock } = {}) {
     if (this.element.entity.object.animations) {
-      console.log("in context - has animations");
+      this.mixer = new AnimationMixer(this.element.entity.object);
       const theAnimation = this.element.entity.object.animations.filter(
         (animation) => animation.name == this.attrs.attrs.animationName
       )[0];
@@ -14,14 +13,13 @@ export default class MAE extends MC.Effect {
         .clipAction(theAnimation)
         .setDuration(this.attrs.attrs.singleLoopDuration / 1000)
         .play();
-
-      window.mixer = this.mixer;
+      if (unblock) {
+        this.unblock();
+      }
     }
   }
 
   getScratchValue() {
-    console.log("scratch");
-
     this.element.entity.object.animations =
       this.element.entity.object.animations || {};
     const attr = this.attributeKey;
@@ -31,6 +29,11 @@ export default class MAE extends MC.Effect {
   }
 
   onProgress(progress /*,millisecond*/) {
+    if (!this.mixer) {
+      this.setBlock("aparia");
+      this.onGetContext({ unblock: true });
+      return;
+    }
     const key = this.attributeKey;
     const initialValue = this.initialValue;
     const animatedAttr = this.attrs.animatedAttrs[key];

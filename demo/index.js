@@ -16,24 +16,6 @@ const planet_1 = {
   },
 };
 
-// const gridHelper = {
-//   geometry: {
-//     type: "PlaneGeometry",
-//     parameters: [5, 20, 32],
-//   },
-//   material: {
-//     type: "MeshBasicMaterial",
-//     parameters: [{ color: 0xffff00, side: "DoubleSide" }],
-//   },
-//   settings: {
-//     entityType: "Mesh",
-//     rotation: { z: Math.PI / 2, x: 0, y: 0 },
-//     position: { z: -10, x: 0, y: 0 },
-//   },
-// };
-
-const entities = [planet_1];
-
 const scene = new MC.HTMLClip({
   html: `
     <div id="scene"></div>`,
@@ -109,7 +91,7 @@ const clip = new threejsPlugin.Clip(
         lookAt: [0, 0, 0],
       },
     },
-    entities,
+    entities: [planet_1],
     controls: { enable: true },
   },
   {
@@ -119,8 +101,8 @@ const clip = new threejsPlugin.Clip(
   }
 );
 
-for (let index = 0; index <= 0; index++) {
-  const rand = Math.floor(Math.random() * 3000 + 3500);
+for (let index = 0; index <= 80; index++) {
+  const rand = Math.floor(Math.random() * 4500 + 7000);
   const planetAnimation = new threejsPlugin.MAE(
     {
       attrs: {
@@ -135,19 +117,18 @@ for (let index = 0; index <= 0; index++) {
     {
       selector: "!#planet_1",
       duration: rand,
+      easing: "easeOutExpo",
     }
   );
   clip.addIncident(planetAnimation, 0);
 }
-
 scene.addIncident(clip, 0);
-window.clip = scene;
 
+window.clip = clip;
 //error when loading anime after clip
 new Player({
   theme: "mc-green",
   clip: scene,
   scaleToFit: true,
   showVolume: true,
-  // pointerEvents: true,
 });
