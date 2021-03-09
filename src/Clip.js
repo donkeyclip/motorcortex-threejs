@@ -215,6 +215,7 @@ export default class Clip3D extends MC.BrowserClip {
               child.receiveShadow = entity.settings.receiveShadow;
             }
           });
+
           for (const scene of this.getElements(entity.selector)) {
             scene.entity.object.add(model);
           }
@@ -225,8 +226,8 @@ export default class Clip3D extends MC.BrowserClip {
             this.context.loadingModels.length
           ) {
             this.context.loading = false;
-            debugger;//eslint-disable-line
-            console.log(this.context);
+            // debugger;//eslint-disable-line
+            console.log("CONTEXT-LOADED");
             this.contextLoaded();
           }
         });

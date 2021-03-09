@@ -1,5 +1,6 @@
 const MC = require("@kissmybutton/motorcortex").default;
-const Player = require("@kissmybutton/motorcortex-player/");
+// const Player = require("@kissmybutton/motorcortex-player/");
+const Player = require("../../teo-motorcortex-player/");
 const threejsPluginDefinition = require("../src/index");
 const threejsPlugin = MC.loadPlugin(threejsPluginDefinition);
 
@@ -8,7 +9,7 @@ const planet_1 = {
   model: {
     id: "planet",
     loader: "GLTFLoader",
-    file: "./models/firstAnim2.glb",
+    file: "./models/firstAnim3.glb",
   },
   settings: {
     position: { x: 0, y: 0, z: 0 },
@@ -112,20 +113,20 @@ const clip = new threejsPlugin.Clip(
     controls: { enable: true },
   },
   {
-    host: document.getElementById("clip"),
-    // selector: "#scene",
+    // host: document.getElementById("clip"),
+    selector: "#scene",
     containerParams: { width: "100%", height: "100%" },
   }
 );
 
-for (let index = 1; index <= 100; index++) {
+for (let index = 0; index <= 0; index++) {
   const rand = Math.floor(Math.random() * 3000 + 3500);
-  const soldierAn = new threejsPlugin.MAE(
+  const planetAnimation = new threejsPlugin.MAE(
     {
       attrs: {
         singleLoopDuration: rand,
         animationFrames: 30,
-        animationName: `Sphere_cell.0${index < 10 ? "0" + index : index}Action`,
+        animationName: `planet.0${index < 10 ? "0" + index : index}Action`,
       },
       animatedAttrs: {
         [`time_${index}`]: rand,
@@ -136,17 +137,17 @@ for (let index = 1; index <= 100; index++) {
       duration: rand,
     }
   );
-  clip.addIncident(soldierAn, 0);
+  clip.addIncident(planetAnimation, 0);
 }
 
-scene.addIncident(clip, 2000);
-window.clip = clip;
+scene.addIncident(clip, 0);
+window.clip = scene;
 
 //error when loading anime after clip
 new Player({
   theme: "mc-green",
-  clip: clip,
+  clip: scene,
   scaleToFit: true,
   showVolume: true,
-  pointerEvents: true,
+  // pointerEvents: true,
 });
