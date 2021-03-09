@@ -10,7 +10,7 @@ const Anime = MC.loadPlugin(animeDef);
 // const Subtitles = MC.loadPlugin(SubtitlesDefinition);
 
 const soldierModelPath =
-  "https://kissmybutton.github.io/motorcortex-threejs/demo/models/Soldier.glb";
+  "./models/firstAnim2.glb";
 const deathValleyPath =
   "https://kissmybutton.github.io/motorcortex-threejs/demo/models/mountainous_valley/scene.gltf";
 const towerPath =
@@ -85,7 +85,7 @@ const soldier_1 = JSON.parse(
   })
 );
 soldier_1.settings = {
-  position: { x: -33, y: 14, z: 30 },
+  // position: { x: -33, y: 14, z: 30 },
   castShadow: true
 };
 
@@ -140,10 +140,6 @@ const entities = [deathValley_1, soldier_1];
 const scene = new MC.HTMLClip({
   html: `
     <div id="scene">
-      <div id="curtains">
-        <p>MotorCortex Productions Presents</p>
-        <img width=200 height=150 src="https://github.com/kissmybutton/motorcortex-threejs/blob/master/three.png?raw=true"/>
-      </div>
       <div id="date">18 April 3046</div>
       <div id="location">Thessaloniki | Hortiatis</div>
       <div id="subs-container"></div>
@@ -229,7 +225,7 @@ const scene = new MC.HTMLClip({
   host: document.getElementById("clip"),
   containerParams: { width: "100%", height: "70%" }
 });
-
+console.log(entities)
 const clip = new threejsPlugin.Clip(
   {
     renderers: { settings: { setClearColor: ["#999"] } },
@@ -285,8 +281,8 @@ const clip = new threejsPlugin.Clip(
     cameras: {
       id: "camera_1",
       settings: {
-        position: { x: -290, y: 70, z: 150 },
-        lookAt: [-33, 14, 30]
+        position: { x: 0, y: 0, z: 0 },
+        // lookAt: [-33, 14, 30]
       }
     },
     entities,
@@ -299,527 +295,73 @@ const clip = new threejsPlugin.Clip(
   }
 );
 
-// const subtitle = new Subtitles.SRT(
+
+// const soldierMAE1 = new threejsPlugin.MAE(
 //   {
 //     attrs: {
-//       css: `color:white;font-size:20px`
+//       singleLoopDuration: 7500,
+//       animationFrames: 30,
+//       animationName: "Sphere_cellAction"
 //     },
 //     animatedAttrs: {
-//       text: `
-//         1
-//         00:00:13,000 --> 00:00:15,000
-//         You think you are alone?
-
-//         2
-//         00:00:18,000 --> 00:00:23,000
-//         Nothing has survived since we fucked things up
-
-//         3
-//         00:00:24,000 --> 00:00:30,000
-//         I've been alone walking the same old roads
-//         for as long as I can remember
-
-//         4
-//         00:00:32,000 --> 00:00:35,000
-//         When I feel like running
-
-//         5
-//         00:00:37,000 --> 00:00:40,000
-//         I run
-
-//         5
-//         00:00:66,000 --> 00:00:65,000
-//         I still wonder if I am alive
-
-//         7
-//         00:00:70,000 --> 00:00:75,000
-//         or is this just my view on paradise
-//         `
+//       time: 7500
 //     }
 //   },
-//   { duration: 100000, selector: "#subs-container" }
+//   {
+//     selector: "!#soldier_1",
+//     duration: 7500
+//   }
 // );
 
-const fadeincurtain = new Anime.Anime(
-  {
-    animatedAttrs: {
-      opacity: 0
-    }
-  },
-  {
-    duration: 3000,
-    selector: `#curtains`,
-    easing: "linear"
-  }
-);
-const fadeindate = new Anime.Anime(
-  {
-    animatedAttrs: {
-      opacity: 1
-    }
-  },
-  {
-    duration: 3000,
-    selector: `#date`
-  }
-);
-const fadeoutdate = new Anime.Anime(
-  {
-    animatedAttrs: {
-      opacity: 0
-    }
-  },
-  {
-    duration: 3000,
-    selector: `#date`
-  }
-);
-const fadeinlocation = new Anime.Anime(
-  {
-    animatedAttrs: {
-      opacity: 1
-    }
-  },
-  {
-    duration: 3000,
-    selector: `#location`
-  }
-);
-const fadeoutlocation = new Anime.Anime(
-  {
-    animatedAttrs: {
-      opacity: 0
-    }
-  },
-  {
-    duration: 3000,
-    selector: `#location`
-  }
-);
-const cameraAnimation = new threejsPlugin.Object3D(
-  {
-    animatedAttrs: {
-      targetEntity: "!#soldier_1",
-      position: {
-        x: -150,
-        y: 20,
-        z: 80
-      }
-    }
-  },
-  {
-    selector: "!#camera_1",
-    duration: 20000
-  }
-);
+// clip.addIncident(soldierMAE1, 0);
 
-const soldierMAE = new threejsPlugin.MAE(
-  {
-    attrs: {
-      singleLoopDuration: 1000,
-      animationFrames: 30,
-      animationName: "Idle"
-    },
-    animatedAttrs: {
-      time: 10000
-    }
-  },
-  {
-    selector: "!#soldier_1",
-    duration: 10000
-  }
-);
-const rot = ThemeliodesProblima_2(-33, 30, -36, 9).Gab;
-const soldierAnimation1 = new threejsPlugin.Object3D(
-  {
-    animatedAttrs: {
-      position: {
-        x: -36,
-        y: "!#deathValley_1",
-        z: 9
+// const soldierMAE2 = new threejsPlugin.MAE(
+//   {
+//     attrs: {
+//       singleLoopDuration: 7500,
+//       animationFrames: 30,
+//       animationName: "Sphere_cell.007Action"
+//     },
+//     animatedAttrs: {
+//       time: 7500
+//     }
+//   },
+//   {
+//     selector: "!#soldier_1",
+//     duration: 7500
+//   }
+// );
+
+// clip.addIncident(soldierMAE2, 0);
+
+console.log(clip)
+for (let index = 1; index <= 1; index++) {
+  console.log(index)
+  const soldierAn = new threejsPlugin.MAE(
+    {
+      attrs: {
+        singleLoopDuration: 7500,
+        animationFrames: 30,
+        animationName: `Sphere_cell.0${index<10?"0"+index:index}Action`
       },
-      rotationSetY: Math.PI + rot
-    }
-  },
-  {
-    selector: "!#soldier_1",
-    duration: 15000
-  }
-);
-
-const cameraAnimation1 = new threejsPlugin.Object3D(
-  {
-    animatedAttrs: {
-      targetEntity: "!#soldier_1",
-      position: {
-        x: -46,
-        y: 25,
-        z: -20
+      animatedAttrs: {
+        time: 7500
       }
-    }
-  },
-  {
-    selector: "!#camera_1",
-    duration: 15000
-  }
-);
-
-// Vector3 {x: -33.05862710874124, y: 14.2412998275283, z: 30.540445980956793}
-// Clip.js?ec19:348 undefined
-// Clip.js?ec19:348 Vector3 {x: -36.00494356512677, y: 17.676858007396643, z: -9.374431879098442}
-// Clip.js?ec19:348 undefined
-// Clip.js?ec19:348 Vector3 {x: -60.86447867115839, y: 19.720236862743278, z: -51.98990126098527}
-// Clip.js?ec19:348 undefined
-// Clip.js?ec19:348 Vector3 {x: -60.253242693492545, y: 21.783746471905896, z: -88.8038843646755}
-// Clip.js?ec19:348 undefined
-// Clip.js?ec19:348 Vector3 {x: -46.541444386336615, y: 23.834236872385162, z: -92.37887143938472}
-// Vector3 {x: 9.854846878733191, y: 30.191371479607458, z: -101.69151163546336}
-const soldierMAE1 = new threejsPlugin.MAE(
-  {
-    attrs: {
-      singleLoopDuration: 900,
-      animationFrames: 30,
-      animationName: "Walk"
     },
-    animatedAttrs: {
-      time: 15000
+    {
+      selector: "!#soldier_1",
+      duration: 7500
     }
-  },
-  {
-    selector: "!#soldier_1",
-    duration: 15000
-  }
-);
-const rot1 = ThemeliodesProblima_2(-36, 9, -60, -51).Gab;
+  );
+  
+  clip.addIncident(soldierAn, index);
+  
+}
 
-const soldierAnimation2 = new threejsPlugin.Object3D(
-  {
-    animatedAttrs: {
-      position: {
-        x: -60,
-        y: "!#deathValley_1",
-        z: -51
-      },
-      rotationSetY: Math.PI + rot1
-    }
-  },
-  {
-    selector: "!#soldier_1",
-    duration: 15000
-  }
-);
-
-const soldierMAE2 = new threejsPlugin.MAE(
-  {
-    attrs: {
-      singleLoopDuration: 700,
-      animationFrames: 30,
-      animationName: "Run"
-    },
-    animatedAttrs: {
-      time: 15000
-    }
-  },
-  {
-    selector: "!#soldier_1",
-    duration: 15000
-  }
-);
-const cameraAnimation2 = new threejsPlugin.Object3D(
-  {
-    animatedAttrs: {
-      targetEntity: "!#soldier_1",
-      position: {
-        x: -66,
-        y: 24,
-        z: -17
-      }
-    }
-  },
-  {
-    selector: "!#camera_1",
-    duration: 15000
-  }
-);
-
-const rot3 = ThemeliodesProblima_2(-60, -51, -60, -88).Gab;
-
-const soldierAnimation3 = new threejsPlugin.Object3D(
-  {
-    animatedAttrs: {
-      position: {
-        x: -60,
-        y: "!#deathValley_1",
-        z: -88
-      },
-      rotationSetY: Math.PI + rot3
-    }
-  },
-  {
-    selector: "!#soldier_1",
-    duration: 10000
-  }
-);
-
-const soldierMAE3 = new threejsPlugin.MAE(
-  {
-    attrs: {
-      singleLoopDuration: 600,
-      animationFrames: 30,
-      animationName: "Run"
-    },
-    animatedAttrs: {
-      time: 10000
-    }
-  },
-  {
-    selector: "!#soldier_1",
-    duration: 10000
-  }
-);
-const cameraAnimation3 = new threejsPlugin.Object3D(
-  {
-    animatedAttrs: {
-      targetEntity: "!#soldier_1",
-      position: {
-        x: -130,
-        y: 51,
-        z: -150
-      }
-    }
-  },
-  {
-    selector: "!#camera_1",
-    duration: 10000
-  }
-);
-
-const rot4 = ThemeliodesProblima_2(-60, -88, -46, -92).Gab;
-
-const soldierAnimation4 = new threejsPlugin.Object3D(
-  {
-    animatedAttrs: {
-      position: {
-        x: -46,
-        y: "!#deathValley_1",
-        z: -92
-      },
-      rotationSetY: Math.PI + rot4
-    }
-  },
-  {
-    selector: "!#soldier_1",
-    duration: 5000
-  }
-);
-
-const soldierMAE4 = new threejsPlugin.MAE(
-  {
-    attrs: {
-      singleLoopDuration: 600,
-      animationFrames: 30,
-      animationName: "Run"
-    },
-    animatedAttrs: {
-      time: 5000
-    }
-  },
-  {
-    selector: "!#soldier_1",
-    duration: 5000
-  }
-);
-const cameraAnimation4 = new threejsPlugin.Object3D(
-  {
-    animatedAttrs: {
-      targetEntity: "!#soldier_1",
-      position: {
-        x: -130,
-        y: 51,
-        z: -150
-      }
-    }
-  },
-  {
-    selector: "!#camera_1",
-    duration: 5000
-  }
-);
-
-const rot5 = ThemeliodesProblima_2(-46, -92, -6, -109).Gab;
-
-const soldierAnimation5 = new threejsPlugin.Object3D(
-  {
-    animatedAttrs: {
-      position: {
-        x: -6,
-        y: "!#deathValley_1",
-        z: -109
-      },
-      rotationSetY: Math.PI + rot5
-    }
-  },
-  {
-    selector: "!#soldier_1",
-    duration: 8000
-  }
-);
-
-const soldierMAE5 = new threejsPlugin.MAE(
-  {
-    attrs: {
-      singleLoopDuration: 400,
-      animationFrames: 30,
-      animationName: "Run"
-    },
-    animatedAttrs: {
-      time: 8000
-    }
-  },
-  {
-    selector: "!#soldier_1",
-    duration: 8000
-  }
-);
-const cameraAnimation5 = new threejsPlugin.Object3D(
-  {
-    animatedAttrs: {
-      targetEntity: "!#soldier_1",
-      position: {
-        x: 0,
-        y: 40,
-        z: -110
-      }
-    }
-  },
-  {
-    selector: "!#camera_1",
-    duration: 9000
-  }
-);
-const soldierMAE6 = new threejsPlugin.MAE(
-  {
-    attrs: {
-      singleLoopDuration: 1000,
-      animationFrames: 30,
-      animationName: "Idle"
-    },
-    animatedAttrs: {
-      time: 15000
-    }
-  },
-  {
-    selector: "!#soldier_1",
-    duration: 15000
-  }
-);
-const cameraAnimation6 = new threejsPlugin.Object3D(
-  {
-    animatedAttrs: {
-      targetEntity: "!#soldier_1",
-      position: {
-        x: 142,
-        y: 40,
-        z: -215
-      }
-    }
-  },
-  {
-    selector: "!#camera_1",
-    duration: 25000
-  }
-);
-// Vector3 {x: -6.448264786082455, y: 37.61849341670934, z: -109.47186367589241}
-
-const songPlayback = new MC.AudioPlayback({
-  selector: "~#sound",
-  startFrom: 0,
-  duration: 100000
-});
-
-const soundtrackPlayback = new MC.AudioPlayback({
-  selector: "~#soundtrack",
-  startFrom: 0,
-  duration: 58000
-});
-
-const monologue = new MC.AudioPlayback({
-  selector: "~#monologue",
-  startFrom: 0,
-  duration: 31000
-});
-
-const monologue2 = new MC.AudioPlayback({
-  selector: "~#monologue2",
-  startFrom: 0,
-  duration: 10000
-});
-
-window.mc = MC;
-
-const effect = new MC.AudioEffect(
-  {
-    animatedAttrs: {
-      gain: 0.1
-    }
-  },
-  {
-    selector: "~#soundtrack",
-    duration: 2
-  }
-);
-const effect1 = new MC.AudioEffect(
-  {
-    animatedAttrs: {
-      gain: 0.8
-    }
-  },
-  {
-    selector: "~#soundtrack",
-    duration: 2
-  }
-);
-clip.addIncident(cameraAnimation, 0);
-clip.addIncident(soldierMAE, 0);
-
-clip.addIncident(cameraAnimation1, 20000);
-clip.addIncident(soldierAnimation1, 20000);
-clip.addIncident(soldierMAE1, 20000);
-
-clip.addIncident(soldierAnimation2, 35000);
-clip.addIncident(soldierMAE2, 35000);
-clip.addIncident(cameraAnimation2, 35000);
-
-clip.addIncident(soldierAnimation3, 50000);
-clip.addIncident(soldierMAE3, 50000);
-clip.addIncident(cameraAnimation3, 50000);
-
-clip.addIncident(soldierAnimation4, 60000);
-clip.addIncident(soldierMAE4, 60000);
-clip.addIncident(cameraAnimation4, 60000);
-
-clip.addIncident(soldierAnimation5, 65000);
-clip.addIncident(soldierMAE5, 65000);
-clip.addIncident(cameraAnimation5, 65000);
-clip.addIncident(cameraAnimation6, 74000);
-clip.addIncident(soldierMAE6, 73000);
 
 scene.addIncident(clip, 2000);
 
-scene.addIncident(songPlayback, 0);
-scene.addIncident(soundtrackPlayback, 36500);
-scene.addIncident(monologue, 8000);
-scene.addIncident(monologue2, 67000);
-scene.addIncident(effect, 36500);
-scene.addIncident(effect1, 66500);
 
-scene.addIncident(fadeincurtain, 2000);
-
-scene.addIncident(fadeindate, 6000);
-scene.addIncident(fadeoutdate, 14000);
-
-scene.addIncident(fadeinlocation, 8000);
-scene.addIncident(fadeoutlocation, 16000);
 // scene.addIncident(subtitle, 0);
 
 //error when loading anime after clip

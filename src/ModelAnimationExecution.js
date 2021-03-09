@@ -4,6 +4,8 @@ import { AnimationMixer } from "three";
 export default class MAE extends MC.Effect {
   onGetContext() {
     this.mixer = new AnimationMixer(this.element.entity.object);
+    debugger
+    this.element.entity.object.animations &&
     this.mixer
       .clipAction(
         this.element.entity.object.animations.filter(
