@@ -30,7 +30,7 @@ export default class MAE extends MC.Effect {
 
   onProgress(progress /*,millisecond*/) {
     if (!this.mixer) {
-      this.setBlock("aparia");
+      this.setBlock();
       this.onGetContext({ unblock: true });
       return;
     }
@@ -42,12 +42,12 @@ export default class MAE extends MC.Effect {
       this.element.entity.object.animations[key + "_previous"] || 0;
     const delta = time - prevTime;
     this.element.entity.object.animations[key + "_previous"] = time;
-    if(progress === 0){
-      this.mixer.setTime(0)
-    }else if (progress === 1){
-      this.mixer.setTime((animatedAttr-1)/1000)
-      console.log(animatedAttr)
-    }else{
+    if (progress === 0) {
+      this.mixer.setTime(0);
+    } else if (progress === 1) {
+      this.mixer.setTime((animatedAttr - 1) / 1000);
+      console.log(animatedAttr);
+    } else {
       this.mixer.update(delta / 1000);
     }
   }
