@@ -1,7 +1,6 @@
 const MC = require("@kissmybutton/motorcortex").default;
-// const Player = require("@kissmybutton/motorcortex-player/");
-const Player = require("../../teo-motorcortex-player/dist/motorcortex-player.umd");
-const threejsPluginDefinition = require("../src/index");
+const Player = require("@kissmybutton/motorcortex-player/");
+const threejsPluginDefinition = require("../../src/index");
 const threejsPlugin = MC.loadPlugin(threejsPluginDefinition);
 const animeDef = require("@kissmybutton/motorcortex-anime");
 const Anime = MC.loadPlugin(animeDef);
