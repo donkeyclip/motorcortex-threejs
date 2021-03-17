@@ -240,14 +240,33 @@ export default class Clip3D extends MC.BrowserClip {
         ...entity.geometry.parameters
       );
 
-      if (entity.material.parameters.side) {
-        entity.material.parameters.side =
-          THREE[entity.material.parameters.side];
+      if (
+        entity.material.parameters[0].side &&
+        typeof entity.material.parameters[0].side == "string"
+      ) {
+        const side = entity.material.parameters[0].side;
+        entity.material.parameters[0].side = THREE[side];
+      }
+      if (
+        entity.material.parameters[0].textureMap &&
+        !entity.material.parameters[0].map
+      ) {
+        entity.material.parameters[0].map = new THREE.TextureLoader().load(
+          entity.material.parameters[0].textureMap
+        );
       }
 
-      if (entity.material.parameters.vertexColors) {
-        entity.material.parameters.vertexColors =
-          THREE[entity.material.parameters.vertexColors];
+      if (
+        entity.material.parameters[0].videoMap
+        
+      ) {
+        const video = document.createElement("video")
+        video.src = entity.material.parameters[0].videoMap
+        this.context.rootElement.appendChild(video)
+        video.play();
+        entity.material.parameters[0].map = new THREE.VideoTexture(
+         video
+        );
       }
 
       const material = new THREE[entity.material.type](

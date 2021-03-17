@@ -9,16 +9,39 @@ const planet_1 = {
   model: {
     id: "planet",
     loader: "GLTFLoader",
-    file: "./models/firstAnim3.glb",
+    file: "./models/firstAnimation2.glb",
   },
   settings: {
     position: { x: 0, y: 0, z: 0 },
   },
 };
 
+const skyBox = {
+  geometry: {
+    type: "BoxGeometry",
+    parameters: [20, 20, 20],
+  },
+  material: {
+    type: "MeshStandardMaterial",
+    parameters: [
+      {
+        emissive:"0xd83b3b",
+        color: "0x2194ce",
+      },
+    ],
+  },
+  settings: {
+    entityType: "Mesh",
+  },
+};
+
+
+
 const scene = new MC.HTMLClip({
   html: `
-    <div id="scene"></div>`,
+    <div id="scene">
+
+    </div>`,
   css: `
     #scene{
       display:flex;
@@ -35,7 +58,7 @@ const scene = new MC.HTMLClip({
 const clip = new threejsPlugin.Clip(
   {
     renderers: { settings: { setClearColor: ["#999"] } },
-    scenes: { id: "scene", fog: ["#999", 0.1, 500] },
+    scenes: { id: "scene" },
     lights: [
       {
         parameters: ["#457", 1],
@@ -87,11 +110,11 @@ const clip = new threejsPlugin.Clip(
     cameras: {
       id: "camera_1",
       settings: {
-        position: { x: 0, y: 0, z: 0 },
+        position: { x: 10.761, y: 1.4348, z: 0.48725 },
         lookAt: [0, 0, 0],
       },
     },
-    entities: [planet_1],
+    entities: [planet_1,skyBox],
     controls: { enable: true },
   },
   {
@@ -102,26 +125,45 @@ const clip = new threejsPlugin.Clip(
 );
 
 for (let index = 0; index <= 80; index++) {
-  const rand = Math.floor(Math.random() * 4500 + 7000);
+  const rand = Math.floor(Math.random() * (12000 - 7500 + 1) + 7500);
   const planetAnimation = new threejsPlugin.MAE(
     {
       attrs: {
-        singleLoopDuration: rand,
-        animationFrames: 30,
+        singleLoopDuration: 7000,
+        animationFrames: 24,
         animationName: `planet.0${index < 10 ? "0" + index : index}Action`,
       },
       animatedAttrs: {
-        [`time_${index}`]: rand,
+        [`time_${index}`]: 700,
       },
     },
     {
       selector: "!#planet_1",
       duration: rand,
-      easing: "easeOutExpo",
+      delay: 12000-rand
     }
   );
   clip.addIncident(planetAnimation, 0);
 }
+const spaceshipAnimation = new threejsPlugin.MAE(
+  {
+    attrs: {
+      singleLoopDuration: 12000,
+      animationFrames: 24,
+      animationName: `Action`,
+    },
+    animatedAttrs: {
+      time: 12000,
+    },
+  },
+  {
+    selector: "!#planet_1",
+    duration: 12000,
+  }
+);
+clip.addIncident(spaceshipAnimation, 0);
+
+
 scene.addIncident(clip, 0);
 
 window.clip = clip;
@@ -131,4 +173,5 @@ new Player({
   clip: scene,
   scaleToFit: true,
   showVolume: true,
+  pointerEvents: true
 });
