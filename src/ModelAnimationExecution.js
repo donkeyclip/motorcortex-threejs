@@ -2,16 +2,21 @@ import MC from "@kissmybutton/motorcortex";
 import { AnimationMixer } from "three";
 
 export default class MAE extends MC.Effect {
-  onGetContext() {
-    this.mixer = new AnimationMixer(this.element.entity.object);
-    this.mixer
-      .clipAction(
-        this.element.entity.object.animations.filter(
-          animation => animation.name == this.attrs.attrs.animationName
-        )[0]
-      )
-      .setDuration(this.attrs.attrs.singleLoopDuration / 1000)
-      .play();
+  onGetContext({ unblock } = {}) {
+    if (this.element.entity.object.animations) {
+      this.mixer = new AnimationMixer(this.element.entity.object);
+      const theAnimation = this.element.entity.object.animations.filter(
+        (animation) => animation.name == this.attrs.attrs.animationName
+      )[0];
+
+      this.mixer
+        .clipAction(theAnimation)
+        .setDuration(this.attrs.attrs.singleLoopDuration / 1000)
+        .play();
+      if (unblock) {
+        this.unblock();
+      }
+    }
   }
 
   getScratchValue() {
@@ -24,6 +29,11 @@ export default class MAE extends MC.Effect {
   }
 
   onProgress(progress /*,millisecond*/) {
+    if (!this.mixer) {
+      this.setBlock("aparia");
+      this.onGetContext({ unblock: true });
+      return;
+    }
     const key = this.attributeKey;
     const initialValue = this.initialValue;
     const animatedAttr = this.attrs.animatedAttrs[key];
@@ -32,6 +42,13 @@ export default class MAE extends MC.Effect {
       this.element.entity.object.animations[key + "_previous"] || 0;
     const delta = time - prevTime;
     this.element.entity.object.animations[key + "_previous"] = time;
-    this.mixer.update(delta / 1000);
+    if(progress === 0){
+      this.mixer.setTime(0)
+    }else if (progress === 1){
+      this.mixer.setTime((animatedAttr-1)/1000)
+      console.log(animatedAttr)
+    }else{
+      this.mixer.update(delta / 1000);
+    }
   }
 }

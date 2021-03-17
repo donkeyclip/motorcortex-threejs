@@ -183,6 +183,7 @@ export default class Clip3D extends MC.BrowserClip {
         // check if context previously loading
         if (!this.context.loading) {
           this.context.loading = true;
+          console.log("context is loading");
           this.contextLoading();
           // console.log(this);
           //   debugger;//eslint-disable-line
@@ -205,16 +206,18 @@ export default class Clip3D extends MC.BrowserClip {
         this.loadTheModel(entity).then((model) => {
           //apply settings
           this.applySettingsToObjects(entity.settings, model);
+
           const theEntity = this.getElements(`#${entity.id}`);
+
           theEntity.entity.object = model;
           // add to the scene
-          console.log(entity.settings);
           model.traverse((child) => {
             if (child.isMesh) {
               child.castShadow = entity.settings.castShadow;
               child.receiveShadow = entity.settings.receiveShadow;
             }
           });
+
           for (const scene of this.getElements(entity.selector)) {
             scene.entity.object.add(model);
           }
@@ -225,9 +228,8 @@ export default class Clip3D extends MC.BrowserClip {
             this.context.loadingModels.length
           ) {
             this.context.loading = false;
-            //eslint-ingore-line
-            // console.log(this);
             // debugger;//eslint-disable-line
+            console.log("CONTEXT-LOADED");
             this.contextLoaded();
           }
         });
@@ -238,14 +240,33 @@ export default class Clip3D extends MC.BrowserClip {
         ...entity.geometry.parameters
       );
 
-      if (entity.material.parameters.side) {
-        entity.material.parameters.side =
-          THREE[entity.material.parameters.side];
+      if (
+        entity.material.parameters[0].side &&
+        typeof entity.material.parameters[0].side == "string"
+      ) {
+        const side = entity.material.parameters[0].side;
+        entity.material.parameters[0].side = THREE[side];
+      }
+      if (
+        entity.material.parameters[0].textureMap &&
+        !entity.material.parameters[0].map
+      ) {
+        entity.material.parameters[0].map = new THREE.TextureLoader().load(
+          entity.material.parameters[0].textureMap
+        );
       }
 
-      if (entity.material.parameters.vertexColors) {
-        entity.material.parameters.vertexColors =
-          THREE[entity.material.parameters.vertexColors];
+      if (
+        entity.material.parameters[0].videoMap
+        
+      ) {
+        const video = document.createElement("video")
+        video.src = entity.material.parameters[0].videoMap
+        this.context.rootElement.appendChild(video)
+        video.play();
+        entity.material.parameters[0].map = new THREE.VideoTexture(
+         video
+        );
       }
 
       const material = new THREE[entity.material.type](
