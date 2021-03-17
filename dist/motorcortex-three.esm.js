@@ -12166,6 +12166,7 @@ var Clip3D = /*#__PURE__*/function (_MC$BrowserClip) {
                     // check if context previously loading
                     if (!_this2.context.loading) {
                       _this2.context.loading = true;
+                      console.log("context is loading");
 
                       _this2.contextLoading(); // console.log(this);
                       //   debugger;//eslint-disable-line
@@ -12189,7 +12190,6 @@ var Clip3D = /*#__PURE__*/function (_MC$BrowserClip) {
 
                       theEntity.entity.object = model; // add to the scene
 
-                      console.log(entity.settings);
                       model.traverse(function (child) {
                         if (child.isMesh) {
                           child.castShadow = entity.settings.castShadow;
@@ -12214,9 +12214,9 @@ var Clip3D = /*#__PURE__*/function (_MC$BrowserClip) {
                       _this2.context.loadedModels.push(1);
 
                       if (_this2.context.loadedModels.length === _this2.context.loadingModels.length) {
-                        _this2.context.loading = false; //eslint-ingore-line
-                        // console.log(this);
-                        // debugger;//eslint-disable-line
+                        _this2.context.loading = false; // debugger;//eslint-disable-line
+
+                        console.log("CONTEXT-LOADED");
 
                         _this2.contextLoaded();
                       }
@@ -12227,12 +12227,23 @@ var Clip3D = /*#__PURE__*/function (_MC$BrowserClip) {
 
                   var geometry = _construct(THREE[entity.geometry.type], _toConsumableArray(entity.geometry.parameters));
 
-                  if (entity.material.parameters.side) {
-                    entity.material.parameters.side = THREE[entity.material.parameters.side];
+                  if (entity.material.parameters[0].side && typeof entity.material.parameters[0].side == "string") {
+                    var side = entity.material.parameters[0].side;
+                    entity.material.parameters[0].side = THREE[side];
                   }
 
-                  if (entity.material.parameters.vertexColors) {
-                    entity.material.parameters.vertexColors = THREE[entity.material.parameters.vertexColors];
+                  if (entity.material.parameters[0].textureMap && !entity.material.parameters[0].map) {
+                    entity.material.parameters[0].map = new TextureLoader().load(entity.material.parameters[0].textureMap);
+                  }
+
+                  if (entity.material.parameters[0].videoMap) {
+                    var video = document.createElement("video");
+                    video.src = entity.material.parameters[0].videoMap;
+
+                    _this2.context.rootElement.appendChild(video);
+
+                    video.play();
+                    entity.material.parameters[0].map = new VideoTexture(video);
                   }
 
                   var material = _construct(THREE[entity.material.type], _toConsumableArray(entity.material.parameters));
@@ -12759,10 +12770,20 @@ var MAE = /*#__PURE__*/function (_MC$Effect) {
     value: function onGetContext() {
       var _this = this;
 
-      this.mixer = new AnimationMixer(this.element.entity.object);
-      this.mixer.clipAction(this.element.entity.object.animations.filter(function (animation) {
-        return animation.name == _this.attrs.attrs.animationName;
-      })[0]).setDuration(this.attrs.attrs.singleLoopDuration / 1000).play();
+      var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+          unblock = _ref.unblock;
+
+      if (this.element.entity.object.animations) {
+        this.mixer = new AnimationMixer(this.element.entity.object);
+        var theAnimation = this.element.entity.object.animations.filter(function (animation) {
+          return animation.name == _this.attrs.attrs.animationName;
+        })[0];
+        this.mixer.clipAction(theAnimation).setDuration(this.attrs.attrs.singleLoopDuration / 1000).play();
+
+        if (unblock) {
+          this.unblock();
+        }
+      }
     }
   }, {
     key: "getScratchValue",
@@ -12778,6 +12799,14 @@ var MAE = /*#__PURE__*/function (_MC$Effect) {
     value: function onProgress(progress
     /*,millisecond*/
     ) {
+      if (!this.mixer) {
+        this.setBlock();
+        this.onGetContext({
+          unblock: true
+        });
+        return;
+      }
+
       var key = this.attributeKey;
       var initialValue = this.initialValue;
       var animatedAttr = this.attrs.animatedAttrs[key];
@@ -12785,7 +12814,15 @@ var MAE = /*#__PURE__*/function (_MC$Effect) {
       var prevTime = this.element.entity.object.animations[key + "_previous"] || 0;
       var delta = time - prevTime;
       this.element.entity.object.animations[key + "_previous"] = time;
-      this.mixer.update(delta / 1000);
+
+      if (progress === 0) {
+        this.mixer.setTime(0);
+      } else if (progress === 1) {
+        this.mixer.setTime((animatedAttr - 1) / 1000);
+        console.log(animatedAttr);
+      } else {
+        this.mixer.update(delta / 1000);
+      }
     }
   }]);
 
