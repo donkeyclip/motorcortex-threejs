@@ -48,7 +48,7 @@ export default class Clip3D extends MC.BrowserClip {
   async loadTheModel(entity) {
     //check if model is previously loaded
     const theModel = this.getElements(`#${entity.model.id}`);
-    if (theModel) {
+    if (Object.keys(theModel?.entity?.object || {}).length) {
       if (theModel.entity.loader === "GLTFLoader") {
         return SkeletonUtils.clone(theModel.entity.object.scene);
       } else {
@@ -66,11 +66,10 @@ export default class Clip3D extends MC.BrowserClip {
     };
 
     this.context.loadingModels.push(1);
-
     return loadModel(entity)
       .then((obj) => {
         this.setCustomEntity(
-          entity.model.id,
+          "models-" + entity.model.id,
           {
             object: obj,
           },
@@ -144,6 +143,7 @@ export default class Clip3D extends MC.BrowserClip {
         ["renderers", ...renderer.class]
       );
       const rendererObj = this.getElements(`#${renderer.id}`).entity.object;
+      rendererObj.outputEncoding = THREE.sRGBEncoding;
       this.applySettingsToObjects(renderer.settings, rendererObj);
     });
 
@@ -183,10 +183,7 @@ export default class Clip3D extends MC.BrowserClip {
         // check if context previously loading
         if (!this.context.loading) {
           this.context.loading = true;
-          console.log("context is loading");
           this.contextLoading();
-          // console.log(this);
-          //   debugger;//eslint-disable-line
         }
 
         //create the custume entity reference
@@ -228,14 +225,13 @@ export default class Clip3D extends MC.BrowserClip {
             this.context.loadingModels.length
           ) {
             this.context.loading = false;
-            // debugger;//eslint-disable-line
-            console.log("CONTEXT-LOADED");
             this.contextLoaded();
           }
         });
 
         continue;
       }
+
       const geometry = new THREE[entity.geometry.type](
         ...entity.geometry.parameters
       );
@@ -256,22 +252,18 @@ export default class Clip3D extends MC.BrowserClip {
         );
       }
 
-      if (
-        entity.material.parameters[0].videoMap
-        
-      ) {
-        const video = document.createElement("video")
-        video.src = entity.material.parameters[0].videoMap
-        this.context.rootElement.appendChild(video)
+      if (entity.material.parameters[0].videoMap) {
+        const video = document.createElement("video");
+        video.src = entity.material.parameters[0].videoMap;
+        this.context.rootElement.appendChild(video);
         video.play();
-        entity.material.parameters[0].map = new THREE.VideoTexture(
-         video
-        );
+        entity.material.parameters[0].map = new THREE.VideoTexture(video);
       }
 
       const material = new THREE[entity.material.type](
         ...entity.material.parameters
       );
+      console.log(entity);
 
       this.setCustomEntity(
         entity.id,
@@ -362,10 +354,9 @@ export default class Clip3D extends MC.BrowserClip {
 
         mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
         mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-        raycaster.setFromCamera(
-          mouse,
-          this.getElements(this.attributes.renders[0].camera).entity.object
-        );
+        const camera = this.getElements(this.attributes.renders[0].camera)
+          .entity.object;
+        raycaster.setFromCamera(mouse, camera);
 
         // calculate objects intersecting the picking ray
         const intersects = raycaster.intersectObjects(
@@ -373,9 +364,9 @@ export default class Clip3D extends MC.BrowserClip {
             .children,
           true
         );
-        // console.log((intersects[0] || {}).point);
+        console.log(intersects);
       };
-      // window.addEventListener("click", onMouseMove, false);
+      window.addEventListener("click", onMouseMove, false);
       const animate = () => {
         requestAnimationFrame(animate);
         // controls.update(); // only required if controls.enableDamping = true, or if controls.autoRotate = true
