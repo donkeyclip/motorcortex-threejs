@@ -2,59 +2,170 @@ import MC from "@kissmybutton/motorcortex";
 import threeDefinition from "../../../src/index";
 const threejs = MC.loadPlugin(threeDefinition);
 import { ThemeliodesProblima_2 } from "../helpers";
-export const skeletonWalk = new threejs.MAE(
-  {
-    attrs: {
-      singleLoopDuration: 1000,
-      animationFrames: 30,
-      animationName: "Take 001",
-    },
-    animatedAttrs: {
-      time: 50000,
-    },
-  },
-  {
-    selector: "!#skeleton",
-    duration: 50000,
-  }
-);
 
-const xa = -20.89;
-const za = 33.15;
-const xb = 1730.76;
-const yb = -12.31;
-const zb = -138.29;
-const rot = ThemeliodesProblima_2(xa, za, xb, zb).Gab;
-export const skeletonMove = new threejs.Object3D(
+export const manMorph = [
   {
-    animatedAttrs: {
-      position: {
-        x: xb,
-        y: yb,
-        z: zb,
+    animation: new threejs.MorphAnimation(
+      {
+        attrs: {
+          singleLoopDuration: 1000,
+          animationFrames: 30,
+          animationName: "Walk",
+        },
+        animatedAttrs: {
+          time: 14000,
+        },
       },
-      rotationSetY: rot,
-    },
+      {
+        selector: "!#man",
+        duration: 14000,
+      }
+    ),
+    millisecond: 0,
   },
   {
-    selector: "!#skeleton",
-    duration: 50000,
-  }
-);
+    animation: new threejs.MorphAnimation(
+      {
+        attrs: {
+          singleLoopDuration: 1000,
+          animationFrames: 30,
+          animationName: "Run",
+        },
+        animatedAttrs: {
+          time: 14000,
+        },
+      },
+      {
+        selector: "!#man",
+        duration: 14000,
+      }
+    ),
+    millisecond: 14000,
+  },
+];
 
-export const cameraMove = new threejs.Object3D(
+export const manMove = [
   {
-    animatedAttrs: {
-      targetEntity: "!#skeleton",
-      position: {
-        x: 1857,
-        y: 50,
-        z: 172,
+    animation: new threejs.Object3D(
+      {
+        animatedAttrs: {
+          position: {
+            x: 665,
+            y: -12.31,
+            z: -161,
+          },
+          rotationSetY:
+            Math.PI + ThemeliodesProblima_2(-20, 121, 665, -161).Gab,
+        },
       },
-    },
+      {
+        selector: "!#man",
+        duration: 14000,
+      }
+    ),
+    millisecond: 0,
   },
   {
-    selector: "!#camera_1",
-    duration: 45000,
-  }
-);
+    animation: new threejs.Object3D(
+      {
+        animatedAttrs: {
+          position: {
+            x: 1807,
+            y: -12.31,
+            z: -99,
+          },
+          rotationSetY:
+            Math.PI + ThemeliodesProblima_2(665, -161, 1807, -99).Gab,
+        },
+      },
+      {
+        selector: "!#man",
+        duration: 14000,
+      }
+    ),
+    millisecond: 14000,
+  },
+];
+
+export const cameraMove = [
+  {
+    animation: new threejs.Object3D(
+      {
+        animatedAttrs: {
+          targetEntity: "!#man",
+          position: {
+            x: 231,
+            y: 50,
+            z: 195,
+          },
+        },
+      },
+      {
+        selector: "!#camera_1",
+        duration: 6000,
+        easing: "easeInOutCubic",
+      }
+    ),
+    millisecond: 0,
+  },
+  {
+    animation: new threejs.Object3D(
+      {
+        animatedAttrs: {
+          targetEntity: "!#man",
+          position: {
+            x: 307,
+            y: 59,
+            z: 300,
+          },
+        },
+      },
+      {
+        selector: "!#camera_1",
+        duration: 8000,
+        easing: "easeInOutCubic",
+      }
+    ),
+    millisecond: 6000,
+  },
+  {
+    animation: new threejs.Object3D(
+      {
+        animatedAttrs: {
+          targetEntity: "!#man",
+          position: {
+            x: 1171,
+            y: 46,
+            z: 0,
+          },
+        },
+      },
+      {
+        selector: "!#camera_1",
+        duration: 8000,
+        easing: "easeInOutCubic",
+      }
+    ),
+    millisecond: 14000,
+  },
+  {
+    animation: new threejs.Object3D(
+      {
+        animatedAttrs: {
+          targetEntity: "!#man",
+          position: {
+            x: 1767,
+            y: 65,
+            z: 191,
+          },
+        },
+      },
+      {
+        selector: "!#camera_1",
+        duration: 6000,
+        easing: "easeInOutCubic",
+      }
+    ),
+    millisecond: 22000,
+  },
+];

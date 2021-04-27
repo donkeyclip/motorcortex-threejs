@@ -780,52 +780,55 @@ const effect1 = new MC.AudioEffect(
   }
 );
 clip.addIncident(cameraAnimation, 0);
-clip.addIncident(soldierMAE, 0);
+// clip.addIncident(soldierMAE, 0);
 
-clip.addIncident(cameraAnimation1, 20000);
-clip.addIncident(soldierAnimation1, 20000);
-clip.addIncident(soldierMAE1, 20000);
+// clip.addIncident(cameraAnimation1, 20000);
+// clip.addIncident(soldierAnimation1, 20000);
+// clip.addIncident(soldierMAE1, 20000);
 
-clip.addIncident(soldierAnimation2, 35000);
-clip.addIncident(soldierMAE2, 35000);
-clip.addIncident(cameraAnimation2, 35000);
+// clip.addIncident(soldierAnimation2, 35000);
+// clip.addIncident(soldierMAE2, 35000);
+// clip.addIncident(cameraAnimation2, 35000);
 
-clip.addIncident(soldierAnimation3, 50000);
-clip.addIncident(soldierMAE3, 50000);
-clip.addIncident(cameraAnimation3, 50000);
+// clip.addIncident(soldierAnimation3, 50000);
+// clip.addIncident(soldierMAE3, 50000);
+// clip.addIncident(cameraAnimation3, 50000);
 
-clip.addIncident(soldierAnimation4, 60000);
-clip.addIncident(soldierMAE4, 60000);
-clip.addIncident(cameraAnimation4, 60000);
+// clip.addIncident(soldierAnimation4, 60000);
+// clip.addIncident(soldierMAE4, 60000);
+// clip.addIncident(cameraAnimation4, 60000);
 
-clip.addIncident(soldierAnimation5, 65000);
-clip.addIncident(soldierMAE5, 65000);
-clip.addIncident(cameraAnimation5, 65000);
-clip.addIncident(cameraAnimation6, 74000);
-clip.addIncident(soldierMAE6, 73000);
+// clip.addIncident(soldierAnimation5, 65000);
+// clip.addIncident(soldierMAE5, 65000);
+// clip.addIncident(cameraAnimation5, 65000);
+// clip.addIncident(cameraAnimation6, 74000);
+// clip.addIncident(soldierMAE6, 73000);
 
-scene.addIncident(clip, 2000);
+// scene.addIncident(songPlayback, 0);
 
-scene.addIncident(songPlayback, 0);
-scene.addIncident(soundtrackPlayback, 36500);
-scene.addIncident(monologue, 8000);
-scene.addIncident(monologue2, 67000);
-scene.addIncident(effect, 36500);
-scene.addIncident(effect1, 66500);
+// scene.addIncident(soundtrackPlayback, 36500);
+// scene.addIncident(monologue, 8000);
+// scene.addIncident(monologue2, 67000);
+// scene.addIncident(effect, 36500);
+// scene.addIncident(effect1, 66500);
 
-scene.addIncident(fadeincurtain, 2000);
+// scene.addIncident(fadeincurtain, 2000);
 
-scene.addIncident(fadeindate, 6000);
-scene.addIncident(fadeoutdate, 14000);
+// scene.addIncident(fadeindate, 6000);
+// scene.addIncident(fadeoutdate, 14000);
 
-scene.addIncident(fadeinlocation, 8000);
+// scene.addIncident(fadeinlocation, 8000);
+scene.addIncident(clip, 2000); // this should always load last dono why??
 scene.addIncident(fadeoutlocation, 16000);
+
+window.clip = scene;
 // scene.addIncident(subtitle, 0);
 
 //error when loading anime after clip
-new Player({
+window.p = new Player({
   theme: "mc-green",
   clip: scene,
   scaleToFit: true,
   showVolume: true,
+  showIndicator: true,
 });

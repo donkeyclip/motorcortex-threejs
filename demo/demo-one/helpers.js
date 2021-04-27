@@ -5,7 +5,7 @@ export const ThemeliodesProblima_2 = (Xa, Ya, Xb, Yb) => {
   const Sab = Math.sqrt(Math.pow(absDX, 2) + Math.pow(absDY, 2));
   const DX = Xb - Xa;
   const DY = Yb - Ya;
-  const theta = Math.atan(absDX / absDY) * rad2Grad; //http://www.translatorscafe.com/cafe/EN/units-converter/angle/2-3/radian-grad/
+  const theta = Math.atan(absDX / absDY) * rad2Grad;
   let Gab;
   if (DX > 0 && DY > 0) {
     Gab = theta;

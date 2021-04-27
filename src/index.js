@@ -1,6 +1,6 @@
 import Clip3D from "./Clip";
 import Object3D from "./Object3D";
-import MAE from "./ModelAnimationExecution";
+import MorphAnimation from "./MorphAnimation";
 import compositeAttributes from "./compoAttrs";
 
 export default {
@@ -8,13 +8,14 @@ export default {
   incidents: [
     {
       exportable: Object3D,
-      name: "Object3D"
+      name: "Object3D",
     },
     {
-      exportable: MAE,
-      name: "MAE"
-    }
+      exportable: MorphAnimation,
+      name: "MorphAnimation",
+    },
   ],
   Clip: Clip3D,
-  compositeAttributes
+  helpers: {},
+  compositeAttributes,
 };
