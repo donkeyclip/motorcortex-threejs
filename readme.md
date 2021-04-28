@@ -1,9 +1,20 @@
-<center><img src="https://motorcortexjs.com/fill-1.f3febbda.svg" alt="drawing" width="100"/><img src="http://pngimg.com/uploads/plus/plus_PNG30.png" alt="drawing" width="40" style="padding-left:20px"/><img src="https://raw.githubusercontent.com/kissmybutton/motorcortex-threejs/master/three.png" alt="drawing" width="130"/></center>
-
 # MotorCortex-Threejs
 **Table of Contents**
 
-[TOC]
+1. [ Key Concepts / Features ](#key-concepts--features)
+    1. [ Renderers ](#renderers)
+    2. [ Cameras ](#cameras)
+    3. [ Lights ](#lights)
+    4. [ Entities ](#entities)
+        1. [ Mesh ](#mesh)
+        2. [ Model ](#model)
+    6. [ Controls ](#controls)
+2. [ Usage ](#usage)
+    1. [ Install ](#install)
+    2. [ Import ](#import)
+    3. [ Create a 3D Clip ](#create-a-3d-clip)
+    4. [ Create an ObjectAnimation Effect ](#create-an-objectanimation-effect)
+    5. [ Create a MorphAnimation Effect ](#create-a-morphanimation-effect)
 
 ### Demo
 https://kissmybutton.github.io/motorcortex-threejs/demo/
@@ -130,7 +141,7 @@ const light = {
 
 ## Entities
 As we mentioned, entities are any threejs mesh or model.
-##Mesh
+## Mesh
 If we want to create a new Box with threejs we would do:
 
 ```javascript
@@ -159,7 +170,7 @@ in our descriptive representation we would do:
 |parameters| The arguments to pass in the light function|
 |settings| Any other setting related to the light|
 
-##Model
+## Model
 If we want to load a model with threejs we would do:
 
 ```javascript
@@ -206,7 +217,7 @@ const controls = { enable: true, enableEvents: true }
 ```
 and add them to your clip. The property enableEvents will be triggered on each click inside the scene and will log the camera position and the 3d point of where you clicked if there is any  intersection with any object in the scene.
 
-#Usage
+# Usage
 ## Install
 ```bash
 npm install @kissmybutton/motorcortex-threejs
@@ -218,7 +229,7 @@ import threejsPlugin from "@kissmybutton/motorcortex-threejs";
 const threejs = loadPlugin(threejs);
 ```
 
-##Create a 3D Clip
+## Create a 3D Clip
 With the Clip method you describe the initial state of your 3D Scene with a javascript object. All five main parts (renderers, scenes, cameras, lights, entities) are properties of this object and of type object or collection, containing information for each part accordingly.
 ```javascript
 const clip = new threejs.Clip(
@@ -300,7 +311,7 @@ clip.addIncident(cameraAnimation,0);
 |Animate Attribute|value|Description|
 |-|-|-|
 |targetEntity|"!#targetId", "!.targetClass"| the id of the entity to lookAt |
-|position| {x:number,y:number or "dynamic",z:number}|the new position of the object. If set to "dynamic" it's value will be calculate by intersection points below the object. This came in handy when animating in a terrain is what you want|
+|position| {x:number,y:number or "!#targetId",z:number}|the new position of the object. If set to targeting the id of an other entity it's value will be calculated by intersection points below the object. This came in handy when animating in a terrain is what you want|
 |rotation|{x:number,y:number,z:number}| the new rotation of the object|
 |scale| {x:number,y:number,z:number}| the new scale of the object|
 |rotationSetX| number|the new rotation y of the object. This will set statically an will not animate through time|
@@ -329,12 +340,12 @@ const manWalk = new threejsPlugin.MorphAnimation(
 clip.addIncident(manWalk,0);
 ```
 |Attribute|Value|Description|
-|-|-|
+|-|-|-|
 |singleLoopDuration| number| The duration of a single loop|
 |animationName|string| the name of the animation to be played|
 
 |Animated Attribute|Value|Description|
-|-|-|
+|-|-|-|
 |time (+any string)| number| The duration of the animation. If you want to play multiple animation in the same time you can add different time property in each incident. For example one incident may animate the property "time_1", another incident may animate the propery "time_2" and so on |
 
 
