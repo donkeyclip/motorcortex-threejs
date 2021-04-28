@@ -233,7 +233,7 @@ export default class Clip3D extends BrowserClip {
         camera.id,
         {
           settings: camera.settings,
-          object: new THREE[camera.settings.type](...camera.parameters),
+          object: new THREE[camera.type](...camera.parameters),
         },
         ["cameras", ...camera.class]
       );
@@ -254,7 +254,7 @@ export default class Clip3D extends BrowserClip {
         renderer.id,
         {
           settings: renderer.settings,
-          object: new THREE[renderer.settings.type](...renderer.parameters),
+          object: new THREE[renderer.type](...renderer.parameters),
         },
         ["renderers", ...renderer.class]
       );
@@ -275,7 +275,7 @@ export default class Clip3D extends BrowserClip {
         light.id,
         {
           settings: light.settings,
-          object: new THREE[light.settings.type](...light.parameters),
+          object: new THREE[light.type](...light.parameters),
         },
         ["lights", ...light.class]
       );

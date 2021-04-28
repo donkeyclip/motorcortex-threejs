@@ -1,5 +1,5 @@
 import Clip3D from "./Clip";
-import Object3D from "./Object3D";
+import ObjectAnimation from "./ObjectAnimation";
 import MorphAnimation from "./MorphAnimation";
 import compositeAttributes from "./compoAttrs";
 
@@ -7,8 +7,8 @@ export default {
   npm_name: "@kissmybutton/motorcortex-threejs",
   incidents: [
     {
-      exportable: Object3D,
-      name: "Object3D",
+      exportable: ObjectAnimation,
+      name: "ObjectAnimation",
     },
     {
       exportable: MorphAnimation,

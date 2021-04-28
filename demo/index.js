@@ -1,6 +1,5 @@
 const MC = require("@kissmybutton/motorcortex").default;
-// const Player = require("@kissmybutton/motorcortex-player/");
-const Player = require("../../teo-motorcortex-player/dist/motorcortex-player.umd");
+const Player = require("@kissmybutton/motorcortex-player/");
 const threejsPluginDefinition = require("../src/index");
 const threejsPlugin = MC.loadPlugin(threejsPluginDefinition);
 const animeDef = require("@kissmybutton/motorcortex-anime");
@@ -232,13 +231,15 @@ const scene = new MC.HTMLClip({
 
 const clip = new threejsPlugin.Clip(
   {
-    renderers: { settings: { setClearColor: ["#999"] } },
+    renderers: {
+      settings: { setClearColor: ["#999"], physicallyCorrectLight: true },
+    },
     scenes: { id: "scene", fog: ["#999", 0.1, 500] },
     lights: [
       {
         parameters: ["#457", 1],
+        type: "SpotLight",
         settings: {
-          type: "SpotLight",
           position: { set: [-40, 80, 20] },
           shadow: {
             radius: 1.2,
@@ -257,8 +258,8 @@ const clip = new threejsPlugin.Clip(
       },
       {
         parameters: ["#999", 1],
+        type: "PointLight",
         settings: {
-          type: "PointLight",
           position: { set: [-40, 80, 20] },
           shadow: {
             radius: 1.2,
@@ -276,8 +277,8 @@ const clip = new threejsPlugin.Clip(
         },
       },
       {
+        type: "HemisphereLight",
         settings: {
-          type: "HemisphereLight",
           position: { set: [-40, 180, 20] },
         },
       },
@@ -396,7 +397,7 @@ const fadeoutlocation = new Anime.Anime(
     selector: `#location`,
   }
 );
-const cameraAnimation = new threejsPlugin.Object3D(
+const cameraAnimation = new threejsPlugin.ObjectAnimation(
   {
     animatedAttrs: {
       targetEntity: "!#soldier_1",
@@ -410,10 +411,11 @@ const cameraAnimation = new threejsPlugin.Object3D(
   {
     selector: "!#camera_1",
     duration: 20000,
+    easing: "easeInOutCubic",
   }
 );
 
-const soldierMAE = new threejsPlugin.MAE(
+const soldierMorphAnimation = new threejsPlugin.MorphAnimation(
   {
     attrs: {
       singleLoopDuration: 1000,
@@ -430,7 +432,7 @@ const soldierMAE = new threejsPlugin.MAE(
   }
 );
 const rot = ThemeliodesProblima_2(-33, 30, -36, 9).Gab;
-const soldierAnimation1 = new threejsPlugin.Object3D(
+const soldierAnimation1 = new threejsPlugin.ObjectAnimation(
   {
     animatedAttrs: {
       position: {
@@ -447,7 +449,7 @@ const soldierAnimation1 = new threejsPlugin.Object3D(
   }
 );
 
-const cameraAnimation1 = new threejsPlugin.Object3D(
+const cameraAnimation1 = new threejsPlugin.ObjectAnimation(
   {
     animatedAttrs: {
       targetEntity: "!#soldier_1",
@@ -461,6 +463,7 @@ const cameraAnimation1 = new threejsPlugin.Object3D(
   {
     selector: "!#camera_1",
     duration: 15000,
+    easing: "easeInOutCubic",
   }
 );
 
@@ -474,7 +477,7 @@ const cameraAnimation1 = new threejsPlugin.Object3D(
 // Clip.js?ec19:348 undefined
 // Clip.js?ec19:348 Vector3 {x: -46.541444386336615, y: 23.834236872385162, z: -92.37887143938472}
 // Vector3 {x: 9.854846878733191, y: 30.191371479607458, z: -101.69151163546336}
-const soldierMAE1 = new threejsPlugin.MAE(
+const soldierMorphAnimation1 = new threejsPlugin.MorphAnimation(
   {
     attrs: {
       singleLoopDuration: 900,
@@ -492,7 +495,7 @@ const soldierMAE1 = new threejsPlugin.MAE(
 );
 const rot1 = ThemeliodesProblima_2(-36, 9, -60, -51).Gab;
 
-const soldierAnimation2 = new threejsPlugin.Object3D(
+const soldierAnimation2 = new threejsPlugin.ObjectAnimation(
   {
     animatedAttrs: {
       position: {
@@ -509,7 +512,7 @@ const soldierAnimation2 = new threejsPlugin.Object3D(
   }
 );
 
-const soldierMAE2 = new threejsPlugin.MAE(
+const soldierMorphAnimation2 = new threejsPlugin.MorphAnimation(
   {
     attrs: {
       singleLoopDuration: 700,
@@ -525,7 +528,7 @@ const soldierMAE2 = new threejsPlugin.MAE(
     duration: 15000,
   }
 );
-const cameraAnimation2 = new threejsPlugin.Object3D(
+const cameraAnimation2 = new threejsPlugin.ObjectAnimation(
   {
     animatedAttrs: {
       targetEntity: "!#soldier_1",
@@ -539,12 +542,13 @@ const cameraAnimation2 = new threejsPlugin.Object3D(
   {
     selector: "!#camera_1",
     duration: 15000,
+    easing: "easeInOutCubic",
   }
 );
 
 const rot3 = ThemeliodesProblima_2(-60, -51, -60, -88).Gab;
 
-const soldierAnimation3 = new threejsPlugin.Object3D(
+const soldierAnimation3 = new threejsPlugin.ObjectAnimation(
   {
     animatedAttrs: {
       position: {
@@ -561,7 +565,7 @@ const soldierAnimation3 = new threejsPlugin.Object3D(
   }
 );
 
-const soldierMAE3 = new threejsPlugin.MAE(
+const soldierMorphAnimation3 = new threejsPlugin.MorphAnimation(
   {
     attrs: {
       singleLoopDuration: 600,
@@ -577,7 +581,7 @@ const soldierMAE3 = new threejsPlugin.MAE(
     duration: 10000,
   }
 );
-const cameraAnimation3 = new threejsPlugin.Object3D(
+const cameraAnimation3 = new threejsPlugin.ObjectAnimation(
   {
     animatedAttrs: {
       targetEntity: "!#soldier_1",
@@ -591,12 +595,13 @@ const cameraAnimation3 = new threejsPlugin.Object3D(
   {
     selector: "!#camera_1",
     duration: 10000,
+    easing: "easeInOutCubic",
   }
 );
 
 const rot4 = ThemeliodesProblima_2(-60, -88, -46, -92).Gab;
 
-const soldierAnimation4 = new threejsPlugin.Object3D(
+const soldierAnimation4 = new threejsPlugin.ObjectAnimation(
   {
     animatedAttrs: {
       position: {
@@ -613,7 +618,7 @@ const soldierAnimation4 = new threejsPlugin.Object3D(
   }
 );
 
-const soldierMAE4 = new threejsPlugin.MAE(
+const soldierMorphAnimation4 = new threejsPlugin.MorphAnimation(
   {
     attrs: {
       singleLoopDuration: 600,
@@ -629,7 +634,7 @@ const soldierMAE4 = new threejsPlugin.MAE(
     duration: 5000,
   }
 );
-const cameraAnimation4 = new threejsPlugin.Object3D(
+const cameraAnimation4 = new threejsPlugin.ObjectAnimation(
   {
     animatedAttrs: {
       targetEntity: "!#soldier_1",
@@ -643,12 +648,13 @@ const cameraAnimation4 = new threejsPlugin.Object3D(
   {
     selector: "!#camera_1",
     duration: 5000,
+    easing: "easeInOutCubic",
   }
 );
 
 const rot5 = ThemeliodesProblima_2(-46, -92, -6, -109).Gab;
 
-const soldierAnimation5 = new threejsPlugin.Object3D(
+const soldierAnimation5 = new threejsPlugin.ObjectAnimation(
   {
     animatedAttrs: {
       position: {
@@ -665,7 +671,7 @@ const soldierAnimation5 = new threejsPlugin.Object3D(
   }
 );
 
-const soldierMAE5 = new threejsPlugin.MAE(
+const soldierMorphAnimation5 = new threejsPlugin.MorphAnimation(
   {
     attrs: {
       singleLoopDuration: 400,
@@ -681,7 +687,7 @@ const soldierMAE5 = new threejsPlugin.MAE(
     duration: 8000,
   }
 );
-const cameraAnimation5 = new threejsPlugin.Object3D(
+const cameraAnimation5 = new threejsPlugin.ObjectAnimation(
   {
     animatedAttrs: {
       targetEntity: "!#soldier_1",
@@ -695,9 +701,10 @@ const cameraAnimation5 = new threejsPlugin.Object3D(
   {
     selector: "!#camera_1",
     duration: 9000,
+    easing: "easeInCubic",
   }
 );
-const soldierMAE6 = new threejsPlugin.MAE(
+const soldierMorphAnimation6 = new threejsPlugin.MorphAnimation(
   {
     attrs: {
       singleLoopDuration: 1000,
@@ -713,7 +720,7 @@ const soldierMAE6 = new threejsPlugin.MAE(
     duration: 15000,
   }
 );
-const cameraAnimation6 = new threejsPlugin.Object3D(
+const cameraAnimation6 = new threejsPlugin.ObjectAnimation(
   {
     animatedAttrs: {
       targetEntity: "!#soldier_1",
@@ -727,6 +734,7 @@ const cameraAnimation6 = new threejsPlugin.Object3D(
   {
     selector: "!#camera_1",
     duration: 25000,
+    easing: "easeOutCubic",
   }
 );
 // Vector3 {x: -6.448264786082455, y: 37.61849341670934, z: -109.47186367589241}
@@ -771,7 +779,7 @@ const effect = new MC.AudioEffect(
 const effect1 = new MC.AudioEffect(
   {
     animatedAttrs: {
-      gain: 0.8,
+      gain: 0.2,
     },
   },
   {
@@ -780,44 +788,44 @@ const effect1 = new MC.AudioEffect(
   }
 );
 clip.addIncident(cameraAnimation, 0);
-// clip.addIncident(soldierMAE, 0);
+clip.addIncident(soldierMorphAnimation, 0);
 
-// clip.addIncident(cameraAnimation1, 20000);
-// clip.addIncident(soldierAnimation1, 20000);
-// clip.addIncident(soldierMAE1, 20000);
+clip.addIncident(cameraAnimation1, 20000);
+clip.addIncident(soldierAnimation1, 20000);
+clip.addIncident(soldierMorphAnimation1, 20000);
 
-// clip.addIncident(soldierAnimation2, 35000);
-// clip.addIncident(soldierMAE2, 35000);
-// clip.addIncident(cameraAnimation2, 35000);
+clip.addIncident(soldierAnimation2, 35000);
+clip.addIncident(soldierMorphAnimation2, 35000);
+clip.addIncident(cameraAnimation2, 35000);
 
-// clip.addIncident(soldierAnimation3, 50000);
-// clip.addIncident(soldierMAE3, 50000);
-// clip.addIncident(cameraAnimation3, 50000);
+clip.addIncident(soldierAnimation3, 50000);
+clip.addIncident(soldierMorphAnimation3, 50000);
+clip.addIncident(cameraAnimation3, 50000);
 
-// clip.addIncident(soldierAnimation4, 60000);
-// clip.addIncident(soldierMAE4, 60000);
-// clip.addIncident(cameraAnimation4, 60000);
+clip.addIncident(soldierAnimation4, 60000);
+clip.addIncident(soldierMorphAnimation4, 60000);
+clip.addIncident(cameraAnimation4, 60000);
 
-// clip.addIncident(soldierAnimation5, 65000);
-// clip.addIncident(soldierMAE5, 65000);
-// clip.addIncident(cameraAnimation5, 65000);
-// clip.addIncident(cameraAnimation6, 74000);
-// clip.addIncident(soldierMAE6, 73000);
+clip.addIncident(soldierAnimation5, 65000);
+clip.addIncident(soldierMorphAnimation5, 65000);
+clip.addIncident(cameraAnimation5, 65000);
+clip.addIncident(cameraAnimation6, 74000);
+clip.addIncident(soldierMorphAnimation6, 73000);
 
-// scene.addIncident(songPlayback, 0);
+scene.addIncident(songPlayback, 0);
 
-// scene.addIncident(soundtrackPlayback, 36500);
-// scene.addIncident(monologue, 8000);
-// scene.addIncident(monologue2, 67000);
-// scene.addIncident(effect, 36500);
-// scene.addIncident(effect1, 66500);
+scene.addIncident(soundtrackPlayback, 36500);
+scene.addIncident(monologue, 8000);
+scene.addIncident(monologue2, 67000);
+scene.addIncident(effect, 36500);
+scene.addIncident(effect1, 66500);
 
-// scene.addIncident(fadeincurtain, 2000);
+scene.addIncident(fadeincurtain, 2000);
 
-// scene.addIncident(fadeindate, 6000);
-// scene.addIncident(fadeoutdate, 14000);
+scene.addIncident(fadeindate, 6000);
+scene.addIncident(fadeoutdate, 14000);
 
-// scene.addIncident(fadeinlocation, 8000);
+scene.addIncident(fadeinlocation, 8000);
 scene.addIncident(clip, 2000); // this should always load last dono why??
 scene.addIncident(fadeoutlocation, 16000);
 

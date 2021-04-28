@@ -77,8 +77,8 @@ const clip = new threejs.Clip(
     lights: [
       {
         parameters: ["#457", 1],
+        type: "SpotLight",
         settings: {
-          type: "SpotLight",
           position: { set: [139, 175, 195] },
           shadow: {
             radius: 1.2,
@@ -97,8 +97,8 @@ const clip = new threejs.Clip(
       },
       {
         parameters: ["#999", 1],
+        type: "PointLight",
         settings: {
-          type: "PointLight",
           position: { set: [139, 175, 195] },
           shadow: {
             radius: 1.2,
@@ -116,8 +116,8 @@ const clip = new threejs.Clip(
         },
       },
       {
+        type: "HemisphereLight",
         settings: {
-          type: "HemisphereLight",
           position: { set: [139, 175, 195] },
         },
       },

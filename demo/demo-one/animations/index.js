@@ -46,7 +46,7 @@ export const manMorph = [
 
 export const manMove = [
   {
-    animation: new threejs.Object3D(
+    animation: new threejs.ObjectAnimation(
       {
         animatedAttrs: {
           position: {
@@ -66,7 +66,7 @@ export const manMove = [
     millisecond: 0,
   },
   {
-    animation: new threejs.Object3D(
+    animation: new threejs.ObjectAnimation(
       {
         animatedAttrs: {
           position: {
@@ -89,7 +89,7 @@ export const manMove = [
 
 export const cameraMove = [
   {
-    animation: new threejs.Object3D(
+    animation: new threejs.ObjectAnimation(
       {
         animatedAttrs: {
           targetEntity: "!#man",
@@ -109,7 +109,7 @@ export const cameraMove = [
     millisecond: 0,
   },
   {
-    animation: new threejs.Object3D(
+    animation: new threejs.ObjectAnimation(
       {
         animatedAttrs: {
           targetEntity: "!#man",
@@ -129,7 +129,7 @@ export const cameraMove = [
     millisecond: 6000,
   },
   {
-    animation: new threejs.Object3D(
+    animation: new threejs.ObjectAnimation(
       {
         animatedAttrs: {
           targetEntity: "!#man",
@@ -149,7 +149,7 @@ export const cameraMove = [
     millisecond: 14000,
   },
   {
-    animation: new threejs.Object3D(
+    animation: new threejs.ObjectAnimation(
       {
         animatedAttrs: {
           targetEntity: "!#man",

@@ -352,7 +352,7 @@ const clip = new threejsPlugin.Clip(
   }
 );
 
-const cameraAnimation = new threejsPlugin.Object3D(
+const cameraAnimation = new threejsPlugin.ObjectAnimation(
   {
     animatedAttrs: {
       position: {
@@ -372,7 +372,7 @@ const cameraAnimation = new threejsPlugin.Object3D(
     duration: 2000
   }
 );
-const cameraAnimation2 = new threejsPlugin.Object3D(
+const cameraAnimation2 = new threejsPlugin.ObjectAnimation(
   {
     animatedAttrs: {
       position: {
@@ -393,7 +393,7 @@ const cameraAnimation2 = new threejsPlugin.Object3D(
     duration: 2000
   }
 );
-const cameraAnimation21 = new threejsPlugin.Object3D(
+const cameraAnimation21 = new threejsPlugin.ObjectAnimation(
   {
     animatedAttrs: {
       rotation: {
@@ -411,7 +411,7 @@ const cameraAnimation21 = new threejsPlugin.Object3D(
   }
 );
 
-const cameraAnimation3 = new threejsPlugin.Object3D(
+const cameraAnimation3 = new threejsPlugin.ObjectAnimation(
   {
     animatedAttrs: {
       position: {
@@ -434,7 +434,7 @@ const cameraAnimation3 = new threejsPlugin.Object3D(
   }
 );
 
-const cameraAnimation4 = new threejsPlugin.Object3D(
+const cameraAnimation4 = new threejsPlugin.ObjectAnimation(
   {
     animatedAttrs: {
       position: {
@@ -457,7 +457,7 @@ const cameraAnimation4 = new threejsPlugin.Object3D(
   }
 );
 
-const cameraAnimation5 = new threejsPlugin.Object3D(
+const cameraAnimation5 = new threejsPlugin.ObjectAnimation(
   {
     animatedAttrs: {
       position: {
@@ -480,7 +480,7 @@ const cameraAnimation5 = new threejsPlugin.Object3D(
   }
 );
 
-const boxAnimation3 = new threejsPlugin.Object3D(
+const boxAnimation3 = new threejsPlugin.ObjectAnimation(
   {
     animatedAttrs: {
       rotation: {
@@ -500,7 +500,7 @@ const boxAnimation3 = new threejsPlugin.Object3D(
   }
 );
 
-const boxAnimation4 = new threejsPlugin.Object3D(
+const boxAnimation4 = new threejsPlugin.ObjectAnimation(
   {
     animatedAttrs: {
       rotation: {
@@ -519,7 +519,7 @@ const boxAnimation4 = new threejsPlugin.Object3D(
     duration: 1000
   }
 );
-const horseAnimation4 = new threejsPlugin.Object3D(
+const horseAnimation4 = new threejsPlugin.ObjectAnimation(
   {
     animatedAttrs: {
       position: {
@@ -534,7 +534,7 @@ const horseAnimation4 = new threejsPlugin.Object3D(
   }
 );
 
-const divAnimation5 = new threejsPlugin.Object3D(
+const divAnimation5 = new threejsPlugin.ObjectAnimation(
   {
     animatedAttrs: {
       rotation: {
@@ -551,7 +551,7 @@ const divAnimation5 = new threejsPlugin.Object3D(
   }
 );
 
-const horseAnimation5 = new threejsPlugin.Object3D(
+const horseAnimation5 = new threejsPlugin.ObjectAnimation(
   {
     animatedAttrs: {
       position: {

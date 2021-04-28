@@ -6,9 +6,9 @@ export const initializeCamera = (camera, context) => {
   camera.class = camera.class || [];
   camera.settings = camera.settings || {};
   camera.class = camera.class || [];
-  camera.settings.type = camera.settings.type || "PerspectiveCamera";
+  camera.type = camera.type || "PerspectiveCamera";
   camera.parameters = camera.parameters || {};
-  if (camera.settings.type === "PerspectiveCamera") {
+  if (camera.type === "PerspectiveCamera") {
     const fov = 45;
     const aspect =
       context.rootElement.offsetWidth / context.rootElement.offsetHeight;
@@ -45,14 +45,14 @@ export const initializeRenderer = (renderer, context) => {
   (renderer.settings.setClearColor = renderer.settings.setClearColor || [
     "lightblue",
   ]),
-    (renderer.settings.type = renderer.settings.type || "WebGLRenderer");
+    (renderer.type = renderer.type || "WebGLRenderer");
   renderer.parameters = renderer.parameters || [
     {
       alpha: true,
       antialias: true,
     },
   ];
-  if (renderer.settings.type === "WebGLRenderer") {
+  if (renderer.type === "WebGLRenderer") {
     renderer.settings.setPixelRatio = renderer.settings.setPixelRatio || [
       context.window.devicePixelRatio,
     ];
@@ -69,9 +69,9 @@ export const initializeLight = (light) => {
   light.selector = light.selector || "!.scenes";
   light.class = light.class || [];
   light.settings = light.settings || {};
-  light.settings.type = light.settings.type || "DirectionalLight";
+  light.type = light.type || "DirectionalLight";
 
-  if (light.settings.type === "SpotLight") {
+  if (light.type === "SpotLight") {
     light.settings.castShadow = light.settings.hasOwnProperty("castShadow")
       ? light.settings.castShadow
       : true;
@@ -93,7 +93,7 @@ export const initializeLight = (light) => {
     };
     light.settings.penumbra = light.settings.penumbra || 0.8;
     light.parameters = light.parameters || [0xffffff, 2];
-  } else if (light.settings.type === "DirectionalLight") {
+  } else if (light.type === "DirectionalLight") {
     light.settings.castShadow = light.settings.hasOwnProperty("castShadow")
       ? light.settings.castShadow
       : true;
@@ -115,7 +115,7 @@ export const initializeLight = (light) => {
     };
 
     light.parameters = light.parameters || [0xffffff, 1];
-  } else if (light.settings.type === "PointLight") {
+  } else if (light.type === "PointLight") {
     light.settings.castShadow = light.settings.hasOwnProperty("castShadow")
       ? light.settings.castShadow
       : true;
@@ -137,9 +137,9 @@ export const initializeLight = (light) => {
       bias: 0.0001,
       mapSize: { x: 512, y: 512 },
     };
-  } else if (light.settings.type === "AmbientLight") {
+  } else if (light.type === "AmbientLight") {
     light.parameters = light.parameters || [0x404040];
-  } else if (light.settings.type === "HemisphereLight") {
+  } else if (light.type === "HemisphereLight") {
     light.parameters = light.parameters || [0xffffff, 0xffffff, 0.6];
     light.settings.position = light.settings.position || {
       set: [0, 0, 50],
