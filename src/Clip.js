@@ -4,7 +4,7 @@ import { SkeletonUtils } from "three/examples/jsm/utils/SkeletonUtils.js";
 import { BrowserClip } from "@kissmybutton/motorcortex";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import loaders from "./utils/loaders";
-import { applySettingsToObjects } from "./utils/helpers";
+import { applySettingsToObjects, enableControlEvents } from "./utils/helpers";
 
 import {
   initializeCamera,
@@ -17,6 +17,8 @@ export default class Clip3D extends BrowserClip {
   onAfterRender() {
     /* 
       attributes needs to be cloned for the scene to work as CASI
+      entities and controls should not be cloned to avoid
+      double creations 
     */
     const attrs = JSON.parse(JSON.stringify(this.attrs));
     this.attributes = {
@@ -45,11 +47,13 @@ export default class Clip3D extends BrowserClip {
   getObjectById(id) {
     return (this.context.getElements(`!#${id}`)[0] || {}).entity?.object;
   }
+
   getObjects(selector) {
     return this.context
       .getElements(selector)
       .map((element) => element.entity.object);
   }
+
   getObject(selector) {
     return this.context
       .getElements(selector)
@@ -103,6 +107,92 @@ export default class Clip3D extends BrowserClip {
       this.contextLoaded();
     }
   }
+
+  createModel(entity) {
+    // check if context previously loading
+    this.checkLoadingContext();
+
+    //create the custom entity reference
+    this.setCustomEntity(
+      entity.id,
+      {
+        model: entity.model,
+        settings: entity.settings,
+        object: {},
+      },
+      ["entities", ...entity.class]
+    );
+
+    // run the loadModel function
+    // and push in loadingModels Array one
+
+    this.loadModel(entity).then((model) => {
+      //apply settings
+      applySettingsToObjects(entity.settings, model);
+
+      const theEntity = this.getEntityById(entity.id);
+      theEntity.object = model;
+
+      this.getObjects(entity.selector).forEach((scene) => scene.add(model));
+      this.context.loadedModels.push(1);
+      this.checkLoadedContext();
+    });
+  }
+
+  createMesh(entity) {
+    const geometry = new THREE[entity.geometry.type](
+      ...entity.geometry.parameters
+    );
+
+    if (
+      entity.material.parameters[0].side &&
+      typeof entity.material.parameters[0].side == "string"
+    ) {
+      const side = entity.material.parameters[0].side;
+      entity.material.parameters[0].side = THREE[side];
+    }
+    if (
+      entity.material.parameters[0].textureMap &&
+      !entity.material.parameters[0].map
+    ) {
+      entity.material.parameters[0].map = new THREE.TextureLoader().load(
+        entity.material.parameters[0].textureMap
+      );
+    }
+
+    if (entity.material.parameters[0].videoMap) {
+      const video = document.createElement("video");
+      video.src = entity.material.parameters[0].videoMap;
+      this.context.rootElement.appendChild(video);
+      video.play();
+      entity.material.parameters[0].map = new THREE.VideoTexture(video);
+    }
+
+    const material = new THREE[entity.material.type](
+      ...entity.material.parameters
+    );
+
+    const entityObj = new THREE[entity.settings.entityType || "Mesh"](
+      geometry,
+      material
+    );
+    applySettingsToObjects(entity.settings, entityObj);
+    this.setCustomEntity(
+      entity.id,
+      {
+        settings: entity.settings,
+        object: entityObj,
+      },
+      ["entities", ...entity.class]
+    );
+
+    if (entity.callback) {
+      entity.callback(entityObj.geometry, entityObj.material, entityObj);
+    }
+
+    this.getObjects(entity.selector).forEach((scene) => scene.add(entityObj));
+  }
+
   async init() {
     /*
      * SCENES
@@ -201,89 +291,8 @@ export default class Clip3D extends BrowserClip {
     this.attributes.entities.forEach((entity) => {
       initializeMesh(entity);
 
-      if (entity.model) {
-        // check if context previously loading
-        this.checkLoadingContext();
-
-        //create the custom entity reference
-        this.setCustomEntity(
-          entity.id,
-          {
-            model: entity.model,
-            settings: entity.settings,
-            object: {},
-          },
-          ["entities", ...entity.class]
-        );
-
-        // run the loadModel function
-        // and push in loadingModels Array one
-
-        this.loadModel(entity).then((model) => {
-          //apply settings
-          applySettingsToObjects(entity.settings, model);
-
-          const theEntity = this.getEntityById(entity.id);
-          theEntity.object = model;
-
-          this.getObjects(entity.selector).forEach((scene) => scene.add(model));
-          this.context.loadedModels.push(1);
-          this.checkLoadedContext();
-        });
-        return;
-      }
-
-      const geometry = new THREE[entity.geometry.type](
-        ...entity.geometry.parameters
-      );
-
-      if (
-        entity.material.parameters[0].side &&
-        typeof entity.material.parameters[0].side == "string"
-      ) {
-        const side = entity.material.parameters[0].side;
-        entity.material.parameters[0].side = THREE[side];
-      }
-      if (
-        entity.material.parameters[0].textureMap &&
-        !entity.material.parameters[0].map
-      ) {
-        entity.material.parameters[0].map = new THREE.TextureLoader().load(
-          entity.material.parameters[0].textureMap
-        );
-      }
-
-      if (entity.material.parameters[0].videoMap) {
-        const video = document.createElement("video");
-        video.src = entity.material.parameters[0].videoMap;
-        this.context.rootElement.appendChild(video);
-        video.play();
-        entity.material.parameters[0].map = new THREE.VideoTexture(video);
-      }
-
-      const material = new THREE[entity.material.type](
-        ...entity.material.parameters
-      );
-
-      const entityObj = new THREE[entity.settings.entityType || "Mesh"](
-        geometry,
-        material
-      );
-      applySettingsToObjects(entity.settings, entityObj);
-      this.setCustomEntity(
-        entity.id,
-        {
-          settings: entity.settings,
-          object: entityObj,
-        },
-        ["entities", ...entity.class]
-      );
-
-      if (entity.callback) {
-        entity.callback(entityObj.geometry, entityObj.material, entityObj);
-      }
-
-      this.getObjects(entity.selector).forEach((scene) => scene.add(entityObj));
+      if (entity.model) return this.createModel(entity);
+      return this.createMesh(entity);
     });
 
     /*
@@ -300,21 +309,11 @@ export default class Clip3D extends BrowserClip {
     CONTROLS
      */
     if (this.attributes.controls && !this.attributes.controls.applied) {
-      let applyElement;
-      if (this.attributes.controls.applyTo) {
-        this.attrs.controls.applied = true;
-        applyElement = this.attributes.controls.applyTo;
-      } else {
-        applyElement = this.props.host || this.props.rootElement;
-      }
-      this.attributes.controls.selector ??= "!.cameras";
-      const cameraElement = this.context.getElements(
-        this.attributes.controls.selector
-      )[0];
+      const cameraObject = this.getObject("!.cameras");
 
       const controls = new OrbitControls(
-        cameraElement.entity.object,
-        applyElement
+        cameraObject,
+        this.props.host || this.props.rootElement
       );
       controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
       controls.dampingFactor = 0.5;
@@ -323,27 +322,8 @@ export default class Clip3D extends BrowserClip {
       controls.maxDistance = 1000;
       controls.maxPolarAngle = Math.PI / 2;
 
-      // const raycaster = new THREE.Raycaster();
-      // const mouse = new THREE.Vector2();
-      // const onMouseMove = (event) => {
-      //   // calculate mouse position in normalized device coordinates
-      //   // (-1 to +1) for both components
+      if (this.attributes.controls.enableEvents) enableControlEvents(this);
 
-      //   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-      //   mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-      //   const camera = this.getElements(this.attributes.renders[0].camera)
-      //     .entity.object;
-      //   raycaster.setFromCamera(mouse, camera);
-
-      //   // calculate objects intersecting the picking ray
-      //   const intersects = raycaster.intersectObjects(
-      //     this.getElements(this.attributes.renders[0].scene).entity.object
-      //       .children,
-      //     true
-      //   );
-      //   // console.log(intersects, camera.position);
-      // };
-      // window.addEventListener("click", onMouseMove, false);
       const animate = () => {
         try {
           requestAnimationFrame(animate);

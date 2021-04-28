@@ -4,10 +4,10 @@ import threeDef from "../../src/index";
 import { mainScene, man, plane } from "./entities";
 import { manMorph, manMove, cameraMove } from "./animations";
 const threejs = MC.loadPlugin(threeDef);
-
 import animeDef from "@kissmybutton/motorcortex-anime";
 const Anime = MC.loadPlugin(animeDef);
 
+import dcSvg from "./assets/images/donkey clip logo.svg";
 const entities = [mainScene, man, plane];
 
 const scene = new MC.HTMLClip({
@@ -15,7 +15,7 @@ const scene = new MC.HTMLClip({
     <div id="scene">
       <div id="curtains">
         <div id="logo">
-          <img src="./assets/images/dc-logo.jpg"/>
+          <img src="${dcSvg}"/>
         </div>
       <div/>
     </div>`,
@@ -37,7 +37,9 @@ const scene = new MC.HTMLClip({
       z-index:1;
       position:relative;
     }
-    
+    img{
+      width:1700px;
+    }
     `,
   audioSources: [
     {
@@ -129,7 +131,7 @@ const clip = new threejs.Clip(
       },
     },
     entities,
-    controls: { enable: true },
+    controls: { enable: true, enableEvents: true },
   },
   {
     selector: "#scene",

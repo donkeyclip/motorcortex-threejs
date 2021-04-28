@@ -60,6 +60,7 @@
     }
   },
   "dependencies": {
+    "svg-url-loader": "^7.1.1",
     "three": "^0.124.0"
   },
   "peerDependencies": {
