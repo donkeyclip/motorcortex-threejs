@@ -7,23 +7,42 @@ export const mainScene = {
   },
   settings: {
     position: { x: 0, y: 0, z: 0 },
+    receiveShadow: true,
   },
 };
 
-export const skeleton = {
-  id: "skeleton",
+export const man = {
+  id: "man",
   model: {
-    id: "skeleton",
+    id: "man",
     loader: "GLTFLoader",
-    file: "../assets/skeleton.glb",
+    file: "../assets/Soldier.glb",
   },
   settings: {
+    castShadow: true,
     position: {
-      x: -20.89,
-      y: -12.31,
-      z: 33.15,
+      x: -20,
+      y: -9,
+      z: 121,
     },
-    scale: { x: 6, y: 6, z: 6 },
-    rotation: { x: 0, y: Math.PI / 2, z: 0 },
+    scale: { x: 30, y: 30, z: 30 },
+    rotation: { x: 0, y: -Math.PI / 2, z: 0 },
+  },
+};
+export const plane = {
+  id: "plane",
+  geometry: { type: "BoxGeometry", parameters: [20000, 20000, 20000] },
+  material: {
+    type: "MeshBasicMaterial",
+    parameters: [
+      {
+        color: "#947956",
+        side: "DoubleSide",
+      },
+    ],
+  },
+  settings: {
+    position: { x: 0, y: -15, z: 0 },
+    rotation: { x: Math.PI / 2, y: 0, z: 0 },
   },
 };
