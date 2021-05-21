@@ -1,6 +1,6 @@
 {
   "name": "@kissmybutton/motorcortex-threejs",
-  "version": "1.4.1",
+  "version": "2.0.0",
   "description": "Threejs library for MotorCortex",
   "main": "dist/motorcortex-three.cjs.js",
   "module": "dist/motorcortex-three.esm.js",
