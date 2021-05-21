@@ -27,17 +27,17 @@ export const manMorph = [
     animation: new threejs.MorphAnimation(
       {
         attrs: {
-          singleLoopDuration: 1000,
+          singleLoopDuration: 700,
           animationFrames: 30,
           animationName: "Run",
         },
         animatedAttrs: {
-          time: 14000,
+          time: 10000,
         },
       },
       {
         selector: "!#man",
-        duration: 14000,
+        duration: 10000,
       }
     ),
     millisecond: 14000,
@@ -80,7 +80,7 @@ export const manMove = [
       },
       {
         selector: "!#man",
-        duration: 14000,
+        duration: 10000,
       }
     ),
     millisecond: 14000,
@@ -122,50 +122,50 @@ export const cameraMove = [
       },
       {
         selector: "!#camera_1",
-        duration: 8000,
+        duration: 6000,
         easing: "easeInOutCubic",
       }
     ),
     millisecond: 6000,
   },
+  // {
+  //   animation: new threejs.ObjectAnimation(
+  //     {
+  //       animatedAttrs: {
+  //         targetEntity: "!#man",
+  //         position: {
+  //           x: 1171,
+  //           y: 46,
+  //           z: 0,
+  //         },
+  //       },
+  //     },
+  //     {
+  //       selector: "!#camera_1",
+  //       duration: 8000,
+  //       easing: "easeInOutCubic",
+  //     }
+  //   ),
+  //   millisecond: 12000,
+  // },
   {
     animation: new threejs.ObjectAnimation(
       {
         animatedAttrs: {
           targetEntity: "!#man",
           position: {
-            x: 1171,
-            y: 46,
-            z: 0,
+            x: 1812,
+            y: 104,
+            z: 231,
           },
         },
       },
       {
         selector: "!#camera_1",
-        duration: 8000,
+        duration: 11000,
         easing: "easeInOutCubic",
       }
     ),
-    millisecond: 14000,
-  },
-  {
-    animation: new threejs.ObjectAnimation(
-      {
-        animatedAttrs: {
-          targetEntity: "!#man",
-          position: {
-            x: 1767,
-            y: 65,
-            z: 191,
-          },
-        },
-      },
-      {
-        selector: "!#camera_1",
-        duration: 6000,
-        easing: "easeInOutCubic",
-      }
-    ),
-    millisecond: 22000,
+    millisecond: 12000,
   },
 ];

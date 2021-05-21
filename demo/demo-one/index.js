@@ -1,5 +1,6 @@
 import MC from "@kissmybutton/motorcortex";
-import Player from "@kissmybutton/motorcortex-player/";
+import Player from "@kissmybutton/motorcortex-player";
+// import Player from "../../../teo-motorcortex-player/src";
 import threeDef from "../../src/index";
 import { mainScene, man, plane } from "./entities";
 import { manMorph, manMove, cameraMove } from "./animations";
@@ -15,7 +16,7 @@ const scene = new MC.HTMLClip({
     <div id="scene">
       <div id="curtains">
         <div id="logo">
-          <img src="${dcSvg}"/>
+          ${dcSvg}
         </div>
       <div/>
     </div>`,
@@ -36,8 +37,9 @@ const scene = new MC.HTMLClip({
       align-items:center;
       z-index:1;
       position:relative;
+      border: 2px solid;
     }
-    img{
+    svg{
       width:1700px;
     }
     `,
@@ -62,7 +64,7 @@ const scene = new MC.HTMLClip({
     },
   ],
   host: document.getElementById("clip"),
-  containerParams: { width: "800px", height: "600px" },
+  containerParams: { width: "1920px", height: "1080px" },
 });
 
 const clip = new threejs.Clip(
@@ -125,7 +127,7 @@ const clip = new threejs.Clip(
     cameras: {
       id: "camera_1",
       settings: {
-        position: { x: -231, y: 20, z: 195 },
+        position: { x: -92, y: 103, z: 324 },
         lookAt: [0, 0, 0],
         far: 30000,
       },
@@ -158,6 +160,7 @@ const scaleinlogo = new Anime.Anime(
     easing: "easeInCubic",
   }
 );
+
 const fadeoutcurtains = new Anime.Anime(
   {
     animatedAttrs: {
@@ -170,7 +173,18 @@ const fadeoutcurtains = new Anime.Anime(
     easing: "easeInCubic",
   }
 );
-
+const fadeincurtains = new Anime.Anime(
+  {
+    animatedAttrs: {
+      opacity: 1,
+    },
+  },
+  {
+    duration: 1000,
+    selector: `#curtains`,
+    easing: "easeInCubic",
+  }
+);
 manMorph.map((morph) => clip.addIncident(morph.animation, morph.millisecond));
 manMove.map((move) => clip.addIncident(move.animation, move.millisecond));
 cameraMove.map((camera) =>
@@ -185,7 +199,7 @@ const introSound = new MC.AudioPlayback({
 const desertWind = new MC.AudioPlayback({
   selector: "~#desert-wind",
   startFrom: 0,
-  duration: 28000,
+  duration: 20000,
 });
 
 const walkGrass = new MC.AudioPlayback({
@@ -201,10 +215,12 @@ scene.addIncident(walkGrass, 6000);
 scene.addIncident(scaleinlogo, 1500);
 scene.addIncident(fadeoutcurtains, 6000);
 scene.addIncident(clip, 6000);
+scene.addIncident(fadeincurtains, 26000);
 
 new Player({
   theme: "mc-green",
   clip: scene,
   showVolume: true,
   pointerEvents: true,
+  controls: true,
 });
