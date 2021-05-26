@@ -92,7 +92,7 @@ export const cameraMove = [
     animation: new threejs.ObjectAnimation(
       {
         animatedAttrs: {
-          targetEntity: "!#man",
+          targetEntity: "!#main-scene.Apocalyptic_Cityobjcleaner",
           position: {
             x: 231,
             y: 50,

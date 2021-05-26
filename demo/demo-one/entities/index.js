@@ -9,6 +9,7 @@ export const mainScene = {
     position: { x: 0, y: 0, z: 0 },
     receiveShadow: true,
   },
+  children: ["Apocalyptic_Cityobjcleaner"],
 };
 
 export const man = {
