@@ -43,12 +43,6 @@ export default class ObjectAnimation extends Effect {
     if (this.attributeKey == "rotationSetY")
       element.rotation.y = this.targetValue;
 
-    if (this.attributeKey == "rotationSetY")
-      element.rotation.y = this.targetValue;
-
-    if (this.attributeKey == "rotationSetY")
-      element.rotation.y = this.targetValue;
-
     if (typeof this.targetValue.x !== "undefined")
       this.applyValue(element, "x", fraction);
 
@@ -61,24 +55,26 @@ export default class ObjectAnimation extends Effect {
     if (typeof this.targetValue.z !== "undefined")
       this.applyValue(element, "z", fraction);
 
-    // if (typeof this.targetValue.y === "string") {
-    //   const origin = new THREE.Vector3(
-    //     element.position.x,
-    //     element.position.y + 10,
-    //     element.position.z
-    //   );
-    //   const raycaster = new THREE.Raycaster(
-    //     origin,
-    //     new THREE.Vector3(0, -1, 0)
-    //   );
-    //   const intersects = raycaster.intersectObjects(
-    //     this.context.getElements(this.targetValue.y)[0].entity.object.children,
-    //     true
-    //   );
-    //   element.position.y = ((intersects[0] || {}).point || {}).y;
-    // }
+    if (typeof this.targetValue.y === "string") {
+      const origin = new THREE.Vector3(
+        element.position.x,
+        element.position.y + 10,
+        element.position.z
+      );
+      const raycaster = new THREE.Raycaster(
+        origin,
+        new THREE.Vector3(0, -1, 0)
+      );
+      const intersects = raycaster.intersectObjects(
+        this.context.getElements(this.targetValue.y)[0].entity.object.children,
+        true
+      );
+      element.position.y = ((intersects[0] || {}).point || {}).y;
+    }
 
     if (this.attributeKey === "targetEntity") {
+      const telement = this.context.getElements(this.targetValue);
+
       element.lookAt(
         this.context.getElements(this.targetValue)[0].entity.object.position
       );

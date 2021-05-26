@@ -132,7 +132,24 @@ export default class Clip3D extends BrowserClip {
 
       const theEntity = this.getEntityById(entity.id);
       theEntity.object = model;
-
+      if (entity.children) {
+        entity.children.map((key) => {
+          let theChild = {};
+          model.traverse((child) => {
+            if (child.name === key) {
+              theChild = child;
+            }
+          });
+          //create the custom entity reference
+          this.setCustomEntity(
+            `${entity.id}.${key}`,
+            {
+              object: theChild,
+            },
+            ["entities", ...entity.class, "child"]
+          );
+        });
+      }
       this.getObjects(entity.selector).forEach((scene) => scene.add(model));
       this.context.loadedModels.push(1);
       this.checkLoadedContext();
