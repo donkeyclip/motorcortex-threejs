@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://www.github.com/kissmybutton/motorcortex-threejs/compare/v2.0.0...v2.1.0) (2021-05-26)
+
+
+### Features
+
+* expose glb children to incident selectors ([e791ba6](https://www.github.com/kissmybutton/motorcortex-threejs/commit/e791ba63acfbf2ee977ab4a054b1bad9a03927b4))
+
 ## 2.0.0 (2021-05-21)
 
 
