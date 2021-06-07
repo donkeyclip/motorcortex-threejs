@@ -191,6 +191,7 @@ loader.load(url, (glb) => {
 in our descriptive representation we would do:
 ```javascript
 const glb = {
+  id:"my-model",
   model: {
     loader: "GLTFLoader",
     file: "path/to/our/model.glb",
@@ -199,7 +200,8 @@ const glb = {
     position: { x: 10, y: 10, z: 10},
 	rotation: { x: 0, y: -Math.PI / 2, z: 0 },
     scale: { x: 2, y: 2, z: 2 },
-  }
+  },
+  children: ["child_model_name"],
 };
 ```
 |Property|Description|
@@ -209,6 +211,7 @@ const glb = {
 |type| A valid light type|
 |parameters| The arguments to pass in the light function|
 |settings| Any other setting related to the light|
+|children| The name of a child object that the model has and you want to use it in an effect. This will then be available to use with the selector `!#my-model.child_model_name`|
 
 ## Controls
 Controls will provide interactivity with your 3D Clip and will help you on creation time. To enable controls simply type
