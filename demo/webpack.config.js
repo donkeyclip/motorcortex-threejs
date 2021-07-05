@@ -5,10 +5,6 @@ module.exports = {
   resolve: {
     extensions: [".js"],
     modules: [path.resolve("./"), "node_modules"],
-    fallback: {
-      fs: false,
-      path: require.resolve("path-browserify"),
-    },
   },
   output: {
     filename: "bundle.js",
