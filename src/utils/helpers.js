@@ -29,7 +29,9 @@ export const enableControlEvents = (_this) => {
 
     // calculate objects intersecting the picking ray
     const intersects = raycaster.intersectObjects(scene.children, true);
+    // eslint-disable-next-line no-console
     console.log("INTERSECTIONS", intersects);
+    // eslint-disable-next-line no-console
     console.log("CAMERA POSITION", camera.position);
   };
   window.addEventListener("click", onMouseMove, false);

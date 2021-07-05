@@ -72,6 +72,7 @@ export const initializeLight = (light) => {
   light.type = light.type || "DirectionalLight";
 
   if (light.type === "SpotLight") {
+    // eslint-disable-next-line no-prototype-builtins
     light.settings.castShadow = light.settings.hasOwnProperty("castShadow")
       ? light.settings.castShadow
       : true;
@@ -94,6 +95,7 @@ export const initializeLight = (light) => {
     light.settings.penumbra = light.settings.penumbra || 0.8;
     light.parameters = light.parameters || [0xffffff, 2];
   } else if (light.type === "DirectionalLight") {
+    // eslint-disable-next-line no-prototype-builtins
     light.settings.castShadow = light.settings.hasOwnProperty("castShadow")
       ? light.settings.castShadow
       : true;
@@ -116,6 +118,7 @@ export const initializeLight = (light) => {
 
     light.parameters = light.parameters || [0xffffff, 1];
   } else if (light.type === "PointLight") {
+    // eslint-disable-next-line no-prototype-builtins
     light.settings.castShadow = light.settings.hasOwnProperty("castShadow")
       ? light.settings.castShadow
       : true;
