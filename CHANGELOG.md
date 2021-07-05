@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.1.3](https://www.github.com/kissmybutton/motorcortex-threejs/compare/v2.1.2...v2.1.3) (2021-07-05)
+
+
+### Miscellaneous Chores
+
+* release 2.1.3 ([4255828](https://www.github.com/kissmybutton/motorcortex-threejs/commit/425582819f8ab9ed7d864e744ae5fbbe984af3ff))
+
 ### [2.1.2](https://www.github.com/kissmybutton/motorcortex-threejs/compare/v2.1.0...v2.1.2) (2021-07-05)
 
 
