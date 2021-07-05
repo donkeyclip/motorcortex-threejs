@@ -1,5 +1,21 @@
 # Changelog
 
+### [2.1.2](https://www.github.com/kissmybutton/motorcortex-threejs/compare/v2.1.0...v2.1.2) (2021-07-05)
+
+
+### Bug Fixes
+
+* **deps:** update dependency three to ^0.129.0 ([9e62995](https://www.github.com/kissmybutton/motorcortex-threejs/commit/9e62995fe5e12c638d6921297bb4daf9f3d7a7e4))
+* **deps:** update dependency three to ^0.130.0 ([1d49ca4](https://www.github.com/kissmybutton/motorcortex-threejs/commit/1d49ca4e9b2b33c0ad6c53eddfb98ea5f4f84cda))
+* eslint errors ([1edd9b7](https://www.github.com/kissmybutton/motorcortex-threejs/commit/1edd9b7a6e013063a6f3c8cf5a4bd3c7f6333e6d))
+* remove bundle from git and fix webpack config file ([ee5595d](https://www.github.com/kissmybutton/motorcortex-threejs/commit/ee5595d75d2159a48214a347d879ad05ce05f5d6))
+
+
+### Miscellaneous Chores
+
+* release 2.1.1 ([8ee2b44](https://www.github.com/kissmybutton/motorcortex-threejs/commit/8ee2b44f44a741b22eefea1754894ed4e2097a8c))
+* release 2.1.2 ([b0695f8](https://www.github.com/kissmybutton/motorcortex-threejs/commit/b0695f8bc410e7622286dbda04a913151e4fe7f2))
+
 ## [2.1.0](https://www.github.com/kissmybutton/motorcortex-threejs/compare/v2.0.0...v2.1.0) (2021-05-26)
 
 
