@@ -5,7 +5,7 @@ node_modules
 coverage
 
 # Output folders
-# dist
+dist
 build
 compiled
 .nyc_output

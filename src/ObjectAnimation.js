@@ -73,8 +73,6 @@ export default class ObjectAnimation extends Effect {
     }
 
     if (this.attributeKey === "targetEntity") {
-      const telement = this.context.getElements(this.targetValue);
-
       element.lookAt(
         this.context.getElements(this.targetValue)[0].entity.object.position
       );

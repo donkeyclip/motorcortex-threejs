@@ -1,5 +1,4 @@
 const path = require("path");
-const webpack = require("webpack");
 
 module.exports = {
   entry: ["babel-polyfill", "./demo/index.js"],
@@ -43,6 +42,6 @@ module.exports = {
     port: 8080,
     historyApiFallback: false,
     hot: false,
-    contentBase: "./demo",
+    contentBase: "./demo/",
   },
 };
