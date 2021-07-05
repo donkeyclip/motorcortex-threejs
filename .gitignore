@@ -6,6 +6,7 @@ coverage
 
 # Output folders
 dist
+bundle
 build
 compiled
 .nyc_output
