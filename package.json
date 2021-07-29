@@ -73,7 +73,7 @@
     ]
   },
   "dependencies": {
-    "three": "^0.130.0"
+    "three": "^0.131.0"
   },
   "peerDependencies": {
     "@kissmybutton/motorcortex": ">= 6.4.1 < 8"
