@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.1.4](https://www.github.com/kissmybutton/motorcortex-threejs/compare/v2.1.3...v2.1.4) (2021-08-31)
+
+
+### Bug Fixes
+
+* **deps:** update dependency three to ^0.131.0 ([5904655](https://www.github.com/kissmybutton/motorcortex-threejs/commit/59046554f9a00627335078e188f15ccbbb4b3cca))
+
 ### [2.1.3](https://www.github.com/kissmybutton/motorcortex-threejs/compare/v2.1.2...v2.1.3) (2021-07-05)
 
 
