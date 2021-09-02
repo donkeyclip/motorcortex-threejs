@@ -2,9 +2,9 @@
   "name": "@kissmybutton/motorcortex-threejs",
   "version": "2.2.0",
   "description": "Threejs library for MotorCortex",
-  "main": "dist/motorcortex-three.cjs.js",
-  "module": "dist/motorcortex-three.esm.js",
-  "browser": "dist/motorcortex-three.umd.js",
+  "main": "dist/motorcortex-threejs.cjs.js",
+  "module": "dist/motorcortex-threejs.esm.js",
+  "browser": "dist/motorcortex-threejs.umd.js",
   "files": [
     "dist"
   ],
