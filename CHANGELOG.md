@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.2.0](https://www.github.com/kissmybutton/motorcortex-threejs/compare/v2.1.3...v2.2.0) (2021-09-02)
+
+
+### Features
+
+* add controls options ([439cb23](https://www.github.com/kissmybutton/motorcortex-threejs/commit/439cb230782a2eea8ad2e9edd2b365019458ffd6))
+* add follow entity animation option ([e1c483d](https://www.github.com/kissmybutton/motorcortex-threejs/commit/e1c483dd4f2c4eed34160adc34b88d4adef4b3f9))
+
+
+### Bug Fixes
+
+* **deps:** update dependency three to ^0.131.0 ([5904655](https://www.github.com/kissmybutton/motorcortex-threejs/commit/59046554f9a00627335078e188f15ccbbb4b3cca))
+
 ### [2.1.3](https://www.github.com/kissmybutton/motorcortex-threejs/compare/v2.1.2...v2.1.3) (2021-07-05)
 
 
