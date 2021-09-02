@@ -89,7 +89,16 @@ const clip = new threejs.Clip(
       },
     },
     entities,
-    controls: { enable: true, enableEvents: true },
+    controls: {
+      enable: true,
+      enableEvents: true, //default value
+      enableDamping: true, //default value
+      dampingFactor: 0.5, //default value
+      screenSpacePanning: false, //default value
+      minDistance: 1, //default value
+      maxDistance: 1000, //default value
+      maxPolarAngle: Math.PI / 2, //default value
+    },
   },
   {
     selector: "#scene",

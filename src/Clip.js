@@ -332,12 +332,21 @@ export default class Clip3D extends BrowserClip {
         cameraObject,
         this.props.host || this.props.rootElement
       );
-      controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
-      controls.dampingFactor = 0.5;
-      controls.screenSpacePanning = false;
-      controls.minDistance = 1;
-      controls.maxDistance = 1000;
-      controls.maxPolarAngle = Math.PI / 2;
+      const {
+        enableDamping = true,
+        dampingFactor = 0.5,
+        screenSpacePanning = false,
+        minDistance = 1,
+        maxDistance = 1000,
+        maxPolarAngle = Math.PI / 2,
+      } = this.attributes.controls;
+
+      controls.enableDamping = enableDamping; // an animation loop is required when either damping or auto-rotation are enabled
+      controls.dampingFactor = dampingFactor;
+      controls.screenSpacePanning = screenSpacePanning;
+      controls.minDistance = minDistance;
+      controls.maxDistance = maxDistance;
+      controls.maxPolarAngle = maxPolarAngle;
 
       if (this.attributes.controls.enableEvents) enableControlEvents(this);
 
