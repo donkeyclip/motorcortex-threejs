@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.2.2](https://www.github.com/kissmybutton/motorcortex-threejs/compare/v2.2.1...v2.2.2) (2021-09-02)
+
+
+### Bug Fixes
+
+* remove async await from clip.js ([e8406af](https://www.github.com/kissmybutton/motorcortex-threejs/commit/e8406aff9a7d43dd95053fcc0112b61aa58ea796))
+
 ### [2.2.1](https://www.github.com/kissmybutton/motorcortex-threejs/compare/v2.2.0...v2.2.1) (2021-09-02)
 
 
