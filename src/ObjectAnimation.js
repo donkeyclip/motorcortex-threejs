@@ -77,5 +77,18 @@ export default class ObjectAnimation extends Effect {
         this.context.getElements(this.targetValue)[0].entity.object.position
       );
     }
+
+    if (this.attributeKey === "followEntity") {
+      const { offsetX, offsetY, offsetZ, entity } =
+        this.attrs.animatedAttrs.followEntity;
+      let { x, y, z } =
+        this.context.getElements(entity)[0].entity.object.position;
+      if (offsetX) x += offsetX;
+      if (offsetY) y += offsetY;
+      if (offsetZ) z += offsetZ;
+      element.position.x = x;
+      element.position.y = y;
+      element.position.z = z;
+    }
   }
 }
