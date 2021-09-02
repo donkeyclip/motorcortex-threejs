@@ -60,7 +60,7 @@ export default class Clip3D extends BrowserClip {
       .map((element) => element.entity.object)[0];
   }
 
-  async loadModel(entity) {
+  loadModel(entity) {
     /* 
     check if model is previously loaded
     and clone it to prevent loading twice
@@ -68,9 +68,11 @@ export default class Clip3D extends BrowserClip {
     const model = this.getEntityById(`models-${entity.model.id}`) || {};
     if (Object.keys(model).length) {
       if (model.loader === "GLTFLoader") {
-        return SkeletonUtils.clone(model.object.scene);
+        return new Promise((resolve) =>
+          resolve(SkeletonUtils.clone(model.object.scene))
+        );
       } else {
-        return model.object.clone();
+        return new Promise((resolve) => resolve(model.object.clone()));
       }
     }
 
@@ -210,7 +212,7 @@ export default class Clip3D extends BrowserClip {
     this.getObjects(entity.selector).forEach((scene) => scene.add(entityObj));
   }
 
-  async init() {
+  init() {
     /*
      * SCENES
      */
