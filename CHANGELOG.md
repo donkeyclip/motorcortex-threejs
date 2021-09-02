@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.2.1](https://www.github.com/kissmybutton/motorcortex-threejs/compare/v2.2.0...v2.2.1) (2021-09-02)
+
+
+### Bug Fixes
+
+* change main file name in package.json ([b9d6b90](https://www.github.com/kissmybutton/motorcortex-threejs/commit/b9d6b90402deb9ce0a6bbdc65af341045da5b5c1))
+
 ## [2.2.0](https://www.github.com/kissmybutton/motorcortex-threejs/compare/v2.1.3...v2.2.0) (2021-09-02)
 
 
