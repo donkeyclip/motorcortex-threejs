@@ -107,7 +107,7 @@
     "babel-eslint": "10.1.0",
     "babel-loader": "8.2.2",
     "browserslist": "4.17.0",
-    "caniuse-lite": "1.0.30001256",
+    "caniuse-lite": "1.0.30001257",
     "commitizen": "4.2.4",
     "concurrently": "6.2.1",
     "coveralls": "3.1.1",
