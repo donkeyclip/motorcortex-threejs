@@ -1,4 +1,4 @@
-import { Effect } from "@kissmybutton/motorcortex";
+import { Effect } from "@donkeyclip/motorcortex";
 import * as THREE from "three";
 
 export default class ObjectAnimation extends Effect {

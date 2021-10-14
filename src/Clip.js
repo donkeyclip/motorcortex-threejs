@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import * as THREE from "three";
 import { SkeletonUtils } from "three/examples/jsm/utils/SkeletonUtils.js";
-import { BrowserClip } from "@kissmybutton/motorcortex";
+import { BrowserClip } from "@donkeyclip/motorcortex";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import loaders from "./utils/loaders";
 import { applySettingsToObjects, enableControlEvents } from "./utils/helpers";

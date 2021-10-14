@@ -1,4 +1,4 @@
-import MC from "@kissmybutton/motorcortex";
+import MC from "@donkeyclip/motorcortex";
 import threeDefinition from "../../src/index";
 const threejs = MC.loadPlugin(threeDefinition);
 import { ThemeliodesProblima_2 } from "../helpers";

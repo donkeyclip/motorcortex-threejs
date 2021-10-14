@@ -4,7 +4,7 @@ import MorphAnimation from "./MorphAnimation";
 import compositeAttributes from "./compoAttrs";
 
 export default {
-  npm_name: "@kissmybutton/motorcortex-threejs",
+  npm_name: "@donkeyclip/motorcortex-threejs",
   incidents: [
     {
       exportable: ObjectAnimation,

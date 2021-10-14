@@ -1,5 +1,5 @@
-import MC from "@kissmybutton/motorcortex";
-import Player from "@kissmybutton/motorcortex-player";
+import MC from "@donkeyclip/motorcortex";
+import Player from "@donkeyclip/motorcortex-player";
 import threeDef from "../src/index";
 import { mainScene, man, plane } from "./entities";
 import { manMorph, manMove, cameraMove } from "./animations";
