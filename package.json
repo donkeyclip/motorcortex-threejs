@@ -74,7 +74,7 @@
   },
   "dependencies": {
     "@donkeyclip/motorcortex-player": "^2.3.5",
-    "three": "^0.133.1"
+    "three": "^0.131.0"
   },
   "peerDependencies": {
     "@donkeyclip/motorcortex": ">= 7.5.4 < 8"
