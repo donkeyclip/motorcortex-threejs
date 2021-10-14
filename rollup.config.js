@@ -7,31 +7,31 @@ import pkg from "./package.json";
 export default [
   {
     input: "src/index.js",
-    external: ["@kissmybutton/motorcortex"],
+    external: ["@donkeyclip/motorcortex"],
     output: [
       { file: pkg.main, format: "cjs" },
-      { file: pkg.module, format: "es" }
+      { file: pkg.module, format: "es" },
     ],
-    plugins: [resolve(), commonjs(), babel()]
+    plugins: [resolve(), commonjs(), babel()],
   },
   {
     input: "src/index.js",
-    external: ["@kissmybutton/motorcortex"],
+    external: ["@donkeyclip/motorcortex"],
     output: [
       {
         globals: {
-          "@kissmybutton/motorcortex": "MotorCortex"
+          "@donkeyclip/motorcortex": "MotorCortex",
         },
         name: pkg.name,
         file: pkg.browser,
-        format: "umd"
-      }
+        format: "umd",
+      },
     ],
     plugins: [
       resolve({ mainFields: ["module", "main", "browser"] }),
       commonjs(),
       babel(),
-      terser()
-    ]
-  }
+      terser(),
+    ],
+  },
 ];

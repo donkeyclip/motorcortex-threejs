@@ -1,5 +1,5 @@
 {
-  "name": "@kissmybutton/motorcortex-threejs",
+  "name": "@donkeyclip/motorcortex-threejs",
   "version": "2.2.2",
   "description": "Threejs library for MotorCortex",
   "main": "dist/motorcortex-threejs.cjs.js",
@@ -11,7 +11,7 @@
   "author": "KissMyButton PC (kissmybutton.gr) <opensource@kissmybutton.gr>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kissmybutton/motorcortex-threejs.git"
+    "url": "https://github.com/donkeyclip/motorcortex-threejs.git"
   },
   "license": "MIT",
   "engines": {

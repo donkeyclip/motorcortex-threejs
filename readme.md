@@ -19,7 +19,7 @@
 
 ### Demo
 
-https://kissmybutton.github.io/motorcortex-threejs/demo/
+https://donkeyclip.github.io/motorcortex-threejs/demo/
 
 # Key Concepts / Features
 
@@ -259,14 +259,14 @@ and add them to your clip. The property enableEvents will be triggered on each c
 ## Install
 
 ```bash
-npm install @kissmybutton/motorcortex-threejs
+npm install @donkeyclip/motorcortex-threejs
 ```
 
 ## Import
 
 ```javascript
-import { loadPlugin } from "@kissmybutton/motorcortex";
-import threejsPlugin from "@kissmybutton/motorcortex-threejs";
+import { loadPlugin } from "@donkeyclip/motorcortex";
+import threejsPlugin from "@donkeyclip/motorcortex-threejs";
 const threejs = loadPlugin(threejs);
 ```
 
