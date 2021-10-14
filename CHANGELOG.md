@@ -1,5 +1,13 @@
 # Changelog
 
+### [2.2.4](https://www.github.com/donkeyclip/motorcortex-threejs/compare/v2.2.3...v2.2.4) (2021-10-14)
+
+
+### Bug Fixes
+
+* remove kissmybutton references ([831dbcc](https://www.github.com/donkeyclip/motorcortex-threejs/commit/831dbccf4ed94e6b1608be31b80142e6a0eb6944))
+* remove kissmybutton references ([2825d3a](https://www.github.com/donkeyclip/motorcortex-threejs/commit/2825d3a6c266901507141b57060cd078708afb84))
+
 ### [2.2.3](https://www.github.com/donkeyclip/motorcortex-threejs/compare/v2.2.2...v2.2.3) (2021-10-14)
 
 ### Bug Fixes
