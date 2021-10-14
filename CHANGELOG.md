@@ -1,5 +1,13 @@
 # Changelog
 
+### [2.2.3](https://www.github.com/donkeyclip/motorcortex-threejs/compare/v2.2.2...v2.2.3) (2021-10-14)
+
+
+### Bug Fixes
+
+* downgrade threejs ([1d783e1](https://www.github.com/donkeyclip/motorcortex-threejs/commit/1d783e1c336acd01290d238c34edd69c08b4f112))
+* update motorcortex ([ef66d0e](https://www.github.com/donkeyclip/motorcortex-threejs/commit/ef66d0ee4583aa9c3fc4e2801eb2c37613d0a635))
+
 ### [2.2.2](https://www.github.com/kissmybutton/motorcortex-threejs/compare/v2.2.1...v2.2.2) (2021-09-02)
 
 
