@@ -328,11 +328,23 @@ export default class Clip3D extends BrowserClip {
       this.setCustomEntity(uuidv4(), render, ["renders"]);
     });
 
+    let frameNumber;
+    const animate = () => {
+      try {
+        frameNumber = requestAnimationFrame(animate);
+        this.renderLoop();
+      } catch (e) {
+        console.error(e);
+        window.cancelAnimationFrame(frameNumber);
+      }
+    };
+
     /*
     CONTROLS
      */
-    if (!(this.attributes.controls && !this.attributes.controls.applied)) {
-      this.render();
+    if (!this.attributes.controls?.enable || this.attributes.controls.applied) {
+      animate();
+      return this.render();
     }
 
     const OrbitControlsPromise = import(
@@ -347,6 +359,7 @@ export default class Clip3D extends BrowserClip {
       minDistance = 1,
       maxDistance = 1000,
       maxPolarAngle = Math.PI / 2,
+      enableEvents,
     } = this.attributes.controls;
 
     return OrbitControlsPromise.then((OrbitControls) => {
@@ -362,17 +375,7 @@ export default class Clip3D extends BrowserClip {
       controls.maxDistance = maxDistance;
       controls.maxPolarAngle = maxPolarAngle;
 
-      if (this.attributes.controls.enableEvents) enableControlEvents(this);
-      let frameNumber;
-      const animate = () => {
-        try {
-          frameNumber = requestAnimationFrame(animate);
-          this.renderLoop();
-        } catch (e) {
-          console.error(e);
-          window.cancelAnimationFrame(frameNumber);
-        }
-      };
+      if (enableEvents) enableControlEvents(this);
 
       animate();
       this.render();
