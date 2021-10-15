@@ -1,16 +1,17 @@
 import babel from "rollup-plugin-babel";
+import cleanup from "rollup-plugin-cleanup";
 import commonjs from "rollup-plugin-commonjs";
 import resolve from "rollup-plugin-node-resolve";
 import { terser } from "rollup-plugin-terser";
 import pkg from "./package.json";
-
 export default [
   {
+    inlineDynamicImports: false,
     input: "src/index.js",
     external: ["@donkeyclip/motorcortex"],
     output: [
-      { file: pkg.main, format: "cjs" },
-      { file: pkg.module, format: "es" },
+      { dir: pkg.main, format: "cjs" },
+      { dir: pkg.module, format: "es" },
     ],
     plugins: [resolve(), commonjs(), babel()],
   },
@@ -22,6 +23,7 @@ export default [
         globals: {
           "@donkeyclip/motorcortex": "MotorCortex",
         },
+        inlineDynamicImports: true,
         name: pkg.name,
         file: pkg.browser,
         format: "umd",
@@ -31,6 +33,7 @@ export default [
       resolve({ mainFields: ["module", "main", "browser"] }),
       commonjs(),
       babel(),
+      cleanup({ comments: "none" }),
       terser(),
     ],
   },

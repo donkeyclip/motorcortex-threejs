@@ -1,24 +1,23 @@
-import { v4 as uuidv4 } from "uuid";
-import * as THREE from "three";
-import { SkeletonUtils } from "three/examples/jsm/utils/SkeletonUtils.js";
 import { BrowserClip } from "@donkeyclip/motorcortex";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import loaders from "./utils/loaders";
+import * as THREE from "three";
+import { Scene, TextureLoader, VideoTexture } from "three";
+import { v4 as uuidv4 } from "uuid";
 import { applySettingsToObjects, enableControlEvents } from "./utils/helpers";
-
 import {
   initializeCamera,
-  initializeRenderer,
   initializeLight,
   initializeMesh,
+  initializeRenderer,
 } from "./utils/initializers";
+import { loaders } from "./utils/loaders";
 
+let SkeletonUtils;
 export default class Clip3D extends BrowserClip {
   onAfterRender() {
-    /* 
+    /*
       attributes needs to be cloned for the scene to work as CASI
       entities and controls should not be cloned to avoid
-      double creations 
+      double creations
     */
     const attrs = JSON.parse(JSON.stringify(this.attrs));
     this.attributes = {
@@ -32,7 +31,7 @@ export default class Clip3D extends BrowserClip {
     this.context.loading = false;
     this.context.loadedModels = [];
     this.context.loadingModels = [];
-    this.handleWindoResize();
+    this.handleWindowResize();
     this.init();
   }
 
@@ -55,25 +54,30 @@ export default class Clip3D extends BrowserClip {
   }
 
   getObject(selector) {
-    return this.context
-      .getElements(selector)
-      .map((element) => element.entity.object)[0];
+    return this.context.getElements(selector)[0]?.entity.object;
   }
 
   loadModel(entity) {
-    /* 
+    /*
     check if model is previously loaded
     and clone it to prevent loading twice
     */
     const model = this.getEntityById(`models-${entity.model.id}`) || {};
     if (Object.keys(model).length) {
-      if (model.loader === "GLTFLoader") {
-        return new Promise((resolve) =>
-          resolve(SkeletonUtils.clone(model.object.scene))
-        );
-      } else {
-        return new Promise((resolve) => resolve(model.object.clone()));
+      if (model.loader !== "GLTFLoader") {
+        return Promise.resolve(model.object.clone());
       }
+
+      if (SkeletonUtils) {
+        return Promise.resolve(SkeletonUtils.clone(model.object.scene));
+      }
+
+      return import("three/examples/jsm/utils/SkeletonUtils.js").then(
+        (Skeleton) => {
+          SkeletonUtils ||= Skeleton.SkeletonUtils;
+          return SkeletonUtils.clone(model.object.scene);
+        }
+      );
     }
 
     entity.model.id ??= uuidv4();
@@ -174,7 +178,7 @@ export default class Clip3D extends BrowserClip {
       entity.material.parameters[0].textureMap &&
       !entity.material.parameters[0].map
     ) {
-      entity.material.parameters[0].map = new THREE.TextureLoader().load(
+      entity.material.parameters[0].map = new TextureLoader().load(
         entity.material.parameters[0].textureMap
       );
     }
@@ -184,7 +188,7 @@ export default class Clip3D extends BrowserClip {
       video.src = entity.material.parameters[0].videoMap;
       this.context.rootElement.appendChild(video);
       video.play();
-      entity.material.parameters[0].map = new THREE.VideoTexture(video);
+      entity.material.parameters[0].map = new VideoTexture(video);
     }
 
     const material = new THREE[entity.material.type](
@@ -229,7 +233,7 @@ export default class Clip3D extends BrowserClip {
         scene.id,
         {
           settings: scene.settings,
-          object: new THREE.Scene(),
+          object: new Scene(),
         },
         ["scenes", ...scene.class]
       );
@@ -318,30 +322,38 @@ export default class Clip3D extends BrowserClip {
     RENDERS
      */
     this.attributes.renders.forEach((render) => {
-      render.scene ??= "!#" + this.context.getElements("!.scenes")[0].id;
-      render.camera ??= "!#" + this.context.getElements("!.cameras")[0].id;
-      render.renderer ??= "!#" + this.context.getElements("!.renderers")[0].id;
+      render.scene ??= `!#${this.context.getElements("!.scenes")[0].id}`;
+      render.camera ??= `!#${this.context.getElements("!.cameras")[0].id}`;
+      render.renderer ??= `!#${this.context.getElements("!.renderers")[0].id}`;
       this.setCustomEntity(uuidv4(), render, ["renders"]);
     });
 
     /*
     CONTROLS
      */
-    if (this.attributes.controls && !this.attributes.controls.applied) {
-      const cameraObject = this.getObject("!.cameras");
+    if (!(this.attributes.controls && !this.attributes.controls.applied)) {
+      this.render();
+    }
 
+    const OrbitControlsPromise = import(
+      "three/examples/jsm/controls/OrbitControls.js"
+    ).then((res) => res.OrbitControls);
+
+    const cameraObject = this.getObject("!.cameras");
+    const {
+      enableDamping = true,
+      dampingFactor = 0.5,
+      screenSpacePanning = false,
+      minDistance = 1,
+      maxDistance = 1000,
+      maxPolarAngle = Math.PI / 2,
+    } = this.attributes.controls;
+
+    return OrbitControlsPromise.then((OrbitControls) => {
       const controls = new OrbitControls(
         cameraObject,
         this.props.host || this.props.rootElement
       );
-      const {
-        enableDamping = true,
-        dampingFactor = 0.5,
-        screenSpacePanning = false,
-        minDistance = 1,
-        maxDistance = 1000,
-        maxPolarAngle = Math.PI / 2,
-      } = this.attributes.controls;
 
       controls.enableDamping = enableDamping; // an animation loop is required when either damping or auto-rotation are enabled
       controls.dampingFactor = dampingFactor;
@@ -351,36 +363,33 @@ export default class Clip3D extends BrowserClip {
       controls.maxPolarAngle = maxPolarAngle;
 
       if (this.attributes.controls.enableEvents) enableControlEvents(this);
-
+      let frameNumber;
       const animate = () => {
         try {
-          requestAnimationFrame(animate);
-          // controls.update(); // only required if controls.enableDamping = true, or if controls.autoRotate = true
+          frameNumber = requestAnimationFrame(animate);
           this.renderLoop();
         } catch (e) {
           console.error(e);
-          window.cancelAnimationFrame(animate);
+          window.cancelAnimationFrame(frameNumber);
         }
       };
+
       animate();
-    }
-    this.render();
+      this.render();
+    });
   }
 
-  handleWindoResize() {
+  handleWindowResize() {
     this.context.window.addEventListener("resize", () => {
+      const { offsetWidth, offsetHeight } = this.context.rootElement;
+      const aspect = offsetWidth / offsetHeight;
       for (const camera of this.getElements(".cameras")) {
-        camera.entity.object.aspect =
-          this.context.rootElement.offsetWidth /
-          this.context.rootElement.offsetHeight;
+        camera.entity.object.aspect = aspect;
         camera.entity.object.updateProjectionMatrix();
       }
 
       for (const renderer of this.getElements(".renderers")) {
-        renderer.entity.object.setSize(
-          this.context.rootElement.offsetWidth,
-          this.context.rootElement.offsetHeight
-        );
+        renderer.entity.object.setSize(offsetWidth, offsetHeight);
       }
       // render the scene
       this.renderLoop();
@@ -399,9 +408,9 @@ export default class Clip3D extends BrowserClip {
 
   renderLoop() {
     this.attributes.renders.forEach((render) => {
-      render.scene ??= "!#" + this.context.getElements("!.scenes")[0].id;
-      render.camera ??= "!#" + this.context.getElements("!.cameras")[0].id;
-      render.renderer ??= "!#" + this.context.getElements("!.renderers")[0].id;
+      render.scene ??= `!#${this.context.getElements("!.scenes")[0].id}`;
+      render.camera ??= `!#${this.context.getElements("!.cameras")[0].id}`;
+      render.renderer ??= `!#${this.context.getElements("!.renderers")[0].id}`;
 
       /* the render function */
       this.getObject(render.renderer).render(

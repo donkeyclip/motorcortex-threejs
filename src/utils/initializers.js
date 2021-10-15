@@ -1,4 +1,4 @@
-import * as THREE from "three";
+import { PCFSoftShadowMap, Vector3 } from "three";
 import { v4 as uuidv4 } from "uuid";
 
 export const initializeCamera = (camera, context) => {
@@ -29,7 +29,7 @@ export const initializeCamera = (camera, context) => {
   camera.settings.position.x = camera.settings.position.x || 0;
   camera.settings.position.y = camera.settings.position.y || 0;
   camera.settings.position.z = camera.settings.position.z || 10;
-  camera.settings.lookAt = new THREE.Vector3(
+  camera.settings.lookAt = new Vector3(
     ...(camera.settings.lookAt || [0, 0, 0])
   );
 };
@@ -40,7 +40,7 @@ export const initializeRenderer = (renderer, context) => {
   renderer.settings = renderer.settings || {};
   renderer.settings.shadowMap = renderer.settings.shadowMap || {
     enabled: true,
-    type: THREE.PCFSoftShadowMap,
+    type: PCFSoftShadowMap,
   };
   (renderer.settings.setClearColor = renderer.settings.setClearColor || [
     "lightblue",

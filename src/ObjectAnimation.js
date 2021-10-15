@@ -1,5 +1,5 @@
 import { Effect } from "@donkeyclip/motorcortex";
-import * as THREE from "three";
+import { Raycaster, Vector3 } from "three";
 
 export default class ObjectAnimation extends Effect {
   getScratchValue() {
@@ -32,11 +32,11 @@ export default class ObjectAnimation extends Effect {
       ) + this.initialValue[prop]);
   }
 
-  onProgress(fraction /*, millisecond*/) {
+  onProgress(fraction) {
     const element = this.element.entity.object;
 
     if (typeof this.targetValue.lookAt !== "undefined") {
-      const target = new THREE.Vector3(...this.targetValue.lookAt);
+      const target = new Vector3(...this.targetValue.lookAt);
       element.children[0].lookAt(target);
     }
 
@@ -56,15 +56,12 @@ export default class ObjectAnimation extends Effect {
       this.applyValue(element, "z", fraction);
 
     if (typeof this.targetValue.y === "string") {
-      const origin = new THREE.Vector3(
+      const origin = new Vector3(
         element.position.x,
         element.position.y + 10,
         element.position.z
       );
-      const raycaster = new THREE.Raycaster(
-        origin,
-        new THREE.Vector3(0, -1, 0)
-      );
+      const raycaster = new Raycaster(origin, new Vector3(0, -1, 0));
       const intersects = raycaster.intersectObjects(
         this.context.getElements(this.targetValue.y)[0].entity.object.children,
         true
