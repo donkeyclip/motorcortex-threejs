@@ -1,5 +1,22 @@
 # Changelog
 
+## [2.3.0](https://www.github.com/donkeyclip/motorcortex-threejs/compare/v2.2.4...v2.3.0) (2021-10-15)
+
+
+### Features
+
+* bump version of 3js to latest ([1b14943](https://www.github.com/donkeyclip/motorcortex-threejs/commit/1b1494358c0a2638fe6b9c204bad4e56b9333f24))
+
+
+### Bug Fixes
+
+* don't enable controls when disabled by clip ([bb33033](https://www.github.com/donkeyclip/motorcortex-threejs/commit/bb33033f24d385477d3f53208fbcfb97202669ec))
+
+
+### Performance Improvements
+
+* dynamic load loaders and controllers, drop unneeded loop ([3790c4b](https://www.github.com/donkeyclip/motorcortex-threejs/commit/3790c4bdbb15981a41ee9e6db1485f02d06b0d98))
+
 ### [2.2.4](https://www.github.com/donkeyclip/motorcortex-threejs/compare/v2.2.3...v2.2.4) (2021-10-14)
 
 
