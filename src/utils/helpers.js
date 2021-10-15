@@ -1,4 +1,4 @@
-import * as THREE from "three";
+import { Raycaster, Vector2 } from "three";
 
 export const applySettingsToObjects = (settings, obj) => {
   for (const key in settings) {
@@ -15,8 +15,8 @@ export const applySettingsToObjects = (settings, obj) => {
 };
 
 export const enableControlEvents = (_this) => {
-  const raycaster = new THREE.Raycaster();
-  const mouse = new THREE.Vector2();
+  const raycaster = new Raycaster();
+  const mouse = new Vector2();
   const onMouseMove = (event) => {
     // calculate mouse position in normalized device coordinates
     // (-1 to +1) for both components

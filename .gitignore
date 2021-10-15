@@ -6,6 +6,7 @@ coverage
 
 # Output files
 bundle.js
+*bundle.js
 
 # Output folders
 dist
