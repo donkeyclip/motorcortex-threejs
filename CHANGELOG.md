@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.3.1](https://www.github.com/donkeyclip/motorcortex-threejs/compare/v2.3.0...v2.3.1) (2021-10-15)
+
+
+### Bug Fixes
+
+* reverse demo ([b646b44](https://www.github.com/donkeyclip/motorcortex-threejs/commit/b646b447b1de431ec9ce6495645e6943d9b63baa))
+
 ## [2.3.0](https://www.github.com/donkeyclip/motorcortex-threejs/compare/v2.2.4...v2.3.0) (2021-10-15)
 
 
