@@ -1,5 +1,6 @@
 import { Effect } from "@donkeyclip/motorcortex";
-import { Raycaster, Vector3 } from "three";
+import { Raycaster, Vector3, Object3D } from "three";
+const matrixObject = new Object3D();
 
 export default class ObjectAnimation extends Effect {
   getScratchValue() {
@@ -15,6 +16,8 @@ export default class ObjectAnimation extends Effect {
         z: (this.element.settings.rotation || {}).z || element.rotation.z || 0,
         lookAt: this.element.settings.lookAt,
       };
+    } else if (this.attributeKey === "instance") {
+      return this.element.entity.settings.instance;
     } else {
       return (
         this.element.settings[this.attributeKey] ||
@@ -86,6 +89,58 @@ export default class ObjectAnimation extends Effect {
       element.position.x = x;
       element.position.y = y;
       element.position.z = z;
+    }
+    // instaces
+    if (this.attributeKey === "instance") {
+      for (const i in this.targetValue) {
+        if (this.targetValue[i][1]) {
+          matrixObject.position.set(
+            Number(
+              (
+                (this.targetValue[i][1][0] - this.initialValue[i][1][0]) *
+                fraction
+              ).toFixed(4)
+            ) + this.initialValue[i][1][0],
+            Number(
+              (
+                (this.targetValue[i][1][1] - this.initialValue[i][1][1]) *
+                fraction
+              ).toFixed(4)
+            ) + this.initialValue[i][1][1],
+            Number(
+              (
+                (this.targetValue[i][1][2] - this.initialValue[i][1][2]) *
+                fraction
+              ).toFixed(4)
+            ) + this.initialValue[i][1][2]
+          );
+        }
+        if (this.targetValue[i][2]) {
+          matrixObject.rotation.set(
+            Number(
+              (
+                (this.targetValue[i][2][0] - this.initialValue[i][2][0]) *
+                fraction
+              ).toFixed(4)
+            ) + this.initialValue[i][2][0],
+            Number(
+              (
+                (this.targetValue[i][2][1] - this.initialValue[i][2][1]) *
+                fraction
+              ).toFixed(4)
+            ) + this.initialValue[i][2][1],
+            Number(
+              (
+                (this.targetValue[i][2][2] - this.initialValue[i][2][2]) *
+                fraction
+              ).toFixed(4)
+            ) + this.initialValue[i][2][2]
+          );
+        }
+        matrixObject.updateMatrix();
+        element.setMatrixAt(this.targetValue[i][0], matrixObject.matrix);
+        element.instanceMatrix.needsUpdate = true;
+      }
     }
   }
 }

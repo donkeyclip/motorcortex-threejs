@@ -195,11 +195,49 @@ export default class Clip3D extends BrowserClip {
       ...entity.material.parameters
     );
 
-    const entityObj = new THREE[entity.settings.entityType || "Mesh"](
-      geometry,
-      material
-    );
-    applySettingsToObjects(entity.settings, entityObj);
+    let entityObj;
+    // create a single mesh
+    if (!entity?.settings?.count) {
+      entityObj = new THREE[entity.settings.entityType || "Mesh"](
+        geometry,
+        material
+      );
+
+      applySettingsToObjects(entity.settings, entityObj);
+    } else {
+      // create an instanced mesh
+      entityObj = new THREE.InstancedMesh(
+        geometry,
+        material,
+        entity.settings.count
+      );
+      for (let i = 0; i < entity.settings.count; i++) {
+        const matrixObject = new THREE.Object3D();
+
+        matrixObject.position.set(...entity.settings.instance[i][1]);
+        matrixObject.rotation.set(...entity.settings.instance[i][2]);
+        if (entity.settings.instance[i][1][3]) {
+          entityObj.setColorAt(
+            entity.settings.instance[i][0],
+            new THREE.Color(entity.settings.instance[i][3])
+          );
+        } else {
+          entityObj.setColorAt(
+            entity.settings.instance[i][0],
+            new THREE.Color(entity.material?.parameters[0]?.color || "#000")
+          );
+        }
+
+        matrixObject.updateMatrix();
+        entityObj.setMatrixAt(
+          entity.settings.instance[i][0],
+          matrixObject.matrix
+        );
+      }
+
+      entityObj.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+    }
+
     this.setCustomEntity(
       entity.id,
       {
@@ -213,7 +251,9 @@ export default class Clip3D extends BrowserClip {
       entity.callback(entityObj.geometry, entityObj.material, entityObj);
     }
 
-    this.getObjects(entity.selector).forEach((scene) => scene.add(entityObj));
+    this.getObjects(entity.selector).forEach((scene) => {
+      scene.add(entityObj);
+    });
   }
 
   init() {

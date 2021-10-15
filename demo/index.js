@@ -79,6 +79,12 @@ const clip = new threejs.Clip(
           position: { set: [139, 175, 195] },
         },
       },
+      {
+        type: "AmbientLight",
+        settings: {
+          position: { set: [139, 175, 195] },
+        },
+      },
     ],
     cameras: {
       id: "camera_1",
