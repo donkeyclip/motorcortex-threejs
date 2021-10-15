@@ -2,24 +2,29 @@
 
 **Table of Contents**
 
-1. [ Key Concepts / Features ](#key-concepts--features)
-   1. [ Renderers ](#renderers)
-   2. [ Cameras ](#cameras)
-   3. [ Lights ](#lights)
-   4. [ Entities ](#entities)
-      1. [ Mesh ](#mesh)
-      2. [ Model ](#model)
-   5. [ Controls ](#controls)
-2. [ Usage ](#usage)
-   1. [ Install ](#install)
-   2. [ Import ](#import)
-   3. [ Create a 3D Clip ](#create-a-3d-clip)
-   4. [ Create an ObjectAnimation Effect ](#create-an-objectanimation-effect)
-   5. [ Create a MorphAnimation Effect ](#create-a-morphanimation-effect)
+- [MotorCortex-Threejs](#motorcortex-threejs)
+  - [Demo](#demo)
+- [Key Concepts / Features](#key-concepts--features)
+  - [Renderers](#renderers)
+  - [Scenes](#scenes)
+  - [Cameras](#cameras)
+  - [Lights](#lights)
+  - [Entities](#entities)
+  - [Mesh](#mesh)
+  - [Model](#model)
+  - [Controls](#controls)
+- [Usage](#usage)
+  - [Install](#install)
+  - [Import](#import)
+  - [Create a 3D Clip](#create-a-3d-clip)
+  - [Create an ObjectAnimation Effect](#create-an-objectanimation-effect)
+  - [Create a MorphAnimation Effect](#create-a-morphanimation-effect)
+  - [License](#license)
+  - [Sponsored by](#sponsored-by)
 
 ### Demo
 
-https://donkeyclip.github.io/motorcortex-threejs/demo/
+<https://donkeyclip.github.io/motorcortex-threejs/demo/>
 
 # Key Concepts / Features
 
@@ -278,54 +283,54 @@ With the Clip method you describe the initial state of your 3D Scene with a java
 const clip = new threejs.Clip(
   {
     renderers: {
-		type: "WebGLRenderer",
-		parameters: [{ alpha: true }],
-		settings: {
-			setClearColor: ["#999"],
-			physicallyCorrectLights: true
-		}
-	},
+  type: "WebGLRenderer",
+  parameters: [{ alpha: true }],
+  settings: {
+   setClearColor: ["#999"],
+   physicallyCorrectLights: true
+  }
+ },
     scenes: {
-		fog: ["#999", 1, 100]
-	},
+  fog: ["#999", 1, 100]
+ },
     lights: {
-		type: "AmbientLight",
-		parameters:[ "#cacaca"],
-	},
+  type: "AmbientLight",
+  parameters:[ "#cacaca"],
+ },
     cameras: {
-		id:"camera_1",
-		type: "PerspectiveCamera",
-		parameters:[45, 800 / 600, 1, 1000],
-		settings: {
-			position: { x: 10, y: 10, z:10 },
-			lookAt: [20, 20, 20],
+  id:"camera_1",
+  type: "PerspectiveCamera",
+  parameters:[45, 800 / 600, 1, 1000],
+  settings: {
+   position: { x: 10, y: 10, z:10 },
+   lookAt: [20, 20, 20],
       far: 10000,
       near: 1
-		}
-	},
+  }
+ },
     entities: [
-		{
-			id:"box_1",
-		   geometry: { type: "BoxGeometry", parameters: [1, 1, 1] },
-		   material: {
-			 type: "MeshBasicMaterial",
-			 parameters: [{ color: "#0f0" }]
-		   },
-		   settings: { position: { set:[ 0, 0, 0] }}
-		},
-		{
-			id:"man_1"
-			model: {
-				loader: "GLTFLoader",
-				file: "path/to/our/model.glb",
-			},
-			settings: {
-				position: { x: 10, y: 10, z: 10},
-				rotation: { x: 0, y: -Math.PI / 2, z: 0 },
-				scale: { x: 2, y: 2, z: 2 },
-			}
-		}
-	],
+  {
+   id:"box_1",
+     geometry: { type: "BoxGeometry", parameters: [1, 1, 1] },
+     material: {
+    type: "MeshBasicMaterial",
+    parameters: [{ color: "#0f0" }]
+     },
+     settings: { position: { set:[ 0, 0, 0] }}
+  },
+  {
+   id:"man_1"
+   model: {
+    loader: "GLTFLoader",
+    file: "path/to/our/model.glb",
+   },
+   settings: {
+    position: { x: 10, y: 10, z: 10},
+    rotation: { x: 0, y: -Math.PI / 2, z: 0 },
+    scale: { x: 2, y: 2, z: 2 },
+   }
+  }
+ ],
     controls: { enable: true, enableEvents: true },
   },
   {
@@ -408,5 +413,7 @@ clip.addIncident(manWalk, 0);
 ## License
 
 [MIT License](https://opensource.org/licenses/MIT)
+
+## Sponsored by
 
 [![Kiss My Button](https://presskit.kissmybutton.gr/logos/kissmybutton-logo-small.png)](https://kissmybutton.gr)
