@@ -115,7 +115,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-promise": "^5.1.0",
     "eslint-plugin-standard": "5.0.0",
-    "exports-loader": "0.7.0",
+    "exports-loader": "3.0.0",
     "husky": "4.3.8",
     "imports-loader": "0.8.0",
     "json-stringify-safe": "5.0.1",
