@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.3.3](https://www.github.com/donkeyclip/motorcortex-threejs/compare/v2.3.2...v2.3.3) (2021-10-18)
+
+
+### Bug Fixes
+
+* add rollup json loader ([5caec89](https://www.github.com/donkeyclip/motorcortex-threejs/commit/5caec89684bc33c71628f6ad8cafbd3ceeece59e))
+
 ### [2.3.2](https://www.github.com/donkeyclip/motorcortex-threejs/compare/v2.3.1...v2.3.2) (2021-10-18)
 
 
