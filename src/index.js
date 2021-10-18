@@ -2,9 +2,10 @@ import Clip3D from "./Clip";
 import ObjectAnimation from "./ObjectAnimation";
 import MorphAnimation from "./MorphAnimation";
 import compositeAttributes from "./compoAttrs";
-
+import { name, version } from "../package.json";
 export default {
-  npm_name: "@donkeyclip/motorcortex-threejs",
+  npm_name: name,
+  version,
   incidents: [
     {
       exportable: ObjectAnimation,
