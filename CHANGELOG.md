@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.3.2](https://www.github.com/donkeyclip/motorcortex-threejs/compare/v2.3.1...v2.3.2) (2021-10-18)
+
+
+### Bug Fixes
+
+* add version in mainjs ([5c51b81](https://www.github.com/donkeyclip/motorcortex-threejs/commit/5c51b813d74c0f4f7f5cec612684b6eb508ef3de))
+
 ### [2.3.1](https://www.github.com/donkeyclip/motorcortex-threejs/compare/v2.3.0...v2.3.1) (2021-10-15)
 
 
