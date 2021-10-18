@@ -90,7 +90,7 @@ export default class ObjectAnimation extends Effect {
       element.position.y = y;
       element.position.z = z;
     }
-    // instaces
+    // instances
     if (this.attributeKey === "instance") {
       for (const i in this.targetValue) {
         if (this.targetValue[i][1]) {
