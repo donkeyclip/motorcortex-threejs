@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.3.4](https://www.github.com/donkeyclip/motorcortex-threejs/compare/v2.3.3...v2.3.4) (2021-10-19)
+
+
+### Bug Fixes
+
+* Typo fixes by misspell-fixer ([#70](https://www.github.com/donkeyclip/motorcortex-threejs/issues/70)) ([eca0a73](https://www.github.com/donkeyclip/motorcortex-threejs/commit/eca0a73e209197dc4b371f2de99279d96dde8fea))
+
 ### [2.3.3](https://www.github.com/donkeyclip/motorcortex-threejs/compare/v2.3.2...v2.3.3) (2021-10-18)
 
 
