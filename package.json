@@ -142,7 +142,7 @@
     "webpack-dev-server": "4.3.1",
     "whatwg-fetch": "3.6.2",
     "@size-limit/preset-big-lib": "5.0.4",
-    "size-limit": "5.0.4"
+    "size-limit": "5.0.5"
   },
   "husky": {
     "hooks": {
