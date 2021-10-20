@@ -13,8 +13,6 @@
     "node": true
   },
   "globals": {
-    "Promise": false,
-    "THREE": false,
     "document": false,
     "escape": false,
     "navigator": false,
