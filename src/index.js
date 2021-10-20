@@ -2,10 +2,10 @@ import Clip3D from "./Clip";
 import ObjectAnimation from "./ObjectAnimation";
 import MorphAnimation from "./MorphAnimation";
 import compositeAttributes from "./compoAttrs";
-import { name, version } from "../package.json";
+import pkg from "../package.json";
 export default {
-  npm_name: name,
-  version,
+  npm_name: pkg.name,
+  version: pkg.version,
   incidents: [
     {
       exportable: ObjectAnimation,
