@@ -1,9 +1,9 @@
-import babel from "rollup-plugin-babel";
-import cleanup from "rollup-plugin-cleanup";
-import commonjs from "rollup-plugin-commonjs";
-import resolve from "rollup-plugin-node-resolve";
-import { terser } from "rollup-plugin-terser";
+import babel from "@rollup/plugin-babel";
+import commonjs from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
+import resolve from "@rollup/plugin-node-resolve";
+import cleanup from "rollup-plugin-cleanup";
+import { terser } from "rollup-plugin-terser";
 import pkg from "./package.json";
 export default [
   {
@@ -31,12 +31,12 @@ export default [
       },
     ],
     plugins: [
+      json(),
       resolve({ mainFields: ["module", "main", "browser"] }),
       commonjs(),
       babel(),
       cleanup({ comments: "none" }),
       terser(),
-      json(),
     ],
   },
 ];
