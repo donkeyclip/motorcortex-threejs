@@ -1,54 +1,34 @@
 const path = require("path");
-const webpack = require("webpack");
-
-const dcPath = "https://code.donkeyclip.com";
 
 module.exports = {
-  context: path.resolve(__dirname),
-
-  entry: "./index.js",
-
-  output: {
-    path: path.resolve(__dirname, "./"),
-    // the output bundle
-    filename: "./bundle.js",
+  entry: ["babel-polyfill", "./demo/index.js"],
+  resolve: {
+    extensions: [".js"],
+    modules: [path.resolve("./"), "node_modules"],
   },
-
+  output: {
+    filename: "bundle.js",
+    path: path.resolve(__dirname, "./"),
+  },
+  mode: "development",
   module: {
     rules: [
+      {
+        test: /\.js?$/,
+        use: ["babel-loader"],
+        exclude: /node_modules/,
+      },
       {
         test: /\.css$/,
         use: ["style-loader", "css-loader"],
       },
-      {
-        test: /\.js$/,
-        use: "babel-loader",
-        exclude: /node_modules/,
-      },
     ],
   },
-
-  plugins: [
-    // enable HMR globally
-    new webpack.HotModuleReplacementPlugin(),
-
-    // do not emit compiled assets that include errors
-    new webpack.NoEmitOnErrorsPlugin(),
-  ],
-
   devServer: {
-    host: "127.0.0.1",
-    port: 8090,
+    host: "0.0.0.0",
+    port: 8080,
     historyApiFallback: false,
-    hot: true,
-    contentBase: "./demo",
-    open: true,
-    openPage: dcPath,
-    headers: {
-      "Access-Control-Allow-Origin": dcPath,
-      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
-      "Access-Control-Allow-Headers":
-        "X-Requested-With, content-type, Authorization",
-    },
+    hot: false,
+    static: "./demo/",
   },
 };

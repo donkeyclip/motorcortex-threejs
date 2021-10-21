@@ -1,13 +1,13 @@
-import MC from "@donkeyclip/motorcortex";
+import { loadPlugin, HTMLClip } from "@donkeyclip/motorcortex";
 import Player from "@donkeyclip/motorcortex-player";
 import threeDef from "../src/index";
 import { mainScene, man, plane } from "./entities";
 import { manMorph, manMove, cameraMove } from "./animations";
 
-const threejs = MC.loadPlugin(threeDef);
+const threejs = loadPlugin(threeDef);
 const entities = [mainScene, man, plane];
 
-const scene = new MC.HTMLClip({
+const scene = new HTMLClip({
   html: `<div id="scene"></div>`,
   css: `
 
@@ -26,63 +26,38 @@ const scene = new MC.HTMLClip({
 const clip = new threejs.Clip(
   {
     renderers: {
+      type: "WebGLRenderer",
+      parameters: [{ powerPreference: "high-performance" }],
       settings: {
-        setClearColor: ["#999"],
+        setClearColor: ["#111"],
+        shadowMap: { enabled: true, type: "PCFSoftShadowMap" },
         physicallyCorrectLights: true,
       },
     },
-    scenes: { id: "scene_1", fog: ["#947956", 0.1, 5000] },
+    scenes: {},
     lights: [
       {
-        parameters: ["#457", 1],
-        type: "SpotLight",
-        settings: {
-          position: { set: [139, 175, 195] },
-          shadow: {
-            radius: 1.2,
-            camera: {
-              near: 0.5,
-              far: 500,
-              left: -100,
-              bottom: -100,
-              right: 100,
-              top: 100,
-            },
-            bias: 0.01,
-            mapSize: { x: 1024 * 6, y: 1024 * 6 },
-          },
-        },
-      },
-      {
-        parameters: ["#999", 1],
+        id: "light_spot_pink",
         type: "PointLight",
+        parameters: ["#111", 1],
         settings: {
-          position: { set: [139, 175, 195] },
-          shadow: {
-            radius: 1.2,
-            camera: {
-              near: 0.5,
-              far: 500,
-              left: -100,
-              bottom: -100,
-              right: 100,
-              top: 100,
-            },
-            bias: 0.01,
-            mapSize: { x: 1024 * 6, y: 1024 * 6 },
-          },
+          position: { x: -3, y: 2, z: 5 },
         },
       },
       {
-        type: "HemisphereLight",
+        id: "DirectionalLight",
+        type: "DirectionalLight",
+        parameters: ["#fff", 1],
         settings: {
-          position: { set: [139, 175, 195] },
+          position: { x: -3, y: 2, z: 5 },
         },
       },
       {
-        type: "AmbientLight",
+        id: "PointLight",
+        type: "PointLight",
+        parameters: ["#aa00ff", 1, 4],
         settings: {
-          position: { set: [139, 175, 195] },
+          position: { x: 0, y: -3.5, z: 5 },
         },
       },
     ],
@@ -95,16 +70,7 @@ const clip = new threejs.Clip(
       },
     },
     entities,
-    controls: {
-      enable: true,
-      enableEvents: true, //default value
-      enableDamping: true, //default value
-      dampingFactor: 0.5, //default value
-      screenSpacePanning: false, //default value
-      minDistance: 1, //default value
-      maxDistance: 1000, //default value
-      maxPolarAngle: Math.PI / 2, //default value
-    },
+    controls: { enable: false, enableEvents: false, maxPolarAngle: Math.PI },
   },
   {
     selector: "#scene",

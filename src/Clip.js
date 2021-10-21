@@ -111,6 +111,7 @@ export default class Clip3D extends BrowserClip {
     ) {
       this.context.loading = false;
       this.contextLoaded();
+      this.animate();
     }
   }
 
@@ -368,10 +369,23 @@ export default class Clip3D extends BrowserClip {
       this.setCustomEntity(uuidv4(), render, ["renders"]);
     });
 
+    /* 
+      store first camera, renderer and scene as default render combination
+    */
+    this.defaultScene = this.getObject(
+      `!#${this.context.getElements("!.scenes")[0].id}`
+    );
+    this.defaultCamera = this.getObject(
+      `!#${this.context.getElements("!.cameras")[0].id}`
+    );
+    this.defaultRenderer = this.getObject(
+      `!#${this.context.getElements("!.renderers")[0].id}`
+    );
+
     let frameNumber;
-    const animate = () => {
+    this.animate = () => {
       try {
-        frameNumber = requestAnimationFrame(animate);
+        frameNumber = requestAnimationFrame(this.animate);
         this.renderLoop();
       } catch (e) {
         console.error(e);
@@ -383,7 +397,6 @@ export default class Clip3D extends BrowserClip {
     CONTROLS
      */
     if (!this.attributes.controls?.enable || this.attributes.controls.applied) {
-      animate();
       return this.render();
     }
 
@@ -417,7 +430,7 @@ export default class Clip3D extends BrowserClip {
 
       if (enableEvents) enableControlEvents(this);
 
-      animate();
+      // this.animate();
       this.render();
     });
   }
@@ -446,20 +459,26 @@ export default class Clip3D extends BrowserClip {
       renderer.entity.object.domElement.style.top = "0px";
       renderer.entity.object.domElement.style.position = "absolute";
     });
+
     this.renderLoop();
   }
 
   renderLoop() {
+    if (this.attributes.renders.length === 1) {
+      return this.defaultRenderer.render(this.defaultScene, this.defaultCamera);
+    }
     this.attributes.renders.forEach((render) => {
-      render.scene ??= `!#${this.context.getElements("!.scenes")[0].id}`;
-      render.camera ??= `!#${this.context.getElements("!.cameras")[0].id}`;
-      render.renderer ??= `!#${this.context.getElements("!.renderers")[0].id}`;
-
+      const renderer = render.renderer
+        ? this.getObject(render.renderer)
+        : this.defaultRenderer;
+      const scene = render.scene
+        ? this.getObject(render.scene)
+        : this.defaultScene;
+      const camera = render.camera
+        ? this.getObject(render.camera)
+        : this.defaultCamera;
       /* the render function */
-      this.getObject(render.renderer).render(
-        this.getObject(render.scene),
-        this.getObject(render.camera)
-      );
+      renderer.render(scene, camera);
     });
   }
 }

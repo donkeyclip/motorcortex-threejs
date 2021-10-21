@@ -3,10 +3,12 @@ import { Raycaster, Vector2 } from "three";
 export const applySettingsToObjects = (settings, obj) => {
   for (const key in settings) {
     if (settings[key] instanceof Array) {
+      checkSchema(obj, key, "function");
       obj[key](...settings[key]);
       continue;
     } else if (settings[key] !== Object(settings[key])) {
       // is primitive
+      checkSchema(obj, key, "primitive");
       obj[key] = settings[key];
       continue;
     }
@@ -35,4 +37,25 @@ export const enableControlEvents = (_this) => {
     console.log("CAMERA POSITION", camera.position);
   };
   window.addEventListener("click", onMouseMove, false);
+};
+
+export const checkSchema = (obj, key, type) => {
+  switch (type) {
+    case "function":
+      if (typeof obj[key] !== "function")
+        console.error(`Object property "${key}" is not a function`, obj);
+      return;
+    case "primitive":
+      if (
+        !Object.prototype.hasOwnProperty.call(obj, key) &&
+        typeof obj !== "function" &&
+        !["Euler"].includes(obj.constructor.name)
+      )
+        console.error(
+          `Key "${key}" not found in object`,
+          obj,
+          obj.constructor.name
+        );
+      return;
+  }
 };
