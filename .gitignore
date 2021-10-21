@@ -7,7 +7,9 @@ coverage
 # Output files
 bundle.js
 *bundle.js
-
+# Output files
+demo/bundle.js
+demo/*bundle.js
 # Output folders
 dist
 build
