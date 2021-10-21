@@ -10,8 +10,8 @@ export default [
     input: "src/index.js",
     external: ["@donkeyclip/motorcortex"],
     output: [
-      { file: pkg.main, format: "cjs" },
-      { file: pkg.module, format: "es" },
+      { dir: pkg.main, format: "cjs" },
+      { dir: pkg.module, format: "es" },
     ],
     plugins: [resolve(), commonjs(), babel(), json()],
   },
@@ -20,6 +20,7 @@ export default [
     external: ["@donkeyclip/motorcortex"],
     output: [
       {
+        inlineDynamicImports: true,
         globals: {
           "@donkeyclip/motorcortex": "MotorCortex",
         },
