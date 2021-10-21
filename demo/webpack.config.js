@@ -1,7 +1,7 @@
 const path = require("path");
 
 module.exports = {
-  entry: ["babel-polyfill", "./demo/index.js"],
+  entry: ["./demo/index.js"],
   resolve: {
     extensions: [".js"],
     modules: [path.resolve("./"), "node_modules"],
