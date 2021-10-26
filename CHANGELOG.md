@@ -1,5 +1,18 @@
 # Changelog
 
+### [2.3.5](https://www.github.com/donkeyclip/motorcortex-threejs/compare/v2.3.4...v2.3.5) (2021-10-26)
+
+
+### Bug Fixes
+
+* drop code from demo config ([171b3f6](https://www.github.com/donkeyclip/motorcortex-threejs/commit/171b3f6fc9cc3e333c025c768b8b111fb5fdcdfc))
+* drop old versions of deps ([3a4b682](https://www.github.com/donkeyclip/motorcortex-threejs/commit/3a4b682b04e687158956749a9c18a569f2b586d5))
+* eslint issues ([029d618](https://www.github.com/donkeyclip/motorcortex-threejs/commit/029d618f56cae605350f5827c541c2a3005fec1f))
+* fix broken config ([3df8b34](https://www.github.com/donkeyclip/motorcortex-threejs/commit/3df8b34a89fbbd3ecf00929efa7431fc1c70129a))
+* fix broken webpack config ([4a0d246](https://www.github.com/donkeyclip/motorcortex-threejs/commit/4a0d24663621e0ceff2b0d3470196aad51cb7512))
+* update build and demo files drop old babel config ([f97a4f8](https://www.github.com/donkeyclip/motorcortex-threejs/commit/f97a4f8723b5be4441a92bb5583f8ddd2f5f1262))
+* update weback and deps update ([64ec597](https://www.github.com/donkeyclip/motorcortex-threejs/commit/64ec5979dbedb4373719d8b3086753a26b6dc5fa))
+
 ### [2.3.4](https://www.github.com/donkeyclip/motorcortex-threejs/compare/v2.3.3...v2.3.4) (2021-10-19)
 
 
