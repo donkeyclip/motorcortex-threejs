@@ -22,7 +22,7 @@
     "lint:fix": "npm run lint -- --fix",
     "build": "npm run build:lib && npm run build:demo",
     "build:lib": "rollup -c",
-    "start": "webpack serve --hot --config ./demo/webpack.config.js",
+    "start": "webpack serve --hot --config ./demo/webpack.config.js --mode=development",
     "build:demo": "webpack --mode=production --config ./demo/webpack.config.js",
     "test": "HERE GOES YOUR TEST TASK",
     "test:prod": "npm run lint",
