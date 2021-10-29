@@ -33,4 +33,4 @@ jobs:
           user_name: "github-actions[bot]"
           user_email: "github-actions[bot]@users.noreply.github.com"
           keep_files: true
-          exclude_assets: ".github,node_modules,.gitignore"
+          exclude_assets: ".github,node_modules,.gitignore,git"
