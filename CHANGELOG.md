@@ -1,5 +1,25 @@
 # Changelog
 
+## [2.4.0](https://www.github.com/donkeyclip/motorcortex-threejs/compare/v2.3.5...v2.4.0) (2021-10-29)
+
+
+### Features
+
+* bump threejs to r134 ([830f42d](https://www.github.com/donkeyclip/motorcortex-threejs/commit/830f42da55cae36fb548aab8e31774db3ef38a06))
+
+
+### Bug Fixes
+
+* add mode development in webpack config ([1535245](https://www.github.com/donkeyclip/motorcortex-threejs/commit/153524533eef48afe8ee77f7796d51ea5d7cde86))
+* use main as default branch ([e00e777](https://www.github.com/donkeyclip/motorcortex-threejs/commit/e00e777994e7fe09646355bf08b7f5213fcb061e))
+
+
+### Miscellaneous Chores
+
+* realease 2.3.6 ([a2f4d42](https://www.github.com/donkeyclip/motorcortex-threejs/commit/a2f4d423e10f8334e2fbd31ab6097d688ad66d42))
+* release 2.3.7 ([f6daec9](https://www.github.com/donkeyclip/motorcortex-threejs/commit/f6daec9b8473d8bf8905e2b9dc285792ca13569c))
+* release 2.4.0 ([4dfe22e](https://www.github.com/donkeyclip/motorcortex-threejs/commit/4dfe22e60a7692b865d538d22114bdc704311fbf))
+
 ### [2.3.5](https://www.github.com/donkeyclip/motorcortex-threejs/compare/v2.3.4...v2.3.5) (2021-10-26)
 
 
