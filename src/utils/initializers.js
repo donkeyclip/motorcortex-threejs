@@ -1,4 +1,3 @@
-import { Vector3 } from "three";
 import { v4 as uuidv4 } from "uuid";
 
 export const initializeCamera = (camera, context) => {
@@ -29,9 +28,7 @@ export const initializeCamera = (camera, context) => {
   camera.settings.position.x = camera.settings.position.x || 0;
   camera.settings.position.y = camera.settings.position.y || 0;
   camera.settings.position.z = camera.settings.position.z || 10;
-  camera.settings.lookAt = new Vector3(
-    ...(camera.settings.lookAt || [0, 0, 0])
-  );
+  camera.settings.lookAt ??= [0, 0, 0];
 };
 
 export const initializeRenderer = (renderer, context) => {
@@ -54,6 +51,12 @@ export const initializeRenderer = (renderer, context) => {
     context.rootElement.offsetWidth,
     context.rootElement.offsetHeight,
   ];
+};
+export const initializeObject = (object) => {
+  object.id = object.id || uuidv4();
+  object.selector = object.selector || "!.scenes";
+  object.class = object.class || [];
+  object.settings = object.settings || {};
 };
 
 export const initializeLight = (light) => {
