@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.4.1](https://www.github.com/donkeyclip/motorcortex-threejs/compare/v2.4.0...v2.4.1) (2021-11-04)
+
+
+### Bug Fixes
+
+* camera look at, animations and object3d feature ([f2b91df](https://www.github.com/donkeyclip/motorcortex-threejs/commit/f2b91dffa777ee09a460231ed7e34b6b6c3b5e57))
+
 ## [2.4.0](https://www.github.com/donkeyclip/motorcortex-threejs/compare/v2.3.5...v2.4.0) (2021-10-29)
 
 
