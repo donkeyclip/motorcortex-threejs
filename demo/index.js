@@ -70,7 +70,7 @@ const clip = new threejs.Clip(
       },
     },
     entities,
-    controls: { enable: false, enableEvents: false, maxPolarAngle: Math.PI },
+    controls: { enable: true, enableEvents: true, maxPolarAngle: Math.PI },
   },
   {
     selector: "#scene",

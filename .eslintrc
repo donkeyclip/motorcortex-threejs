@@ -14,6 +14,7 @@
   },
   "globals": {
     "document": false,
+    "Promise":false,
     "escape": false,
     "navigator": false,
     "unescape": false,
