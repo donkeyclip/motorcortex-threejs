@@ -12,6 +12,7 @@
   - [Entities](#entities)
   - [Mesh](#mesh)
   - [Model](#model)
+  - [Object](#object)
   - [Controls](#controls)
 - [Usage](#usage)
   - [Install](#install)
@@ -155,6 +156,16 @@ const light = {
   type: "AmbientLight",
   parameters: ["#cacaca"],
 };
+
+const Directional = {
+  id: "DirectionalLight",
+  type: "DirectionalLight",
+  parameters: ["0xfff", 1],
+  settings: {
+    position: { x: 0, y: -2, z: 10 },
+    target: "!#myObj",
+  };
+
 ```
 
 | Property   | Description                                 |
@@ -248,6 +259,20 @@ const glb = {
 | parameters | The arguments to pass in the light function                                                                                                                           |
 | settings   | Any other setting related to the light                                                                                                                                |
 | children   | The name of a child object that the model has and you want to use it in an effect. This will then be available to use with the selector `!#my-model.child_model_name` |
+
+## Object
+
+When you need to add a simple Object3D to your scene just to use it in any animation you can use this type of entity. This type of entity can be used as a target to any light that supports target simply by refering to its selector.
+
+```javascript
+const object = {
+  id: "myObj",
+  object: true,
+  settings: {
+    position: { x: 10, y: 10, z: 10 },
+  },
+};
+```
 
 ## Controls
 
@@ -417,5 +442,3 @@ clip.addIncident(manWalk, 0);
 ## Sponsored by
 
 [<img src="https://presskit.donkeyclip.com/logos/donkey%20clip%20logo.svg" width=250></img>](https://donkeyclip.com)
-
-

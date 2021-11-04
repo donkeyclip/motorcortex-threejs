@@ -7,6 +7,7 @@ import {
   initializeCamera,
   initializeLight,
   initializeMesh,
+  initializeObject,
   initializeRenderer,
 } from "./utils/initializers";
 import { loaders } from "./utils/loaders";
@@ -14,6 +15,7 @@ import { loaders } from "./utils/loaders";
 let SkeletonUtils;
 export default class Clip3D extends BrowserClip {
   onAfterRender() {
+    this.lightCallbackFunctions = [];
     /*
       attributes needs to be cloned for the scene to work as CASI
       entities and controls should not be cloned to avoid
@@ -160,6 +162,22 @@ export default class Clip3D extends BrowserClip {
       this.getObjects(entity.selector).forEach((scene) => scene.add(model));
       this.context.loadedModels.push(1);
       this.checkLoadedContext();
+    });
+  }
+  createObject(entity) {
+    initializeObject(entity);
+    const object = new THREE.Object3D();
+    applySettingsToObjects(entity.settings, object);
+    //create the custom entity reference
+    this.setCustomEntity(
+      `${entity.id}`,
+      {
+        object,
+      },
+      ["entities", ...entity.class]
+    );
+    this.getObjects(entity.selector).forEach((scene) => {
+      scene.add(object);
     });
   }
 
@@ -344,10 +362,19 @@ export default class Clip3D extends BrowserClip {
         ["lights", ...light.class]
       );
       const lightObj = this.getObjectById(light.id);
-      applySettingsToObjects(light.settings, lightObj);
+      applySettingsToObjects(light.settings, lightObj, ["target"]);
+
+      /* ADD TARGET OBJECT TO LIGHT */
+      if (typeof light.settings.target === "string") {
+        this.lightCallbackFunctions.push(() => {
+          const target = this.context.getElements(light.settings.target)[0]
+            .entity.object;
+          lightObj.target = target;
+        });
+      }
+
       this.getObjects(light.selector).forEach((scene) => scene.add(lightObj));
     });
-
     /*
      ENTITIES
      */
@@ -356,8 +383,16 @@ export default class Clip3D extends BrowserClip {
       initializeMesh(entity);
 
       if (entity.model) return this.createModel(entity);
+      else if (entity.object) return this.createObject(entity);
       return this.createMesh(entity);
     });
+    /*
+      Execute all light function callbacks
+      we need this to add target to lights.
+      Target entities should and must be initialized after 
+      initializing the lights
+    */
+    this.lightCallbackFunctions.forEach((func) => func());
 
     /*
     RENDERS
@@ -393,6 +428,13 @@ export default class Clip3D extends BrowserClip {
       }
     };
 
+    /* 
+    check if the content is loaded 
+    we need this call when no models 
+    are loaded into the scene
+    */
+    this.checkLoadedContext();
+
     /*
     CONTROLS
      */
@@ -404,7 +446,8 @@ export default class Clip3D extends BrowserClip {
       "three/examples/jsm/controls/OrbitControls.js"
     ).then((res) => res.OrbitControls);
 
-    const cameraObject = this.getObject("!.cameras");
+    const cameraEntity = this.getElements("!.cameras")[0].entity;
+    const cameraObject = cameraEntity.object;
     const {
       enableDamping = true,
       dampingFactor = 0.5,
@@ -421,13 +464,14 @@ export default class Clip3D extends BrowserClip {
         this.props.host || this.props.rootElement
       );
 
+      controls.target.set(...cameraEntity.settings.lookAt);
       controls.enableDamping = enableDamping; // an animation loop is required when either damping or auto-rotation are enabled
       controls.dampingFactor = dampingFactor;
       controls.screenSpacePanning = screenSpacePanning;
       controls.minDistance = minDistance;
       controls.maxDistance = maxDistance;
       controls.maxPolarAngle = maxPolarAngle;
-
+      controls.update();
       if (enableEvents) enableControlEvents(this);
 
       // this.animate();

@@ -1,7 +1,12 @@
 import { Raycaster, Vector2 } from "three";
 
-export const applySettingsToObjects = (settings, obj) => {
+export const applySettingsToObjects = (
+  settings,
+  obj,
+  escapeProperties = []
+) => {
   for (const key in settings) {
+    if (escapeProperties.includes(key)) continue;
     if (settings[key] instanceof Array) {
       checkSchema(obj, key, "function");
       obj[key](...settings[key]);
@@ -32,9 +37,13 @@ export const enableControlEvents = (_this) => {
     // calculate objects intersecting the picking ray
     const intersects = raycaster.intersectObjects(scene.children, true);
     // eslint-disable-next-line no-console
+    console.groupCollapsed("Camera Position and intersections");
+    // eslint-disable-next-line no-console
     console.log("INTERSECTIONS", intersects);
     // eslint-disable-next-line no-console
     console.log("CAMERA POSITION", camera.position);
+    // eslint-disable-next-line no-console
+    console.groupEnd();
   };
   window.addEventListener("click", onMouseMove, false);
 };
