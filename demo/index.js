@@ -30,34 +30,58 @@ const clip = new threejs.Clip(
       parameters: [{ powerPreference: "high-performance" }],
       settings: {
         setClearColor: ["#111"],
-        shadowMap: { enabled: true, type: "PCFSoftShadowMap" },
+        shadowMap: { enabled: true },
         physicallyCorrectLights: true,
       },
     },
     scenes: {},
     lights: [
       {
+        // addHelper: true,
         id: "light_spot_pink",
         type: "PointLight",
         parameters: ["#111", 1],
         settings: {
-          position: { x: -3, y: 2, z: 5 },
+          position: { x: -208, y: 200, z: 200 },
+          castShadow: true,
         },
       },
       {
+        // addHelper: true,
         id: "DirectionalLight",
         type: "DirectionalLight",
         parameters: ["#fff", 1],
         settings: {
-          position: { x: -3, y: 2, z: 5 },
+          position: { x: -50, y: 150, z: 100 },
+          castShadow: true,
+          shadow: {
+            camera: {
+              left: -100,
+              right: 100,
+              top: 100,
+              bottom: -100,
+            },
+            mapSize: {
+              width: 512,
+              height: 512,
+            },
+          },
         },
       },
       {
-        id: "PointLight",
-        type: "PointLight",
+        id: "SpotLight",
+        // addHelper: true,
+        type: "SpotLight",
         parameters: ["#aa00ff", 1, 4],
         settings: {
-          position: { x: 0, y: -3.5, z: 5 },
+          position: { x: -0, y: 200, z: 200 },
+          castShadow: true,
+          shadow: {
+            mapSize: {
+              width: 512,
+              height: 512,
+            },
+          },
         },
       },
     ],
@@ -89,4 +113,5 @@ scene.addIncident(clip, 0);
 new Player({
   theme: "green",
   clip: scene,
+  pointerEvents: true,
 });
