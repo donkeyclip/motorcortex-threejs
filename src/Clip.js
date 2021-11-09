@@ -12,6 +12,10 @@ import {
 } from "./utils/initializers";
 import { loaders } from "./utils/loaders";
 
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
+import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
+
 let SkeletonUtils;
 export default class Clip3D extends BrowserClip {
   onAfterRender() {
@@ -457,6 +461,29 @@ export default class Clip3D extends BrowserClip {
       `!#${this.context.getElements("!.renderers")[0].id}`
     );
 
+    /* COMPOSERS */
+    if (this.attributes.postProcessing) {
+      const { offsetWidth, offsetHeight } = this.context.rootElement;
+
+      this.composer = new EffectComposer(this.defaultRenderer);
+      const renderScene = new RenderPass(this.defaultScene, this.defaultCamera);
+      this.composer.addPass(renderScene);
+
+      if (this.attributes.postProcessing.bloomPass) {
+        const bloomPass = new UnrealBloomPass(
+          new THREE.Vector2(offsetWidth, offsetHeight),
+          ...this.attributes.postProcessing.bloomPass.parameters
+        );
+
+        applySettingsToObjects(
+          this.attributes.postProcessing.bloomPass.settings,
+          bloomPass
+        );
+
+        this.composer.addPass(bloomPass);
+      }
+    }
+
     let frameNumber;
     this.animate = () => {
       try {
@@ -548,6 +575,16 @@ export default class Clip3D extends BrowserClip {
   }
 
   renderLoop() {
+    /*
+     This code is only executed when postprocessing is set 
+     at clip attributes
+     */
+
+    if (this.attributes.postProcessing) {
+      this.composer.render();
+      return;
+    }
+
     if (this.attributes.renders.length === 1) {
       return this.defaultRenderer.render(this.defaultScene, this.defaultCamera);
     }

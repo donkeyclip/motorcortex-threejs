@@ -158,6 +158,7 @@ const light = {
 };
 
 const Directional = {
+  addHelper:true
   id: "DirectionalLight",
   type: "DirectionalLight",
   parameters: ["0xfff", 1],
@@ -175,6 +176,7 @@ const Directional = {
 | type       | A valid light type                          |
 | parameters | The arguments to pass in the light function |
 | settings   | Any other setting related to the light      |
+| addHelper  | Add helper object to the light              |
 
 ## Entities
 
@@ -307,61 +309,73 @@ With the Clip method you describe the initial state of your 3D Scene with a java
 ```javascript
 const clip = new threejs.Clip(
   {
+    /* Only add this property if you want to use postprocessing functionalities */
+    postProcessing: {
+      bloomPass: {
+        parameters: [1.5, 0.4, 0.85],
+        settings: {
+          threshold: 0,
+          strength: 1,
+          radius: 0,
+        },
+      },
+    },
     renderers: {
-  type: "WebGLRenderer",
-  parameters: [{ alpha: true }],
-  settings: {
-   setClearColor: ["#999"],
-   physicallyCorrectLights: true
-  }
- },
+      type: "WebGLRenderer",
+      parameters: [{ alpha: true }],
+      settings: {
+      setClearColor: ["#999"],
+      physicallyCorrectLights: true
+      }
+    },
     scenes: {
-  fog: ["#999", 1, 100]
- },
+      fog: ["#999", 1, 100]
+    },
     lights: {
-  type: "AmbientLight",
-  parameters:[ "#cacaca"],
- },
+      type: "AmbientLight",
+      parameters:[ "#cacaca"],
+    },
     cameras: {
-  id:"camera_1",
-  type: "PerspectiveCamera",
-  parameters:[45, 800 / 600, 1, 1000],
-  settings: {
-   position: { x: 10, y: 10, z:10 },
-   lookAt: [20, 20, 20],
-      far: 10000,
-      near: 1
-  }
- },
+      id:"camera_1",
+      type: "PerspectiveCamera",
+      parameters:[45, 800 / 600, 1, 1000],
+      settings: {
+      position: { x: 10, y: 10, z:10 },
+      lookAt: [20, 20, 20],
+          far: 10000,
+          near: 1
+      }
+    },
     entities: [
-  {
-   id:"box_1",
-     geometry: { type: "BoxGeometry", parameters: [1, 1, 1] },
-     material: {
-    type: "MeshBasicMaterial",
-    parameters: [{ color: "#0f0" }]
-     },
-     settings: { position: { set:[ 0, 0, 0] }}
-  },
-  {
-   id:"man_1"
-   model: {
-    loader: "GLTFLoader",
-    file: "path/to/our/model.glb",
-   },
-   settings: {
-    position: { x: 10, y: 10, z: 10},
-    rotation: { x: 0, y: -Math.PI / 2, z: 0 },
-    scale: { x: 2, y: 2, z: 2 },
-   }
-  }
- ],
-    controls: { enable: true, enableEvents: true },
+    {
+      id:"box_1",
+      geometry: { type: "BoxGeometry", parameters: [1, 1, 1] },
+      material: {
+      type: "MeshBasicMaterial",
+      parameters: [{ color: "#0f0" }]
+      },
+      settings: { position: { set:[ 0, 0, 0] }}
+    },
+    {
+      id:"man_1"
+      model: {
+        loader: "GLTFLoader",
+        file: "path/to/our/model.glb",
+      },
+      settings: {
+        position: { x: 10, y: 10, z: 10},
+        rotation: { x: 0, y: -Math.PI / 2, z: 0 },
+        scale: { x: 2, y: 2, z: 2 },
+      }
+    }
+    ],
+      controls: { enable: true, enableEvents: true },
   },
   {
     host: document.getElementById("clip"),
     containerParams: { width: "800px", height: "600px" },
   }
+)
 ```
 
 ## Create an ObjectAnimation Effect

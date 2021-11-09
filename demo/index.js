@@ -1,7 +1,9 @@
 import { loadPlugin, HTMLClip } from "@donkeyclip/motorcortex";
 import Player from "@donkeyclip/motorcortex-player";
 import threeDef from "../src/index";
+
 import { mainScene, man, plane } from "./entities";
+
 import { manMorph, manMove, cameraMove } from "./animations";
 
 const threejs = loadPlugin(threeDef);
