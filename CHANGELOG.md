@@ -1,5 +1,13 @@
 # Changelog
 
+### [2.4.2](https://www.github.com/donkeyclip/motorcortex-threejs/compare/v2.4.1...v2.4.2) (2021-11-09)
+
+
+### Bug Fixes
+
+* add light helpers and cast-receive shadows at models ([6607d3e](https://www.github.com/donkeyclip/motorcortex-threejs/commit/6607d3ea21fa3ec29bb2e39523a5c8b0b6b5bc1f))
+* first implementation of postprocessing ([cafd0f5](https://www.github.com/donkeyclip/motorcortex-threejs/commit/cafd0f551ee40da4603db5f9790c791eaa6eeb56))
+
 ### [2.4.1](https://www.github.com/donkeyclip/motorcortex-threejs/compare/v2.4.0...v2.4.1) (2021-11-04)
 
 
