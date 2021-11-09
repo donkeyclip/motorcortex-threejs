@@ -159,9 +159,45 @@ export default class Clip3D extends BrowserClip {
           );
         });
       }
+      model._id = entity.id;
+      /* ENTITY CAST SHADOW */
+      if (entity.settings.castShadow || entity.settings.receiveShadow) {
+        model.castShadow = entity.settings.castShadow || false;
+        model.receiveShadow = entity.settings.receiveShadow || false;
+        model.traverse((child) => {
+          if (entity.settings.castShadow) {
+            child.castShadow = true;
+          }
+          if (entity.settings.receiveShadow) {
+            child.receiveShadow = true;
+          }
+        });
+      }
       this.getObjects(entity.selector).forEach((scene) => scene.add(model));
       this.context.loadedModels.push(1);
       this.checkLoadedContext();
+    });
+  }
+  addLightHelper(light, type, selector) {
+    let helper;
+    switch (type) {
+      case "DirectionalLight":
+        helper = new THREE.DirectionalLightHelper(light, 5);
+        break;
+      case "PointLight":
+        helper = new THREE.PointLightHelper(light, 5);
+        break;
+      case "SpotLight":
+        helper = new THREE.SpotLightHelper(light, 5);
+        break;
+      case "HemisphereLight":
+        helper = new THREE.HemisphereLightHelper(light, 5);
+        break;
+    }
+    this.getObjects(selector).forEach((scene) => {
+      const helper1 = new THREE.CameraHelper(light.shadow.camera);
+      scene.add(helper1);
+      scene.add(helper);
     });
   }
   createObject(entity) {
@@ -363,6 +399,10 @@ export default class Clip3D extends BrowserClip {
       );
       const lightObj = this.getObjectById(light.id);
       applySettingsToObjects(light.settings, lightObj, ["target"]);
+
+      if (light.addHelper) {
+        this.addLightHelper(lightObj, light.type, light.selector);
+      }
 
       /* ADD TARGET OBJECT TO LIGHT */
       if (typeof light.settings.target === "string") {

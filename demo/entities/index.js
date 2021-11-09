@@ -8,6 +8,7 @@ export const mainScene = {
   settings: {
     position: { x: 0, y: 0, z: 0 },
     receiveShadow: true,
+    castShadow: true,
   },
   children: ["Apocalyptic_Cityobjcleaner"],
 };
@@ -20,6 +21,7 @@ export const man = {
     file: "../assets/Soldier.glb",
   },
   settings: {
+    receiveShadow: true,
     castShadow: true,
     position: {
       x: -20,
@@ -43,6 +45,8 @@ export const plane = {
     ],
   },
   settings: {
+    receiveShadow: true,
+    castShadow: true,
     position: { x: 0, y: -15, z: 0 },
     rotation: { x: Math.PI / 2, y: 0, z: 0 },
   },
