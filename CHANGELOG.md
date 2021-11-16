@@ -1,5 +1,13 @@
 # Changelog
 
+### [2.4.3](https://www.github.com/donkeyclip/motorcortex-threejs/compare/v2.4.2...v2.4.3) (2021-11-16)
+
+
+### Bug Fixes
+
+* double rendering on casi ([9ea965d](https://www.github.com/donkeyclip/motorcortex-threejs/commit/9ea965d7d4a6d0cbdaec8be8582ebe601b04a6df))
+* initializers ([14fcf4a](https://www.github.com/donkeyclip/motorcortex-threejs/commit/14fcf4ac452a6f7656855ff75ad964d67db2bd4c))
+
 ### [2.4.2](https://www.github.com/donkeyclip/motorcortex-threejs/compare/v2.4.1...v2.4.2) (2021-11-09)
 
 
