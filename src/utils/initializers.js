@@ -5,11 +5,10 @@ export const initializeCamera = (camera, context) => {
   camera.class ??= [];
   camera.settings ??= {};
   camera.type ??= "PerspectiveCamera";
-  camera.parameters ??= {};
   if (camera.type === "PerspectiveCamera") {
     const fov = 45;
     const aspect =
-      context.rootElement.offsetWidth / (context.rootElement.offsetHeight || 1);
+      context.rootElement.offsetWidth / context.rootElement.offsetHeight;
 
     const near = 1;
     const far = 1000;
@@ -48,6 +47,7 @@ export const initializeObject = (object) => {
   object.selector ??= "!.scenes";
   object.class ??= [];
   object.settings ??= {};
+  object.settings.position ??= { x: 0, y: 0, z: 0 };
 };
 
 export const initializeLight = (light) => {
