@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.4.4](https://www.github.com/donkeyclip/motorcortex-threejs/compare/v2.4.3...v2.4.4) (2021-11-16)
+
+
+### Bug Fixes
+
+* camera initial parameters ([0dd9669](https://www.github.com/donkeyclip/motorcortex-threejs/commit/0dd9669a09177e518743a6f80bd905b407f794eb))
+
 ### [2.4.3](https://www.github.com/donkeyclip/motorcortex-threejs/compare/v2.4.2...v2.4.3) (2021-11-16)
 
 
