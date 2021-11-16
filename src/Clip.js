@@ -110,7 +110,13 @@ export default class Clip3D extends BrowserClip {
       this.contextLoading();
     }
   }
-
+  checkIfFragment() {
+    /* todo: change this function when mc is ready to inform us about fragmented clips  */
+    if (this.props.selector && !this.DecriptiveIncident.realClip) {
+      return true;
+    }
+    return false;
+  }
   checkLoadedContext() {
     if (
       this.context.loadedModels.length === this.context.loadingModels.length
@@ -486,6 +492,7 @@ export default class Clip3D extends BrowserClip {
 
     let frameNumber;
     this.animate = () => {
+      if (this.checkIfFragment()) return;
       try {
         frameNumber = requestAnimationFrame(this.animate);
         this.renderLoop();
