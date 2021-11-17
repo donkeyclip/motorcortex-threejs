@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.0](https://www.github.com/donkeyclip/motorcortex-threejs/compare/v2.4.4...v2.5.0) (2021-11-17)
+
+
+### Features
+
+* add stats ([b90e17e](https://www.github.com/donkeyclip/motorcortex-threejs/commit/b90e17e8aa5fa9ca171dfdd8909e063763585b21))
+
 ### [2.4.4](https://www.github.com/donkeyclip/motorcortex-threejs/compare/v2.4.3...v2.4.4) (2021-11-16)
 
 
