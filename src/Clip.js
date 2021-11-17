@@ -34,7 +34,7 @@ export default class Clip3D extends BrowserClip {
       renders: attrs.renders || [{}],
     };
 
-    this.context.loading = false;
+    this.checkLoadingContext();
     this.context.loadedModels = [];
     this.context.loadingModels = [];
     this.handleWindowResize();
@@ -112,7 +112,8 @@ export default class Clip3D extends BrowserClip {
   }
   checkIfFragment() {
     /* todo: change this function when mc is ready to inform us about fragmented clips  */
-    if (this.props.selector && !this.DecriptiveIncident.realClip) {
+    if (this.attrs.isCasi && !this.attrs.timeCheckedCasi) {
+      this.attrs.timeCheckedCasi = 1;
       return true;
     }
     return false;
@@ -123,6 +124,7 @@ export default class Clip3D extends BrowserClip {
     ) {
       this.context.loading = false;
       this.contextLoaded();
+      if (this.checkIfFragment()) return;
       this.animate();
     }
   }
@@ -492,10 +494,10 @@ export default class Clip3D extends BrowserClip {
 
     let frameNumber;
     this.animate = () => {
-      if (this.checkIfFragment()) return;
       try {
         frameNumber = requestAnimationFrame(this.animate);
         this.renderLoop();
+        this.stats?.update();
       } catch (e) {
         console.error(e);
         window.cancelAnimationFrame(frameNumber);
@@ -507,7 +509,16 @@ export default class Clip3D extends BrowserClip {
     we need this call when no models 
     are loaded into the scene
     */
-    this.checkLoadedContext();
+    if (this.context.loading) this.checkLoadedContext();
+
+    /* STATS */
+    this.stats;
+    if (this.attributes.stats && !this.checkIfFragment()) {
+      import("three/examples/jsm/libs/stats.module").then((res) => {
+        this.stats = res.default();
+        this.context.window.document.body.appendChild(this.stats.dom);
+      });
+    }
 
     /*
     CONTROLS
@@ -515,10 +526,6 @@ export default class Clip3D extends BrowserClip {
     if (!this.attributes.controls?.enable || this.attributes.controls.applied) {
       return this.render();
     }
-
-    const OrbitControlsPromise = import(
-      "three/examples/jsm/controls/OrbitControls.js"
-    ).then((res) => res.OrbitControls);
 
     const cameraEntity = this.getElements("!.cameras")[0].entity;
     const cameraObject = cameraEntity.object;
@@ -532,25 +539,27 @@ export default class Clip3D extends BrowserClip {
       enableEvents,
     } = this.attributes.controls;
 
-    return OrbitControlsPromise.then((OrbitControls) => {
-      const controls = new OrbitControls(
-        cameraObject,
-        this.props.host || this.props.rootElement
-      );
+    return import("three/examples/jsm/controls/OrbitControls.js")
+      .then((res) => {
+        return res.OrbitControls;
+      })
+      .then((OrbitControls) => {
+        const controls = new OrbitControls(
+          cameraObject,
+          this.props.host || this.props.rootElement
+        );
 
-      controls.target.set(...cameraEntity.settings.lookAt);
-      controls.enableDamping = enableDamping; // an animation loop is required when either damping or auto-rotation are enabled
-      controls.dampingFactor = dampingFactor;
-      controls.screenSpacePanning = screenSpacePanning;
-      controls.minDistance = minDistance;
-      controls.maxDistance = maxDistance;
-      controls.maxPolarAngle = maxPolarAngle;
-      controls.update();
-      if (enableEvents) enableControlEvents(this);
-
-      // this.animate();
-      this.render();
-    });
+        controls.target.set(...cameraEntity.settings.lookAt);
+        controls.enableDamping = enableDamping; // an animation loop is required when either damping or auto-rotation are enabled
+        controls.dampingFactor = dampingFactor;
+        controls.screenSpacePanning = screenSpacePanning;
+        controls.minDistance = minDistance;
+        controls.maxDistance = maxDistance;
+        controls.maxPolarAngle = maxPolarAngle;
+        controls.update();
+        if (enableEvents) enableControlEvents(this);
+        this.render();
+      });
   }
 
   handleWindowResize() {
