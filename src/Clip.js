@@ -369,6 +369,12 @@ export default class Clip3D extends BrowserClip {
       );
       const cameraObj = this.getObjectById(camera.id);
       applySettingsToObjects(camera.settings, cameraObj);
+      /* 
+      the following code ensures that camera target (lookat) will always 
+      be executed after changing its position 
+      */
+      if (camera.settings.lookAt) cameraObj.lookAt(...camera.settings.lookAt);
+
       cameraObj.updateProjectionMatrix();
     });
 
