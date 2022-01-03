@@ -1,2 +1,2 @@
-export { ap as default } from './index-8e1c7fdd.js';
+export { ap as default } from './index-bb2c7ae0.js';
 import '@donkeyclip/motorcortex';
