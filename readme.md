@@ -293,7 +293,9 @@ and add them to your clip. The property enableEvents will be triggered on each c
 ## Installation
 
 ```bash
-npm install @donkeyclip/motorcortex-threejs
+$ npm install --save @donkeyclip/motorcortex-threejs
+# OR
+$ yarn add @donkeyclip/motorcortex-threejs
 ```
 
 ## Importing and Loading
