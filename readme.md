@@ -384,9 +384,9 @@ const clip = new threejs.Clip(
 
 ## ObjectAnimation Effect
 
-If what you want is to animate the tranformation matrix of any object (camera,scene,light or any entity) you can do so by using the ObjectAnimation Effect. The example below will animate the camera's position to 20,20,20 and will continuously looking at box_1 position.
-Note that for targetEntity and selector we are using the ids as they were set in the clip definition. We can also use the followEntity option to follow a specific moving object with optionaly defined offset.
-\*Important Note: When targe entity and follow Entity are used combined you must first declare the followEntity and then the targetEntity as shown in the example bellow.
+If you want to animate the tranformation matrix of any object (camera,scene,light or any entity) you can do it by using the ObjectAnimation Effect. The example below will animate the camera's position to 20,20,20 and will continuously looking at box_1 position.
+Note that for targetEntity and selector we are using the ids as they were set in the clip definition. We can also use the followEntity option to follow a specific moving object with optionally defined offset.
+\*Important Note: When targe Entity and follow Entity are used combined you must first declare the followEntity and then the targetEntity as shown in the example bellow.
 
 ```javascript
 const cameraAnimation = new threejs.ObjectAnimation(
@@ -423,7 +423,7 @@ clip.addIncident(cameraAnimation, 0);
 
 ## MorphAnimation Effect
 
-If what you want is to play an animation that your model support then MorphAnimation is what you want.
+If you want to play an animation that your model support then MorphAnimation is what you are looking for.
 
 ```javascript
 const manWalk = new threejsPlugin.MorphAnimation(
