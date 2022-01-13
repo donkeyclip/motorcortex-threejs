@@ -4,7 +4,7 @@
 
 - [MotorCortex-Threejs](#motorcortex-threejs)
   - [Demo](#demo)
-- [Key Concepts / Features](#key-concepts--features)
+- [Intro / Features](#intro--features)
   - [Renderers](#renderers)
   - [Scenes](#scenes)
   - [Cameras](#cameras)
@@ -14,20 +14,22 @@
   - [Model](#model)
   - [Object](#object)
   - [Controls](#controls)
-- [Usage](#usage)
-  - [Install](#install)
-  - [Import](#import)
-  - [Create a 3D Clip](#create-a-3d-clip)
-  - [Create an ObjectAnimation Effect](#create-an-objectanimation-effect)
-  - [Create a MorphAnimation Effect](#create-a-morphanimation-effect)
-  - [License](#license)
-  - [Sponsored by](#sponsored-by)
+- [Getting Started](#getting-started)
+  - [Installation](#installation)
+  - [Importing and Loading](#importing-and-loading)
+- [Creating Incidents](#creating-incidents)
+  - [3D Clip](#3d-clip)
+  - [ObjectAnimation Effect](#objectanimation-effect)
+  - [MorphAnimation Effect](#morphanimation-effect)
+- [Contributing](#contributing)
+- [License](#license)
+- [Sponsored by](#sponsored-by)
 
-### Demo
+## Demo
 
-<https://donkeyclip.github.io/motorcortex-threejs/demo/>
+[Check it out here](https://donkeyclip.github.io/motorcortex-threejs/demo/)
 
-# Key Concepts / Features
+# Intro / Features
 
 Can you become a 3d video creator with threejs? Well yes you can! Motorcortex-threejs is a threejs plugin for motorcortex. It exposes most of threejs functionality in a descriptive format. It automates most of the basic stuff (scenes, lights, cameras) and focuses on the animation. With motorcortex-threejs a 3d environment mainly consists of five distinct parts
 
@@ -286,15 +288,15 @@ const controls = { enable: true, enableEvents: true };
 
 and add them to your clip. The property enableEvents will be triggered on each click inside the scene and will log the camera position and the 3d point of where you clicked if there is any intersection with any object in the scene.
 
-# Usage
+# Getting Started
 
-## Install
+## Installation
 
 ```bash
 npm install @donkeyclip/motorcortex-threejs
 ```
 
-## Import
+## Importing and Loading
 
 ```javascript
 import { loadPlugin } from "@donkeyclip/motorcortex";
@@ -302,7 +304,9 @@ import threejsPlugin from "@donkeyclip/motorcortex-threejs";
 const threejs = loadPlugin(threejs);
 ```
 
-## Create a 3D Clip
+# Creating Incidents
+
+## 3D Clip
 
 With the Clip method you describe the initial state of your 3D Scene with a javascript object. All five main parts (renderers, scenes, cameras, lights, entities) are properties of this object and of type object or collection, containing information for each part accordingly.
 
@@ -378,7 +382,7 @@ const clip = new threejs.Clip(
 )
 ```
 
-## Create an ObjectAnimation Effect
+## ObjectAnimation Effect
 
 If what you want is to animate the tranformation matrix of any object (camera,scene,light or any entity) you can do so by using the ObjectAnimation Effect. The example below will animate the camera's position to 20,20,20 and will continuously looking at box_1 position.
 Note that for targetEntity and selector we are using the ids as they were set in the clip definition. We can also use the followEntity option to follow a specific moving object with optionaly defined offset.
@@ -417,7 +421,7 @@ clip.addIncident(cameraAnimation, 0);
 | rotationSetY      | number                                                             | the new rotation y of the object. This will set statically an will not animate through time                                                                                                                          |
 | rotationSetZ      | number                                                             | the new rotation z of the object. This will set statically an will not animate through time                                                                                                                          |
 
-## Create a MorphAnimation Effect
+## MorphAnimation Effect
 
 If what you want is to play an animation that your model support then MorphAnimation is what you want.
 
@@ -449,10 +453,19 @@ clip.addIncident(manWalk, 0);
 | ------------------ | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | time (+any string) | number | The duration of the animation. If you want to play multiple animation in the same time you can add different time property in each incident. For example one incident may animate the property "time_1", another incident may animate the propery "time_2" and so on |
 
-## License
+# Contributing 
+
+In general, we follow the "fork-and-pull" Git workflow, so if you want to submit patches and additions you should follow the next steps:
+1.	**Fork** the repo on GitHub
+2.	**Clone** the project to your own machine
+3.	**Commit** changes to your own branch
+4.	**Push** your work back up to your fork
+5.	Submit a **Pull request** so that we can review your changes
+
+
+# License
 
 [MIT License](https://opensource.org/licenses/MIT)
 
-## Sponsored by
-
+# Sponsored by
 [<img src="https://presskit.donkeyclip.com/logos/donkey%20clip%20logo.svg" width=250></img>](https://donkeyclip.com)
