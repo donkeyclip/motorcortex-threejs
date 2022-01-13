@@ -21,6 +21,7 @@
   - [3D Clip](#3d-clip)
   - [ObjectAnimation Effect](#objectanimation-effect)
   - [MorphAnimation Effect](#morphanimation-effect)
+- [Adding Incidents in your clip](#adding-incidents-in-your-clip)
 - [Contributing](#contributing)
 - [License](#license)
 - [Sponsored by](#sponsored-by)
@@ -454,6 +455,12 @@ clip.addIncident(manWalk, 0);
 | Animated Attribute | Value  | Description                                                                                                                                                                                                                                                          |
 | ------------------ | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | time (+any string) | number | The duration of the animation. If you want to play multiple animation in the same time you can add different time property in each incident. For example one incident may animate the property "time_1", another incident may animate the propery "time_2" and so on |
+
+# Adding Incidents in your clip
+
+```javascript
+clipName.addIncident(incidentName,startTime);
+```
 
 # Contributing 
 
