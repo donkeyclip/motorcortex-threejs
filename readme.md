@@ -357,7 +357,7 @@ const clip = new threejs.Clip(
       settings: { position: { set:[ 0, 0, 0] }}
     },
     {
-      id:"man_1"
+      id:"man_1",
       model: {
         loader: "GLTFLoader",
         file: "path/to/our/model.glb",
