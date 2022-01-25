@@ -113,7 +113,6 @@ cameraMove.map((camera) =>
 scene.addIncident(clip, 0);
 
 new Player({
-  theme: "green",
   clip: scene,
   pointerEvents: true,
 });
