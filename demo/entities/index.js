@@ -3,7 +3,7 @@ export const mainScene = {
   model: {
     id: "main-scene",
     loader: "GLTFLoader",
-    file: "../assets/scene.glb",
+    file: "https://donkeyclip.github.io/motorcortex-threejs/demo/assets/scene.glb",
   },
   settings: {
     position: { x: 0, y: 0, z: 0 },
@@ -18,7 +18,7 @@ export const man = {
   model: {
     id: "man",
     loader: "GLTFLoader",
-    file: "../assets/Soldier.glb",
+    file: "https://donkeyclip.github.io/motorcortex-threejs/demo/assets/Soldier.glb",
   },
   settings: {
     receiveShadow: true,
