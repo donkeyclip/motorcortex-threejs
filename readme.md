@@ -32,7 +32,7 @@
 
 # Intro / Features
 
-Can you become a 3d video creator with threejs? Well yes, you can! Motorcortex-threejs is a threejs plugin for motorcortex. It exposes most of threejs functionality in a descriptive format. It automates most of the basic stuff (scenes, lights, cameras) and focuses on the animation. With motorcortex-threejs a 3d environment mainly consists of five distinct parts
+Can you become a 3d video creator with threejs? Well yes, you can! Motorcortex-threejs is a [threejs](https://threejs.org/) plugin for motorcortex. It exposes most of threejs functionality in a descriptive format. It automates most of the basic stuff (scenes, lights, cameras) and focuses on the animation. With motorcortex-threejs a 3d environment mainly consists of five distinct parts:
 
 - renderers
 - scenes
