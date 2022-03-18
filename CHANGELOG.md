@@ -1,5 +1,13 @@
 # Changelog
 
+### [2.5.1](https://www.github.com/donkeyclip/motorcortex-threejs/compare/v2.5.0...v2.5.1) (2022-03-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency three to ^0.135.0 ([2b0cdc6](https://www.github.com/donkeyclip/motorcortex-threejs/commit/2b0cdc660ea61afbc55a86046a6c291528c9e922))
+* **deps:** update dependency three to ^0.136.0 ([5ba6409](https://www.github.com/donkeyclip/motorcortex-threejs/commit/5ba640947a91c718cbe975585047466bebaef224))
+
 ## [2.5.0](https://www.github.com/donkeyclip/motorcortex-threejs/compare/v2.4.4...v2.5.0) (2021-11-17)
 
 
