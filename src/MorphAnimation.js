@@ -28,7 +28,8 @@ export default class MorphAnimation extends Effect {
     return animations[attr + "_previous"];
   }
 
-  onProgress(progress /*,millisecond*/) {
+  onProgress(millisecond) {
+    const progress = this.getFraction(millisecond);
     if (!this.mixer) {
       this.setBlock();
       this.onGetContext({ unblock: true });

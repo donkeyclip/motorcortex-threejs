@@ -35,9 +35,9 @@ export default class ObjectAnimation extends Effect {
       ) + this.initialValue[prop]);
   }
 
-  onProgress(fraction) {
+  onProgress(millisecond) {
+    const fraction = this.getFraction(millisecond);
     const element = this.element.entity.object;
-
     if (typeof this.targetValue.lookAt !== "undefined") {
       const target = new Vector3(...this.targetValue.lookAt);
       element.children[0].lookAt(target);
