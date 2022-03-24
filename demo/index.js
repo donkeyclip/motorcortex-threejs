@@ -1,40 +1,40 @@
-import { loadPlugin, HTMLClip } from "@donkeyclip/motorcortex";
+import { loadPlugin /* , HTMLClip  */ } from "@donkeyclip/motorcortex";
 import Player from "@donkeyclip/motorcortex-player";
 import threeDef from "../src/index";
-
-import { mainScene, man, plane } from "./entities";
-
-import { manMorph, manMove, cameraMove } from "./animations";
+import { mainScene, man } from "./entities";
+import {
+  animateMan,
+  animateScene,
+  cameraInitialPosition,
+  cameraGoDown,
+  cameraZoomIn,
+  moveMan,
+} from "./incidents";
 
 const threejs = loadPlugin(threeDef);
-const entities = [mainScene, man, plane];
+const entities = [mainScene, man];
 
-const scene = new HTMLClip({
-  html: `<div id="scene"></div>`,
-  css: `
+// const scene = new HTMLClip({
+//   html: `<div id="scene"></div>`,
+//   css: `
 
-    #scene{
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      width: 100%;
-      height: 100%;
-    }
-  `,
-  host: document.getElementById("clip"),
-  containerParams: { width: "1920px", height: "1080px" },
-});
+//     #scene{
+//       display:flex;
+//       justify-content:center;
+//       align-items:center;
+//       width: 100%;
+//       height: 100%;
+//     }
+//   `,
+//   host: document.getElementById("clip"),
+//   containerParams: { width: "1920px", height: "1080px" },
+// });
 
 const clip = new threejs.Clip(
   {
     renderers: {
       type: "WebGLRenderer",
-      parameters: [{ powerPreference: "high-performance" }],
-      settings: {
-        setClearColor: ["#111"],
-        shadowMap: { enabled: true },
-        physicallyCorrectLights: true,
-      },
+      parameters: [],
     },
     scenes: {},
     lights: [
@@ -42,10 +42,9 @@ const clip = new threejs.Clip(
         // addHelper: true,
         id: "light_spot_pink",
         type: "PointLight",
-        parameters: ["#111", 1],
+        parameters: ["#fff", 1],
         settings: {
-          position: { x: -208, y: 200, z: 200 },
-          castShadow: true,
+          position: { x: -50, y: 20, z: -20 },
         },
       },
       {
@@ -54,65 +53,35 @@ const clip = new threejs.Clip(
         type: "DirectionalLight",
         parameters: ["#fff", 1],
         settings: {
-          position: { x: -50, y: 150, z: 100 },
-          castShadow: true,
-          shadow: {
-            camera: {
-              left: -100,
-              right: 100,
-              top: 100,
-              bottom: -100,
-            },
-            mapSize: {
-              width: 512,
-              height: 512,
-            },
-          },
-        },
-      },
-      {
-        id: "SpotLight",
-        // addHelper: true,
-        type: "SpotLight",
-        parameters: ["#aa00ff", 1, 4],
-        settings: {
-          position: { x: -0, y: 200, z: 200 },
-          castShadow: true,
-          shadow: {
-            mapSize: {
-              width: 512,
-              height: 512,
-            },
-          },
+          position: { x: 50, y: 20, z: 20 },
         },
       },
     ],
     cameras: {
       id: "camera_1",
       settings: {
-        position: { x: -92, y: 103, z: 324 },
+        position: cameraInitialPosition,
         lookAt: [0, 0, 0],
         far: 30000,
       },
     },
     entities,
-    controls: { enable: true, enableEvents: true, maxPolarAngle: Math.PI },
+    // controls: { enable: true, enableEvents: true, maxPolarAngle: Math.PI },
   },
   {
-    selector: "#scene",
+    // selector: "#scene",
+    host: document.getElementById("clip"),
     containerParams: { width: "100%", height: "100%" },
   }
 );
-
-manMorph.map((morph) => clip.addIncident(morph.animation, morph.millisecond));
-manMove.map((move) => clip.addIncident(move.animation, move.millisecond));
-cameraMove.map((camera) =>
-  clip.addIncident(camera.animation, camera.millisecond)
-);
-
-scene.addIncident(clip, 0);
+clip.addIncident(cameraZoomIn(), 0);
+clip.addIncident(animateScene, 0);
+clip.addIncident(animateMan, 0);
+clip.addIncident(cameraGoDown(), 5000);
+clip.addIncident(moveMan, 0);
+// scene.addIncident(clip, 0);
 
 new Player({
-  clip: scene,
+  clip /* : scene */,
   pointerEvents: true,
 });

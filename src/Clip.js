@@ -566,12 +566,12 @@ export default class Clip3D extends BrowserClip {
     this.context.window.addEventListener("resize", () => {
       const { offsetWidth, offsetHeight } = this.context.rootElement;
       const aspect = offsetWidth / offsetHeight;
-      for (const camera of this.getElements(".cameras")) {
+      for (const camera of this.getElements("!.cameras")) {
         camera.entity.object.aspect = aspect;
         camera.entity.object.updateProjectionMatrix();
       }
 
-      for (const renderer of this.getElements(".renderers")) {
+      for (const renderer of this.context.getElements("!.renderers")) {
         renderer.entity.object.setSize(offsetWidth, offsetHeight);
       }
       // render the scene

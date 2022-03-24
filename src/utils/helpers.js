@@ -60,7 +60,7 @@ export const checkSchema = (obj, key, type) => {
         typeof obj !== "function" &&
         !["Euler"].includes(obj.constructor.name)
       )
-        console.error(
+        console.warn(
           `Key "${key}" not found in object`,
           obj,
           obj.constructor.name
