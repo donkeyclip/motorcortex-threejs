@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.0.0](https://github.com/donkeyclip/motorcortex-threejs/compare/v2.5.1...v3.0.0) (2022-03-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* upgrade mc version, simplify demo, and fix resize bug
+
+### Bug Fixes
+
+* upgrade mc version, simplify demo, and fix resize bug ([6f5bef8](https://github.com/donkeyclip/motorcortex-threejs/commit/6f5bef8704290f942d401cc1737c468715bf3605))
+
 ### [2.5.1](https://github.com/donkeyclip/motorcortex-threejs/compare/v2.5.0...v2.5.1) (2022-03-20)
 
 
