@@ -5,34 +5,44 @@ const matrixObject = new Object3D();
 export default class ObjectAnimation extends Effect {
   getScratchValue() {
     const element = this.element.entity.object;
-    if (!this.element.settings && !element) {
+    if (!this.element.entity.settings && !element) {
       return 0;
     }
-    this.element.settings = this.element.settings || {};
     if (this.attributeKey === "rotation") {
       return {
-        x: (this.element.settings.rotation || {}).x || element.rotation.x || 0,
-        y: (this.element.settings.rotation || {}).y || element.rotation.y || 0,
-        z: (this.element.settings.rotation || {}).z || element.rotation.z || 0,
-        lookAt: this.element.settings.lookAt,
+        x:
+          (this.element.entity.settings.rotation || {}).x ||
+          element.rotation.x ||
+          0,
+        y:
+          (this.element.entity.settings.rotation || {}).y ||
+          element.rotation.y ||
+          0,
+        z:
+          (this.element.entity.settings.rotation || {}).z ||
+          element.rotation.z ||
+          0,
+        lookAt: this.element.entity.settings.lookAt,
       };
     } else if (this.attributeKey === "instance") {
       return this.element.entity.settings.instance;
     } else {
       return (
-        this.element.settings[this.attributeKey] ||
+        this.element.entity.settings[this.attributeKey] ||
         element[this.attributeKey] ||
         0
       );
     }
   }
   applyValue(element, prop, fraction) {
-    return (element[this.attributeKey][prop] =
+    const value =
       Number(
         ((this.targetValue[prop] - this.initialValue[prop]) * fraction).toFixed(
           5
         )
-      ) + this.initialValue[prop]);
+      ) + this.initialValue[prop];
+    element[this.attributeKey][prop] = value;
+    return true;
   }
 
   onProgress(millisecond) {
