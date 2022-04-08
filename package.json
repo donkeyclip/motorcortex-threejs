@@ -1,15 +1,15 @@
 {
   "name": "@donkeyclip/motorcortex-threejs",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "Threejs library for MotorCortex",
   "main": "dist/motorcortex-threejs.cjs.js",
   "module": "dist/motorcortex-threejs.esm.js",
   "browser": "dist/motorcortex-threejs.umd.js",
   "files": [
-      "dist",
-      "CHANGELOG.md",
-      "README.md",
-      "LICENCE"
+    "dist",
+    "CHANGELOG.md",
+    "README.md",
+    "LICENCE"
   ],
   "author": "Donkeyclip (donkeyclip.com) <opensource@donkeyclip.com>",
   "repository": {
