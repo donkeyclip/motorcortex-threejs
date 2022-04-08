@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.1.0](https://github.com/donkeyclip/motorcortex-threejs/compare/v3.0.0...v3.1.0) (2022-04-08)
+
+
+### Features
+
+* drop explorer 11 support ([fcc9471](https://github.com/donkeyclip/motorcortex-threejs/commit/fcc9471f4f4189a0dc1b20f72e2838f8a5838098))
+* update compatibility with motorcortex ([324d6c9](https://github.com/donkeyclip/motorcortex-threejs/commit/324d6c9f95f16a425addf9d5e7961e8ee5efa026))
+
+
+### Bug Fixes
+
+* delete commitlint.config.js ([b57d33b](https://github.com/donkeyclip/motorcortex-threejs/commit/b57d33b3d7ba0273b41b6b76077bf9fe8fe80872))
+* update files from package.json ([4ec6a07](https://github.com/donkeyclip/motorcortex-threejs/commit/4ec6a073f5a7e6fb1917952c5daff366f085146c))
+
 ## [3.0.0](https://github.com/donkeyclip/motorcortex-threejs/compare/v2.5.1...v3.0.0) (2022-03-24)
 
 
