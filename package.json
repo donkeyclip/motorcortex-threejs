@@ -6,7 +6,10 @@
   "module": "dist/motorcortex-threejs.esm.js",
   "browser": "dist/motorcortex-threejs.umd.js",
   "files": [
-    "dist"
+      "dist",
+      "CHANGELOG.md",
+      "README.md",
+      "LICENCE"
   ],
   "author": "Donkeyclip (donkeyclip.com) <opensource@donkeyclip.com>",
   "repository": {
