@@ -14,7 +14,9 @@ export default class MorphAnimation extends Effect {
         .setDuration(this.attrs.attrs.singleLoopDuration / 1000)
         .play();
       if (unblock) {
-        this.unblock();
+        setTimeout(() => {
+          this.unblock();
+        }, 0);
       }
     }
   }
