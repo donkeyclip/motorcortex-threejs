@@ -1,5 +1,12 @@
 # Changelog
 
+### [3.1.1](https://github.com/donkeyclip/motorcortex-threejs/compare/v3.1.0...v3.1.1) (2022-04-19)
+
+
+### Bug Fixes
+
+* morph animation block bug ([35ebe55](https://github.com/donkeyclip/motorcortex-threejs/commit/35ebe55cdb97094014f5a84807d0651b557413a8))
+
 ## [3.1.0](https://github.com/donkeyclip/motorcortex-threejs/compare/v3.0.0...v3.1.0) (2022-04-08)
 
 
