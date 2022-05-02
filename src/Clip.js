@@ -441,7 +441,7 @@ export default class Clip3D extends BrowserClip {
     /*
       Execute all light function callbacks
       we need this to add target to lights.
-      Target entities should and must be initialized after 
+      Target entities should and must be initialized after
       initializing the lights
     */
     this.lightCallbackFunctions.forEach((func) => func());
@@ -456,7 +456,7 @@ export default class Clip3D extends BrowserClip {
       this.setCustomEntity(uuidv4(), render, ["renders"]);
     });
 
-    /* 
+    /*
       store first camera, renderer and scene as default render combination
     */
     this.defaultScene = this.getObject(
@@ -504,21 +504,21 @@ export default class Clip3D extends BrowserClip {
       }
     };
 
-    /* 
-    check if the content is loaded 
-    we need this call when no models 
+    /*
+    check if the content is loaded
+    we need this call when no models
     are loaded into the scene
     */
     if (this.context.loading) this.checkLoadedContext();
 
     /* STATS */
-    this.stats;
-    if (this.attributes.stats && !this.checkIfFragment()) {
-      import("three/examples/jsm/libs/stats.module").then((res) => {
-        this.stats = res.default();
-        this.context.window.document.body.appendChild(this.stats.dom);
-      });
-    }
+    // this.stats;
+    // if (this.attributes.stats && !this.checkIfFragment()) {
+    //   import("three/examples/jsm/libs/stats.module").then((res) => {
+    //     this.stats = res.default();
+    //     this.context.window.document.body.appendChild(this.stats.dom);
+    //   });
+    // }
 
     /*
     CONTROLS
@@ -592,7 +592,7 @@ export default class Clip3D extends BrowserClip {
 
   renderLoop() {
     /*
-     This code is only executed when postprocessing is set 
+     This code is only executed when postprocessing is set
      at clip attributes
      */
 
