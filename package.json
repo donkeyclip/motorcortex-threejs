@@ -77,7 +77,7 @@
     "browserslist": "^4.20.3",
     "caniuse-lite": "^1.0.30001335",
     "concurrently": "^7.1.0",
-    "core-js": "^3.22.3",
+    "core-js": "3.22.4",
     "css-loader": "^6.7.1",
     "eslint": "^8.14.0",
     "eslint-config-prettier": "^8.5.0",
