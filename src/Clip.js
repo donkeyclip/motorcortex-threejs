@@ -512,13 +512,12 @@ export default class Clip3D extends BrowserClip {
     if (this.context.loading) this.checkLoadedContext();
 
     /* STATS */
-    // this.stats;
-    // if (this.attributes.stats && !this.checkIfFragment()) {
-    //   import("three/examples/jsm/libs/stats.module").then((res) => {
-    //     this.stats = res.default();
-    //     this.context.window.document.body.appendChild(this.stats.dom);
-    //   });
-    // }
+    if (this.attributes.stats && !this.checkIfFragment()) {
+      import("three/examples/jsm/libs/stats.module.js").then((res) => {
+        this.stats = res.default();
+        this.context.window.document.body.appendChild(this.stats.dom);
+      });
+    }
 
     /*
     CONTROLS
