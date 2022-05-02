@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.2.0](https://github.com/donkeyclip/motorcortex-threejs/compare/v3.1.1...v3.2.0) (2022-05-02)
+
+
+### Features
+
+* bump dependencies and remove unused ones ([89bffc1](https://github.com/donkeyclip/motorcortex-threejs/commit/89bffc113a31075954cd0aa66f5530d3e128cf48))
+
+
+### Bug Fixes
+
+* drop broken import of stats ([5e15380](https://github.com/donkeyclip/motorcortex-threejs/commit/5e15380971d34f414eba0f0fcf48685d7396aedb))
+
 ### [3.1.1](https://github.com/donkeyclip/motorcortex-threejs/compare/v3.1.0...v3.1.1) (2022-04-19)
 
 
