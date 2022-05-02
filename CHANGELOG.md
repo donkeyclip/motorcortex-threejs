@@ -1,5 +1,12 @@
 # Changelog
 
+### [3.2.1](https://github.com/donkeyclip/motorcortex-threejs/compare/v3.2.0...v3.2.1) (2022-05-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @rollup/plugin-commonjs to v22 ([#131](https://github.com/donkeyclip/motorcortex-threejs/issues/131)) ([0cdb863](https://github.com/donkeyclip/motorcortex-threejs/commit/0cdb863c19afd28ad1c66be57b3ae2200face2f6))
+
 ## [3.2.0](https://github.com/donkeyclip/motorcortex-threejs/compare/v3.1.1...v3.2.0) (2022-05-02)
 
 
