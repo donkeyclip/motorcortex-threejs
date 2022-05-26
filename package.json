@@ -54,7 +54,7 @@
     ]
   },
   "dependencies": {
-    "three": "^0.140.0"
+    "three": "^0.141.0"
   },
   "peerDependencies": {
     "@donkeyclip/motorcortex": ">=8 < 10"
