@@ -1,6 +1,6 @@
 'use strict';
 
-var index = require('./index-919047fd.js');
+var index = require('./index-0718dd87.js');
 require('@donkeyclip/motorcortex');
 
 
