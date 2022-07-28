@@ -1,2 +1,2 @@
-export { ao as default } from './index-31bd9eb5.js';
+export { ao as default } from './index-be29b9cd.js';
 import '@donkeyclip/motorcortex';
