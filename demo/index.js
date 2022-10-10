@@ -83,5 +83,4 @@ clip.addIncident(moveMan, 0);
 
 new Player({
   clip /* : scene */,
-  pointerEvents: true,
 });
