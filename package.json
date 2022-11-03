@@ -73,7 +73,7 @@
     "@rollup/plugin-commonjs": "22.0.2",
     "@rollup/plugin-json": "4.1.0",
     "@rollup/plugin-node-resolve": "13.3.0",
-    "babel-loader": "8.3.0",
+    "babel-loader": "9.1.0",
     "browserslist": "4.21.4",
     "caniuse-lite": "1.0.30001429",
     "concurrently": "7.5.0",
