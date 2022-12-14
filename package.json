@@ -78,7 +78,7 @@
     "caniuse-lite": "1.0.30001439",
     "concurrently": "7.6.0",
     "core-js": "3.26.1",
-    "css-loader": "6.7.2",
+    "css-loader": "6.7.3",
     "eslint": "8.29.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-babel": "5.3.1",
