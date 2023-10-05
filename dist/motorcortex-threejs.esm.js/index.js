@@ -1,2 +1,2 @@
-export { aq as default } from './index-24a6499d.js';
+export { aq as default } from './index-6d814c70.js';
 import '@donkeyclip/motorcortex';
