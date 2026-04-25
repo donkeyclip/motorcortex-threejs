@@ -659,6 +659,22 @@ export default class Clip3D extends BrowserClip {
     // Create mesh
     const mesh = new THREE.Mesh(geometry, material);
 
+    // Add wireframe edges for visibility (especially with transparent materials)
+    if (definition.edges !== false) {
+      const edgeGeo = new THREE.EdgesGeometry(geometry);
+      const edgeColor =
+        definition.edgeColor || definition.material?.color || "#2c3e50";
+      const edgeMat = new THREE.LineBasicMaterial({
+        color:
+          typeof edgeColor === "string"
+            ? new THREE.Color(edgeColor)
+            : edgeColor,
+        linewidth: 1,
+      });
+      const wireframe = new THREE.LineSegments(edgeGeo, edgeMat);
+      mesh.add(wireframe);
+    }
+
     // Apply transforms
     if (definition.position) {
       const p = definition.position;
