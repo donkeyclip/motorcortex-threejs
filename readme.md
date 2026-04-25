@@ -279,6 +279,64 @@ const object = {
 };
 ```
 
+## Dynamic Custom Entities (addCustomEntity)
+
+You can dynamically add 3D primitives to a running scene using MotorCortex's `addCustomEntity` API. This is useful for building scenes programmatically — e.g. an AI agent creating shapes on the fly.
+
+```javascript
+clip.addCustomEntity(
+  {
+    geometry: "BoxGeometry",
+    params: [2, 2, 2],
+    material: { color: "#e76f51" },
+    position: [0, 1, 0],
+    rotation: [0, Math.PI / 4, 0],
+    scale: [1, 1, 1],
+  },
+  "my_box", // unique entity id
+  ["shapes"], // classes
+  true // hidden (starts invisible)
+);
+```
+
+The entity is created and added to the default scene. When `hidden` is `true`, the object starts with `visible: false` — use an `ObjectAnimation` incident to reveal it (e.g. scale from 0 to 1).
+
+**Supported geometry types:** Any Three.js geometry — `BoxGeometry`, `SphereGeometry`, `CylinderGeometry`, `ConeGeometry`, `PlaneGeometry`, `TorusGeometry`, `TorusKnotGeometry`, `RingGeometry`, `DodecahedronGeometry`, etc.
+
+**Material shorthand:** `{ color: "#e76f51" }` defaults to `MeshStandardMaterial`. For other materials, specify `{ type: "MeshPhongMaterial", color: "#e76f51", shininess: 100 }`.
+
+**Definition shape:**
+
+| Property | Type    | Description                                                |
+| -------- | ------- | ---------------------------------------------------------- |
+| geometry | string  | Three.js geometry class name (e.g. `"BoxGeometry"`)        |
+| params   | array   | Constructor arguments for the geometry                     |
+| material | object  | `{ color, type?, emissive?, roughness?, metalness?, ... }` |
+| position | [x,y,z] | World position                                             |
+| rotation | [x,y,z] | Euler rotation in radians                                  |
+| scale    | [x,y,z] | Scale multiplier                                           |
+
+### Reveal animation pattern
+
+```javascript
+// 1. Add entity (hidden)
+clip.addCustomEntity(definition, "sphere1", ["shapes"], true);
+
+// 2. Set initial scale to 0 on the Three.js object
+const ent = clip.realClip.context.getElements("!#sphere1")[0];
+ent.entity.object.visible = true;
+ent.entity.object.scale.set(0, 0, 0);
+
+// 3. Animate scale to reveal
+clip.addIncident(
+  new threejs.ObjectAnimation(
+    { animatedAttrs: { scale: { x: 1, y: 1, z: 1 } } },
+    { selector: "!#sphere1", duration: 800 }
+  ),
+  1000 // start at 1s
+);
+```
+
 ## Controls
 
 Controls will provide interactivity with your 3D Clip and will help you on creation time. To enable controls simply type
@@ -331,58 +389,58 @@ const clip = new threejs.Clip(
       type: "WebGLRenderer",
       parameters: [{ alpha: true }],
       settings: {
-      setClearColor: ["#999"],
-      physicallyCorrectLights: true
-      }
+        setClearColor: ["#999"],
+        physicallyCorrectLights: true,
+      },
     },
     scenes: {
-      fog: ["#999", 1, 100]
+      fog: ["#999", 1, 100],
     },
     lights: {
       type: "AmbientLight",
-      parameters:[ "#cacaca"],
+      parameters: ["#cacaca"],
     },
     cameras: {
-      id:"camera_1",
+      id: "camera_1",
       type: "PerspectiveCamera",
-      parameters:[45, 800 / 600, 1, 1000],
+      parameters: [45, 800 / 600, 1, 1000],
       settings: {
-      position: { x: 10, y: 10, z:10 },
-      lookAt: [20, 20, 20],
-          far: 10000,
-          near: 1
-      }
+        position: { x: 10, y: 10, z: 10 },
+        lookAt: [20, 20, 20],
+        far: 10000,
+        near: 1,
+      },
     },
     entities: [
-    {
-      id:"box_1",
-      geometry: { type: "BoxGeometry", parameters: [1, 1, 1] },
-      material: {
-      type: "MeshBasicMaterial",
-      parameters: [{ color: "#0f0" }]
+      {
+        id: "box_1",
+        geometry: { type: "BoxGeometry", parameters: [1, 1, 1] },
+        material: {
+          type: "MeshBasicMaterial",
+          parameters: [{ color: "#0f0" }],
+        },
+        settings: { position: { set: [0, 0, 0] } },
       },
-      settings: { position: { set:[ 0, 0, 0] }}
-    },
-    {
-      id:"man_1",
-      model: {
-        loader: "GLTFLoader",
-        file: "path/to/our/model.glb",
+      {
+        id: "man_1",
+        model: {
+          loader: "GLTFLoader",
+          file: "path/to/our/model.glb",
+        },
+        settings: {
+          position: { x: 10, y: 10, z: 10 },
+          rotation: { x: 0, y: -Math.PI / 2, z: 0 },
+          scale: { x: 2, y: 2, z: 2 },
+        },
       },
-      settings: {
-        position: { x: 10, y: 10, z: 10},
-        rotation: { x: 0, y: -Math.PI / 2, z: 0 },
-        scale: { x: 2, y: 2, z: 2 },
-      }
-    }
     ],
-      controls: { enable: true, enableEvents: true },
+    controls: { enable: true, enableEvents: true },
   },
   {
     host: document.getElementById("clip"),
     containerParams: { width: "800px", height: "600px" },
   }
-)
+);
 ```
 
 ## ObjectAnimation Effect
@@ -459,22 +517,23 @@ clip.addIncident(manWalk, 0);
 # Adding Incidents in your clip
 
 ```javascript
-clipName.addIncident(incidentName,startTime);
+clipName.addIncident(incidentName, startTime);
 ```
 
-# Contributing 
+# Contributing
 
 In general, we follow the "fork-and-pull" Git workflow, so if you want to submit patches and additions you should follow the next steps:
-1.	**Fork** the repo on GitHub
-2.	**Clone** the project to your own machine
-3.	**Commit** changes to your own branch
-4.	**Push** your work back up to your fork
-5.	Submit a **Pull request** so that we can review your changes
 
+1. **Fork** the repo on GitHub
+2. **Clone** the project to your own machine
+3. **Commit** changes to your own branch
+4. **Push** your work back up to your fork
+5. Submit a **Pull request** so that we can review your changes
 
 # License
 
 [MIT License](https://opensource.org/licenses/MIT)
 
 # Sponsored by
+
 [<img src="https://presskit.donkeyclip.com/logos/donkey%20clip%20logo.svg" width=250></img>](https://donkeyclip.com)

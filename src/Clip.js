@@ -617,4 +617,81 @@ export default class Clip3D extends BrowserClip {
       renderer.render(scene, camera);
     });
   }
+
+  /**
+   * Called by MC's addCustomEntity to create a Three.js mesh from a definition.
+   *
+   * Definition shape:
+   *   { geometry: "BoxGeometry", params: [2, 2, 2],
+   *     material: { type: "MeshStandardMaterial", color: "#e76f51", ... },
+   *     position: [x, y, z], rotation: [x, y, z], scale: [x, y, z] }
+   *
+   * Shorthand: material can be just { color: "#e76f51" } (defaults to MeshStandardMaterial).
+   *
+   * @param {object} definition - shape descriptor
+   * @returns {{ object: THREE.Object3D }} entity wrapper, or null on failure
+   */
+  renderCustomEntity(definition) {
+    if (!definition || typeof definition !== "object") return null;
+    // Already a live entity (re-add on ClipCopy replay)
+    if (definition.object) return definition;
+
+    const geomType = definition.geometry;
+    if (!geomType || !THREE[geomType]) return null;
+
+    // Create geometry
+    const geometry = new THREE[geomType](...(definition.params || []));
+
+    // Create material — shorthand or full
+    const matDef = definition.material || {};
+    const matType = matDef.type || "MeshStandardMaterial";
+    const matParams = { ...matDef };
+    delete matParams.type;
+    // Convert string color to THREE.Color-compatible format
+    if (matParams.color && typeof matParams.color === "string") {
+      matParams.color = new THREE.Color(matParams.color);
+    }
+    if (matParams.emissive && typeof matParams.emissive === "string") {
+      matParams.emissive = new THREE.Color(matParams.emissive);
+    }
+    const material = new THREE[matType](matParams);
+
+    // Create mesh
+    const mesh = new THREE.Mesh(geometry, material);
+
+    // Apply transforms
+    if (definition.position) {
+      const p = definition.position;
+      mesh.position.set(p[0] || 0, p[1] || 0, p[2] || 0);
+    }
+    if (definition.rotation) {
+      const r = definition.rotation;
+      mesh.rotation.set(r[0] || 0, r[1] || 0, r[2] || 0);
+    }
+    if (definition.scale) {
+      const s = definition.scale;
+      mesh.scale.set(
+        s[0] !== undefined ? s[0] : 1,
+        s[1] !== undefined ? s[1] : 1,
+        s[2] !== undefined ? s[2] : 1
+      );
+    }
+
+    // Add to the default scene
+    if (this.defaultScene) {
+      this.defaultScene.add(mesh);
+    }
+
+    return { object: mesh };
+  }
+
+  /**
+   * Called by MC's addCustomEntity when hidden=true.
+   * Hides the Three.js object.
+   */
+  hideEntity(element) {
+    if (element?.object) {
+      element.object.visible = false;
+    }
+  }
 }
