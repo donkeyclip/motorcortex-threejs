@@ -370,6 +370,15 @@ export default class Clip3D extends BrowserClip {
         ["cameras", ...camera.class]
       );
       const cameraObj = this.getObjectById(camera.id);
+      // Position must be set before lookAt — otherwise lookAt computes
+      // the rotation from the wrong origin.  JSON key order is not
+      // guaranteed (Go sorts alphabetically: "lookAt" < "position").
+      if (camera.settings.position) {
+        applySettingsToObjects(
+          { position: camera.settings.position },
+          cameraObj
+        );
+      }
       applySettingsToObjects(camera.settings, cameraObj);
       cameraObj.updateProjectionMatrix();
     });
@@ -585,7 +594,8 @@ export default class Clip3D extends BrowserClip {
   }
 
   render() {
-    this.context.getElements("!.renderers").forEach((renderer, index) => {
+    const renderers = this.context.getElements("!.renderers");
+    renderers.forEach((renderer, index) => {
       this.context.rootElement.appendChild(renderer.entity.object.domElement);
       renderer.entity.object.domElement.style.zIndex = index;
       renderer.entity.object.domElement.style.top = "0px";
