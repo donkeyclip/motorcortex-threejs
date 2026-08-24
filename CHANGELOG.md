@@ -1,193 +1,181 @@
 # Changelog
 
-## [3.2.2](https://github.com/donkeyclip/motorcortex-threejs/compare/v3.2.1...v3.2.2) (2022-06-04)
+## [3.4.0] (2026-08-24)
 
+### Features
+
+- **OrbitalMotion Effect:** per-frame circular orbit computation with parent entity support for moons
+- **CameraFollow Effect:** positions camera relative to a target entity with animatable offsets and optional lookAtSelector
+- **addCustomEntity:** dynamic 3D primitive creation at runtime (BoxGeometry, SphereGeometry, etc.)
 
 ### Bug Fixes
 
-* **deps:** update dependency three to ^0.141.0 ([f678af0](https://github.com/donkeyclip/motorcortex-threejs/commit/f678af0b7a6daa277f0a006609e2c6e48c08c491))
+- **textureMap:** delete textureMap/videoMap from material parameters after conversion to prevent Three.js warnings
+- **outputEncoding:** use outputColorSpace when available (Three.js v0.150+), fall back to outputEncoding
+- **helpers:** use isEuler/isVector3 flags instead of constructor name matching (fixes minified builds)
+
+## [3.2.2](https://github.com/donkeyclip/motorcortex-threejs/compare/v3.2.1...v3.2.2) (2022-06-04)
+
+### Bug Fixes
+
+- **deps:** update dependency three to ^0.141.0 ([f678af0](https://github.com/donkeyclip/motorcortex-threejs/commit/f678af0b7a6daa277f0a006609e2c6e48c08c491))
 
 ### [3.2.1](https://github.com/donkeyclip/motorcortex-threejs/compare/v3.2.0...v3.2.1) (2022-05-02)
 
-
 ### Bug Fixes
 
-* **deps:** update dependency @rollup/plugin-commonjs to v22 ([#131](https://github.com/donkeyclip/motorcortex-threejs/issues/131)) ([0cdb863](https://github.com/donkeyclip/motorcortex-threejs/commit/0cdb863c19afd28ad1c66be57b3ae2200face2f6))
+- **deps:** update dependency @rollup/plugin-commonjs to v22 ([#131](https://github.com/donkeyclip/motorcortex-threejs/issues/131)) ([0cdb863](https://github.com/donkeyclip/motorcortex-threejs/commit/0cdb863c19afd28ad1c66be57b3ae2200face2f6))
 
 ## [3.2.0](https://github.com/donkeyclip/motorcortex-threejs/compare/v3.1.1...v3.2.0) (2022-05-02)
 
-
 ### Features
 
-* bump dependencies and remove unused ones ([89bffc1](https://github.com/donkeyclip/motorcortex-threejs/commit/89bffc113a31075954cd0aa66f5530d3e128cf48))
-
+- bump dependencies and remove unused ones ([89bffc1](https://github.com/donkeyclip/motorcortex-threejs/commit/89bffc113a31075954cd0aa66f5530d3e128cf48))
 
 ### Bug Fixes
 
-* drop broken import of stats ([5e15380](https://github.com/donkeyclip/motorcortex-threejs/commit/5e15380971d34f414eba0f0fcf48685d7396aedb))
+- drop broken import of stats ([5e15380](https://github.com/donkeyclip/motorcortex-threejs/commit/5e15380971d34f414eba0f0fcf48685d7396aedb))
 
 ### [3.1.1](https://github.com/donkeyclip/motorcortex-threejs/compare/v3.1.0...v3.1.1) (2022-04-19)
 
-
 ### Bug Fixes
 
-* morph animation block bug ([35ebe55](https://github.com/donkeyclip/motorcortex-threejs/commit/35ebe55cdb97094014f5a84807d0651b557413a8))
+- morph animation block bug ([35ebe55](https://github.com/donkeyclip/motorcortex-threejs/commit/35ebe55cdb97094014f5a84807d0651b557413a8))
 
 ## [3.1.0](https://github.com/donkeyclip/motorcortex-threejs/compare/v3.0.0...v3.1.0) (2022-04-08)
 
-
 ### Features
 
-* drop explorer 11 support ([fcc9471](https://github.com/donkeyclip/motorcortex-threejs/commit/fcc9471f4f4189a0dc1b20f72e2838f8a5838098))
-* update compatibility with motorcortex ([324d6c9](https://github.com/donkeyclip/motorcortex-threejs/commit/324d6c9f95f16a425addf9d5e7961e8ee5efa026))
-
+- drop explorer 11 support ([fcc9471](https://github.com/donkeyclip/motorcortex-threejs/commit/fcc9471f4f4189a0dc1b20f72e2838f8a5838098))
+- update compatibility with motorcortex ([324d6c9](https://github.com/donkeyclip/motorcortex-threejs/commit/324d6c9f95f16a425addf9d5e7961e8ee5efa026))
 
 ### Bug Fixes
 
-* delete commitlint.config.js ([b57d33b](https://github.com/donkeyclip/motorcortex-threejs/commit/b57d33b3d7ba0273b41b6b76077bf9fe8fe80872))
-* update files from package.json ([4ec6a07](https://github.com/donkeyclip/motorcortex-threejs/commit/4ec6a073f5a7e6fb1917952c5daff366f085146c))
+- delete commitlint.config.js ([b57d33b](https://github.com/donkeyclip/motorcortex-threejs/commit/b57d33b3d7ba0273b41b6b76077bf9fe8fe80872))
+- update files from package.json ([4ec6a07](https://github.com/donkeyclip/motorcortex-threejs/commit/4ec6a073f5a7e6fb1917952c5daff366f085146c))
 
 ## [3.0.0](https://github.com/donkeyclip/motorcortex-threejs/compare/v2.5.1...v3.0.0) (2022-03-24)
 
-
 ### ⚠ BREAKING CHANGES
 
-* upgrade mc version, simplify demo, and fix resize bug
+- upgrade mc version, simplify demo, and fix resize bug
 
 ### Bug Fixes
 
-* upgrade mc version, simplify demo, and fix resize bug ([6f5bef8](https://github.com/donkeyclip/motorcortex-threejs/commit/6f5bef8704290f942d401cc1737c468715bf3605))
+- upgrade mc version, simplify demo, and fix resize bug ([6f5bef8](https://github.com/donkeyclip/motorcortex-threejs/commit/6f5bef8704290f942d401cc1737c468715bf3605))
 
 ### [2.5.1](https://github.com/donkeyclip/motorcortex-threejs/compare/v2.5.0...v2.5.1) (2022-03-20)
 
-
 ### Bug Fixes
 
-* **deps:** update dependency three to ^0.135.0 ([2b0cdc6](https://github.com/donkeyclip/motorcortex-threejs/commit/2b0cdc660ea61afbc55a86046a6c291528c9e922))
-* **deps:** update dependency three to ^0.136.0 ([5ba6409](https://github.com/donkeyclip/motorcortex-threejs/commit/5ba640947a91c718cbe975585047466bebaef224))
+- **deps:** update dependency three to ^0.135.0 ([2b0cdc6](https://github.com/donkeyclip/motorcortex-threejs/commit/2b0cdc660ea61afbc55a86046a6c291528c9e922))
+- **deps:** update dependency three to ^0.136.0 ([5ba6409](https://github.com/donkeyclip/motorcortex-threejs/commit/5ba640947a91c718cbe975585047466bebaef224))
 
 ## [2.5.0](https://www.github.com/donkeyclip/motorcortex-threejs/compare/v2.4.4...v2.5.0) (2021-11-17)
 
-
 ### Features
 
-* add stats ([b90e17e](https://www.github.com/donkeyclip/motorcortex-threejs/commit/b90e17e8aa5fa9ca171dfdd8909e063763585b21))
+- add stats ([b90e17e](https://www.github.com/donkeyclip/motorcortex-threejs/commit/b90e17e8aa5fa9ca171dfdd8909e063763585b21))
 
 ### [2.4.4](https://www.github.com/donkeyclip/motorcortex-threejs/compare/v2.4.3...v2.4.4) (2021-11-16)
 
-
 ### Bug Fixes
 
-* camera initial parameters ([0dd9669](https://www.github.com/donkeyclip/motorcortex-threejs/commit/0dd9669a09177e518743a6f80bd905b407f794eb))
+- camera initial parameters ([0dd9669](https://www.github.com/donkeyclip/motorcortex-threejs/commit/0dd9669a09177e518743a6f80bd905b407f794eb))
 
 ### [2.4.3](https://www.github.com/donkeyclip/motorcortex-threejs/compare/v2.4.2...v2.4.3) (2021-11-16)
 
-
 ### Bug Fixes
 
-* double rendering on casi ([9ea965d](https://www.github.com/donkeyclip/motorcortex-threejs/commit/9ea965d7d4a6d0cbdaec8be8582ebe601b04a6df))
-* initializers ([14fcf4a](https://www.github.com/donkeyclip/motorcortex-threejs/commit/14fcf4ac452a6f7656855ff75ad964d67db2bd4c))
+- double rendering on casi ([9ea965d](https://www.github.com/donkeyclip/motorcortex-threejs/commit/9ea965d7d4a6d0cbdaec8be8582ebe601b04a6df))
+- initializers ([14fcf4a](https://www.github.com/donkeyclip/motorcortex-threejs/commit/14fcf4ac452a6f7656855ff75ad964d67db2bd4c))
 
 ### [2.4.2](https://www.github.com/donkeyclip/motorcortex-threejs/compare/v2.4.1...v2.4.2) (2021-11-09)
 
-
 ### Bug Fixes
 
-* add light helpers and cast-receive shadows at models ([6607d3e](https://www.github.com/donkeyclip/motorcortex-threejs/commit/6607d3ea21fa3ec29bb2e39523a5c8b0b6b5bc1f))
-* first implementation of postprocessing ([cafd0f5](https://www.github.com/donkeyclip/motorcortex-threejs/commit/cafd0f551ee40da4603db5f9790c791eaa6eeb56))
+- add light helpers and cast-receive shadows at models ([6607d3e](https://www.github.com/donkeyclip/motorcortex-threejs/commit/6607d3ea21fa3ec29bb2e39523a5c8b0b6b5bc1f))
+- first implementation of postprocessing ([cafd0f5](https://www.github.com/donkeyclip/motorcortex-threejs/commit/cafd0f551ee40da4603db5f9790c791eaa6eeb56))
 
 ### [2.4.1](https://www.github.com/donkeyclip/motorcortex-threejs/compare/v2.4.0...v2.4.1) (2021-11-04)
 
-
 ### Bug Fixes
 
-* camera look at, animations and object3d feature ([f2b91df](https://www.github.com/donkeyclip/motorcortex-threejs/commit/f2b91dffa777ee09a460231ed7e34b6b6c3b5e57))
+- camera look at, animations and object3d feature ([f2b91df](https://www.github.com/donkeyclip/motorcortex-threejs/commit/f2b91dffa777ee09a460231ed7e34b6b6c3b5e57))
 
 ## [2.4.0](https://www.github.com/donkeyclip/motorcortex-threejs/compare/v2.3.5...v2.4.0) (2021-10-29)
 
-
 ### Features
 
-* bump threejs to r134 ([830f42d](https://www.github.com/donkeyclip/motorcortex-threejs/commit/830f42da55cae36fb548aab8e31774db3ef38a06))
-
+- bump threejs to r134 ([830f42d](https://www.github.com/donkeyclip/motorcortex-threejs/commit/830f42da55cae36fb548aab8e31774db3ef38a06))
 
 ### Bug Fixes
 
-* add mode development in webpack config ([1535245](https://www.github.com/donkeyclip/motorcortex-threejs/commit/153524533eef48afe8ee77f7796d51ea5d7cde86))
-* use main as default branch ([e00e777](https://www.github.com/donkeyclip/motorcortex-threejs/commit/e00e777994e7fe09646355bf08b7f5213fcb061e))
-
+- add mode development in webpack config ([1535245](https://www.github.com/donkeyclip/motorcortex-threejs/commit/153524533eef48afe8ee77f7796d51ea5d7cde86))
+- use main as default branch ([e00e777](https://www.github.com/donkeyclip/motorcortex-threejs/commit/e00e777994e7fe09646355bf08b7f5213fcb061e))
 
 ### Miscellaneous Chores
 
-* realease 2.3.6 ([a2f4d42](https://www.github.com/donkeyclip/motorcortex-threejs/commit/a2f4d423e10f8334e2fbd31ab6097d688ad66d42))
-* release 2.3.7 ([f6daec9](https://www.github.com/donkeyclip/motorcortex-threejs/commit/f6daec9b8473d8bf8905e2b9dc285792ca13569c))
-* release 2.4.0 ([4dfe22e](https://www.github.com/donkeyclip/motorcortex-threejs/commit/4dfe22e60a7692b865d538d22114bdc704311fbf))
+- realease 2.3.6 ([a2f4d42](https://www.github.com/donkeyclip/motorcortex-threejs/commit/a2f4d423e10f8334e2fbd31ab6097d688ad66d42))
+- release 2.3.7 ([f6daec9](https://www.github.com/donkeyclip/motorcortex-threejs/commit/f6daec9b8473d8bf8905e2b9dc285792ca13569c))
+- release 2.4.0 ([4dfe22e](https://www.github.com/donkeyclip/motorcortex-threejs/commit/4dfe22e60a7692b865d538d22114bdc704311fbf))
 
 ### [2.3.5](https://www.github.com/donkeyclip/motorcortex-threejs/compare/v2.3.4...v2.3.5) (2021-10-26)
 
-
 ### Bug Fixes
 
-* drop code from demo config ([171b3f6](https://www.github.com/donkeyclip/motorcortex-threejs/commit/171b3f6fc9cc3e333c025c768b8b111fb5fdcdfc))
-* drop old versions of deps ([3a4b682](https://www.github.com/donkeyclip/motorcortex-threejs/commit/3a4b682b04e687158956749a9c18a569f2b586d5))
-* eslint issues ([029d618](https://www.github.com/donkeyclip/motorcortex-threejs/commit/029d618f56cae605350f5827c541c2a3005fec1f))
-* fix broken config ([3df8b34](https://www.github.com/donkeyclip/motorcortex-threejs/commit/3df8b34a89fbbd3ecf00929efa7431fc1c70129a))
-* fix broken webpack config ([4a0d246](https://www.github.com/donkeyclip/motorcortex-threejs/commit/4a0d24663621e0ceff2b0d3470196aad51cb7512))
-* update build and demo files drop old babel config ([f97a4f8](https://www.github.com/donkeyclip/motorcortex-threejs/commit/f97a4f8723b5be4441a92bb5583f8ddd2f5f1262))
-* update weback and deps update ([64ec597](https://www.github.com/donkeyclip/motorcortex-threejs/commit/64ec5979dbedb4373719d8b3086753a26b6dc5fa))
+- drop code from demo config ([171b3f6](https://www.github.com/donkeyclip/motorcortex-threejs/commit/171b3f6fc9cc3e333c025c768b8b111fb5fdcdfc))
+- drop old versions of deps ([3a4b682](https://www.github.com/donkeyclip/motorcortex-threejs/commit/3a4b682b04e687158956749a9c18a569f2b586d5))
+- eslint issues ([029d618](https://www.github.com/donkeyclip/motorcortex-threejs/commit/029d618f56cae605350f5827c541c2a3005fec1f))
+- fix broken config ([3df8b34](https://www.github.com/donkeyclip/motorcortex-threejs/commit/3df8b34a89fbbd3ecf00929efa7431fc1c70129a))
+- fix broken webpack config ([4a0d246](https://www.github.com/donkeyclip/motorcortex-threejs/commit/4a0d24663621e0ceff2b0d3470196aad51cb7512))
+- update build and demo files drop old babel config ([f97a4f8](https://www.github.com/donkeyclip/motorcortex-threejs/commit/f97a4f8723b5be4441a92bb5583f8ddd2f5f1262))
+- update weback and deps update ([64ec597](https://www.github.com/donkeyclip/motorcortex-threejs/commit/64ec5979dbedb4373719d8b3086753a26b6dc5fa))
 
 ### [2.3.4](https://www.github.com/donkeyclip/motorcortex-threejs/compare/v2.3.3...v2.3.4) (2021-10-19)
 
-
 ### Bug Fixes
 
-* Typo fixes by misspell-fixer ([#70](https://www.github.com/donkeyclip/motorcortex-threejs/issues/70)) ([eca0a73](https://www.github.com/donkeyclip/motorcortex-threejs/commit/eca0a73e209197dc4b371f2de99279d96dde8fea))
+- Typo fixes by misspell-fixer ([#70](https://www.github.com/donkeyclip/motorcortex-threejs/issues/70)) ([eca0a73](https://www.github.com/donkeyclip/motorcortex-threejs/commit/eca0a73e209197dc4b371f2de99279d96dde8fea))
 
 ### [2.3.3](https://www.github.com/donkeyclip/motorcortex-threejs/compare/v2.3.2...v2.3.3) (2021-10-18)
 
-
 ### Bug Fixes
 
-* add rollup json loader ([5caec89](https://www.github.com/donkeyclip/motorcortex-threejs/commit/5caec89684bc33c71628f6ad8cafbd3ceeece59e))
+- add rollup json loader ([5caec89](https://www.github.com/donkeyclip/motorcortex-threejs/commit/5caec89684bc33c71628f6ad8cafbd3ceeece59e))
 
 ### [2.3.2](https://www.github.com/donkeyclip/motorcortex-threejs/compare/v2.3.1...v2.3.2) (2021-10-18)
 
-
 ### Bug Fixes
 
-* add version in mainjs ([5c51b81](https://www.github.com/donkeyclip/motorcortex-threejs/commit/5c51b813d74c0f4f7f5cec612684b6eb508ef3de))
+- add version in mainjs ([5c51b81](https://www.github.com/donkeyclip/motorcortex-threejs/commit/5c51b813d74c0f4f7f5cec612684b6eb508ef3de))
 
 ### [2.3.1](https://www.github.com/donkeyclip/motorcortex-threejs/compare/v2.3.0...v2.3.1) (2021-10-15)
 
-
 ### Bug Fixes
 
-* reverse demo ([b646b44](https://www.github.com/donkeyclip/motorcortex-threejs/commit/b646b447b1de431ec9ce6495645e6943d9b63baa))
+- reverse demo ([b646b44](https://www.github.com/donkeyclip/motorcortex-threejs/commit/b646b447b1de431ec9ce6495645e6943d9b63baa))
 
 ## [2.3.0](https://www.github.com/donkeyclip/motorcortex-threejs/compare/v2.2.4...v2.3.0) (2021-10-15)
 
-
 ### Features
 
-* bump version of 3js to latest ([1b14943](https://www.github.com/donkeyclip/motorcortex-threejs/commit/1b1494358c0a2638fe6b9c204bad4e56b9333f24))
-
+- bump version of 3js to latest ([1b14943](https://www.github.com/donkeyclip/motorcortex-threejs/commit/1b1494358c0a2638fe6b9c204bad4e56b9333f24))
 
 ### Bug Fixes
 
-* don't enable controls when disabled by clip ([bb33033](https://www.github.com/donkeyclip/motorcortex-threejs/commit/bb33033f24d385477d3f53208fbcfb97202669ec))
-
+- don't enable controls when disabled by clip ([bb33033](https://www.github.com/donkeyclip/motorcortex-threejs/commit/bb33033f24d385477d3f53208fbcfb97202669ec))
 
 ### Performance Improvements
 
-* dynamic load loaders and controllers, drop unneeded loop ([3790c4b](https://www.github.com/donkeyclip/motorcortex-threejs/commit/3790c4bdbb15981a41ee9e6db1485f02d06b0d98))
+- dynamic load loaders and controllers, drop unneeded loop ([3790c4b](https://www.github.com/donkeyclip/motorcortex-threejs/commit/3790c4bdbb15981a41ee9e6db1485f02d06b0d98))
 
 ### [2.2.4](https://www.github.com/donkeyclip/motorcortex-threejs/compare/v2.2.3...v2.2.4) (2021-10-14)
 
-
 ### Bug Fixes
 
-* remove kissmybutton references ([831dbcc](https://www.github.com/donkeyclip/motorcortex-threejs/commit/831dbccf4ed94e6b1608be31b80142e6a0eb6944))
-* remove kissmybutton references ([2825d3a](https://www.github.com/donkeyclip/motorcortex-threejs/commit/2825d3a6c266901507141b57060cd078708afb84))
+- remove kissmybutton references ([831dbcc](https://www.github.com/donkeyclip/motorcortex-threejs/commit/831dbccf4ed94e6b1608be31b80142e6a0eb6944))
+- remove kissmybutton references ([2825d3a](https://www.github.com/donkeyclip/motorcortex-threejs/commit/2825d3a6c266901507141b57060cd078708afb84))
 
 ### [2.2.3](https://www.github.com/donkeyclip/motorcortex-threejs/compare/v2.2.2...v2.2.3) (2021-10-14)
 

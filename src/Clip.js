@@ -248,6 +248,7 @@ export default class Clip3D extends BrowserClip {
       entity.material.parameters[0].map = new TextureLoader().load(
         entity.material.parameters[0].textureMap
       );
+      delete entity.material.parameters[0].textureMap;
     }
 
     if (entity.material.parameters[0].videoMap) {
@@ -256,6 +257,7 @@ export default class Clip3D extends BrowserClip {
       this.context.rootElement.appendChild(video);
       video.play();
       entity.material.parameters[0].map = new VideoTexture(video);
+      delete entity.material.parameters[0].videoMap;
     }
 
     const material = new THREE[entity.material.type](
@@ -389,7 +391,11 @@ export default class Clip3D extends BrowserClip {
         ["renderers", ...renderer.class]
       );
       const rendererObj = this.getObjectById(renderer.id);
-      rendererObj.outputEncoding = THREE.sRGBEncoding;
+      if (rendererObj.outputColorSpace !== undefined) {
+        rendererObj.outputColorSpace = THREE.SRGBColorSpace;
+      } else {
+        rendererObj.outputEncoding = THREE.sRGBEncoding;
+      }
       applySettingsToObjects(renderer.settings, rendererObj);
     });
 
