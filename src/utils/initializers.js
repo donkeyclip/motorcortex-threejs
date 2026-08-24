@@ -7,8 +7,9 @@ export const initializeCamera = (camera, context) => {
   camera.type ??= "PerspectiveCamera";
   if (camera.type === "PerspectiveCamera") {
     const fov = 45;
-    const aspect =
-      context.rootElement.offsetWidth / context.rootElement.offsetHeight;
+    const w = context.rootElement.offsetWidth || 1;
+    const h = context.rootElement.offsetHeight || 1;
+    const aspect = w / h;
 
     const near = 1;
     const far = 1000;
@@ -38,8 +39,8 @@ export const initializeRenderer = (renderer, context) => {
   }
 
   renderer.settings.setSize ??= [
-    context.rootElement.offsetWidth,
-    context.rootElement.offsetHeight,
+    context.rootElement.offsetWidth || 1,
+    context.rootElement.offsetHeight || 1,
   ];
 };
 export const initializeObject = (object) => {
