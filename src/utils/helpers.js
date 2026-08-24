@@ -58,7 +58,8 @@ export const checkSchema = (obj, key, type) => {
       if (
         !Object.prototype.hasOwnProperty.call(obj, key) &&
         typeof obj !== "function" &&
-        !["Euler"].includes(obj.constructor.name)
+        !(obj && obj.isEuler) &&
+        !(obj && obj.isVector3)
       )
         console.warn(
           `Key "${key}" not found in object`,

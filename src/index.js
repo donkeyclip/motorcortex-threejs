@@ -1,6 +1,8 @@
 import Clip3D from "./Clip";
 import ObjectAnimation from "./ObjectAnimation";
 import MorphAnimation from "./MorphAnimation";
+import OrbitalMotion from "./OrbitalMotion";
+import CameraFollow from "./CameraFollow";
 import compositeAttributes from "./compoAttrs";
 import pkg from "../package.json";
 export default {
@@ -15,8 +17,19 @@ export default {
       exportable: MorphAnimation,
       name: "MorphAnimation",
     },
+    {
+      exportable: OrbitalMotion,
+      name: "OrbitalMotion",
+    },
+    {
+      exportable: CameraFollow,
+      name: "CameraFollow",
+    },
   ],
-  Clip: Clip3D,
+  Clip: {
+    exportable: Clip3D,
+    attributesValidationRules: {},
+  },
   helpers: {},
   compositeAttributes,
 };
