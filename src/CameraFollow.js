@@ -1,35 +1,31 @@
 import { Effect } from "@donkeyclip/motorcortex";
+import { Vector3 } from "three";
 
 /**
  * CameraFollow Effect — camera follows a target entity with spring/chase
- * behavior during playback, and snaps directly on seek.
+ * behavior for both position AND lookAt direction.
  *
- * During playback (small dt between frames): when close to the desired
- * position the camera tracks exactly; when far it chases with exponential
- * decay, producing a natural dolly-in that decelerates smoothly.
- *
- * During seek (large dt jump): camera snaps directly to the desired
- * position — no spring, no chase.
+ * During playback: when close, tracks exactly; when far, chases with
+ * exponential decay (magnetic approach).
+ * During seek (or backward): snaps directly.
  *
  * animatedAttrs: {
- *   follow: {
- *     offsetX: number,   // camera offset from target (animatable)
- *     offsetY: number,
- *     offsetZ: number,
- *   }
+ *   follow: { offsetX, offsetY, offsetZ }
  * }
  *
  * attrs: {
- *   targetSelector: string,    // MC selector for the entity to follow
- *   lookAtTarget: boolean,     // camera.lookAt(target) each frame (default true)
- *   lookAtSelector: string,    // look at a different entity than the target
- *   chaseTime: number,         // characteristic time in seconds (default 0.3)
- *   followThreshold: number,   // error below which camera snaps exactly (default 0.05)
+ *   targetSelector: string,
+ *   lookAtTarget: boolean (default true),
+ *   lookAtSelector: string,
+ *   chaseTime: number (default 0.3),
+ *   followThreshold: number (default 0.05),
  * }
  */
 
-// A dt larger than this (in seconds) is considered a seek, not playback.
-const SEEK_THRESHOLD = 0.1; // 100ms
+const SEEK_THRESHOLD = 0.1;
+
+// Reusable vector to avoid per-frame allocation.
+const _lookAtVec = new Vector3();
 
 export default class CameraFollow extends Effect {
   onGetContext() {
@@ -56,16 +52,13 @@ export default class CameraFollow extends Effect {
     this._chaseTime = this.attrs.chaseTime || 0.3;
     this._followThreshold = this.attrs.followThreshold || 0.05;
 
-    // Track last timeline ms for deterministic dt computation.
+    // Tracked lookAt point for magnetic interpolation.
+    this._currentLookAt = null;
     this._lastMs = null;
   }
 
   getScratchValue() {
-    return {
-      offsetX: 0,
-      offsetY: 0,
-      offsetZ: 0,
-    };
+    return { offsetX: 0, offsetY: 0, offsetZ: 0 };
   }
 
   onProgress(millisecond) {
@@ -73,7 +66,7 @@ export default class CameraFollow extends Effect {
     const camera = this.element.entity.object;
     if (!camera || !this._targetObject) return;
 
-    // Interpolate offset from initialValue to targetValue.
+    // Interpolate offset.
     const ox =
       this.initialValue.offsetX +
       fraction * (this.targetValue.offsetX - this.initialValue.offsetX);
@@ -84,47 +77,92 @@ export default class CameraFollow extends Effect {
       this.initialValue.offsetZ +
       fraction * (this.targetValue.offsetZ - this.initialValue.offsetZ);
 
-    // Desired position = target + offset.
+    // Desired camera position = target + offset.
     const desiredX = this._targetObject.position.x + ox;
     const desiredY = this._targetObject.position.y + oy;
     const desiredZ = this._targetObject.position.z + oz;
 
-    // Compute dt to distinguish seek from play.
-    // First frame uses a default 1/60s so the chase begins smoothly.
+    // Desired lookAt point.
+    const lookAtEntity = this._lookAtObject || this._targetObject;
+    const desiredLookX = lookAtEntity.position.x;
+    const desiredLookY = lookAtEntity.position.y;
+    const desiredLookZ = lookAtEntity.position.z;
+
+    // dt for seek detection.
     const dt =
       this._lastMs !== null ? (millisecond - this._lastMs) / 1000 : 1 / 60;
     this._lastMs = millisecond;
 
-    // On seek (large dt): snap directly, no spring.
-    if (dt > SEEK_THRESHOLD) {
+    const isSeek = dt < 0 || dt > SEEK_THRESHOLD;
+
+    // Initialize lookAt tracker on first frame.
+    if (!this._currentLookAt) {
+      // Start from wherever the camera is currently looking.
+      // Extract from camera's current world direction.
+      const dir = new Vector3();
+      camera.getWorldDirection(dir);
+      const dist = camera.position.distanceTo(lookAtEntity.position) || 50;
+      this._currentLookAt = {
+        x: camera.position.x + dir.x * dist,
+        y: camera.position.y + dir.y * dist,
+        z: camera.position.z + dir.z * dist,
+      };
+    }
+
+    if (isSeek) {
+      // SNAP both position and lookAt.
       camera.position.x = desiredX;
       camera.position.y = desiredY;
       camera.position.z = desiredZ;
+      this._currentLookAt.x = desiredLookX;
+      this._currentLookAt.y = desiredLookY;
+      this._currentLookAt.z = desiredLookZ;
     } else {
-      // Error: distance from current camera position to desired.
+      // POSITION chase.
       const errX = camera.position.x - desiredX;
       const errY = camera.position.y - desiredY;
       const errZ = camera.position.z - desiredZ;
       const errDist = Math.sqrt(errX * errX + errY * errY + errZ * errZ);
 
       if (errDist < this._followThreshold) {
-        // FOLLOW mode — snap to desired position (no drift).
         camera.position.x = desiredX;
         camera.position.y = desiredY;
         camera.position.z = desiredZ;
       } else {
-        // CHASE mode — exponential decay of error.
         const decay = Math.exp(-dt / this._chaseTime);
         camera.position.x = desiredX + errX * decay;
         camera.position.y = desiredY + errY * decay;
         camera.position.z = desiredZ + errZ * decay;
       }
+
+      // LOOKAT chase — same magnetic behavior.
+      const lookErrX = this._currentLookAt.x - desiredLookX;
+      const lookErrY = this._currentLookAt.y - desiredLookY;
+      const lookErrZ = this._currentLookAt.z - desiredLookZ;
+      const lookErrDist = Math.sqrt(
+        lookErrX * lookErrX + lookErrY * lookErrY + lookErrZ * lookErrZ
+      );
+
+      if (lookErrDist < this._followThreshold) {
+        this._currentLookAt.x = desiredLookX;
+        this._currentLookAt.y = desiredLookY;
+        this._currentLookAt.z = desiredLookZ;
+      } else {
+        const decay = Math.exp(-dt / this._chaseTime);
+        this._currentLookAt.x = desiredLookX + lookErrX * decay;
+        this._currentLookAt.y = desiredLookY + lookErrY * decay;
+        this._currentLookAt.z = desiredLookZ + lookErrZ * decay;
+      }
     }
 
-    // Look at target or explicit lookAt entity.
+    // Apply lookAt from the tracked (chased) point.
     if (this._lookAt) {
-      const lookAt = this._lookAtObject || this._targetObject;
-      camera.lookAt(lookAt.position);
+      _lookAtVec.set(
+        this._currentLookAt.x,
+        this._currentLookAt.y,
+        this._currentLookAt.z
+      );
+      camera.lookAt(_lookAtVec);
     }
   }
 }
