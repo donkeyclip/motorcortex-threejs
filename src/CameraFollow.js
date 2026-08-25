@@ -2,9 +2,14 @@ import { Effect } from "@donkeyclip/motorcortex";
 
 /**
  * CameraFollow Effect — camera follows a target entity with spring/chase
- * behavior.  When close to the desired position the camera tracks exactly;
- * when far (e.g. after a zoomToObject) it chases with exponential decay,
- * producing a natural dolly-in that decelerates smoothly.
+ * behavior during playback, and snaps directly on seek.
+ *
+ * During playback (small dt between frames): when close to the desired
+ * position the camera tracks exactly; when far it chases with exponential
+ * decay, producing a natural dolly-in that decelerates smoothly.
+ *
+ * During seek (large dt jump): camera snaps directly to the desired
+ * position — no spring, no chase.
  *
  * animatedAttrs: {
  *   follow: {
@@ -22,6 +27,10 @@ import { Effect } from "@donkeyclip/motorcortex";
  *   followThreshold: number,   // error below which camera snaps exactly (default 0.05)
  * }
  */
+
+// A dt larger than this (in seconds) is considered a seek, not playback.
+const SEEK_THRESHOLD = 0.1; // 100ms
+
 export default class CameraFollow extends Effect {
   onGetContext() {
     this._targetObject = null;
@@ -80,33 +89,35 @@ export default class CameraFollow extends Effect {
     const desiredY = this._targetObject.position.y + oy;
     const desiredZ = this._targetObject.position.z + oz;
 
-    // Error: distance from current camera position to desired.
-    const errX = camera.position.x - desiredX;
-    const errY = camera.position.y - desiredY;
-    const errZ = camera.position.z - desiredZ;
-    const errDist = Math.sqrt(errX * errX + errY * errY + errZ * errZ);
+    // Compute dt to distinguish seek from play.
+    const dt = this._lastMs !== null ? (millisecond - this._lastMs) / 1000 : -1;
+    this._lastMs = millisecond;
 
-    if (errDist < this._followThreshold) {
-      // FOLLOW mode — snap to desired position (no drift).
+    // On seek (large dt or first frame): snap directly, no spring.
+    if (dt < 0 || dt > SEEK_THRESHOLD) {
       camera.position.x = desiredX;
       camera.position.y = desiredY;
       camera.position.z = desiredZ;
     } else {
-      // CHASE mode — exponential decay of error.
-      // dt from MC timeline (deterministic, frame-rate independent).
-      const currentMs = millisecond;
-      const dt =
-        this._lastMs !== null ? (currentMs - this._lastMs) / 1000 : 1 / 60;
+      // Error: distance from current camera position to desired.
+      const errX = camera.position.x - desiredX;
+      const errY = camera.position.y - desiredY;
+      const errZ = camera.position.z - desiredZ;
+      const errDist = Math.sqrt(errX * errX + errY * errY + errZ * errZ);
 
-      // decay = e^(-dt / T)  where T = chaseTime.
-      // camera = desired + error * decay
-      const decay = Math.exp(-dt / this._chaseTime);
-      camera.position.x = desiredX + errX * decay;
-      camera.position.y = desiredY + errY * decay;
-      camera.position.z = desiredZ + errZ * decay;
+      if (errDist < this._followThreshold) {
+        // FOLLOW mode — snap to desired position (no drift).
+        camera.position.x = desiredX;
+        camera.position.y = desiredY;
+        camera.position.z = desiredZ;
+      } else {
+        // CHASE mode — exponential decay of error.
+        const decay = Math.exp(-dt / this._chaseTime);
+        camera.position.x = desiredX + errX * decay;
+        camera.position.y = desiredY + errY * decay;
+        camera.position.z = desiredZ + errZ * decay;
+      }
     }
-
-    this._lastMs = millisecond;
 
     // Look at target or explicit lookAt entity.
     if (this._lookAt) {
