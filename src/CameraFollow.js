@@ -90,11 +90,13 @@ export default class CameraFollow extends Effect {
     const desiredZ = this._targetObject.position.z + oz;
 
     // Compute dt to distinguish seek from play.
-    const dt = this._lastMs !== null ? (millisecond - this._lastMs) / 1000 : -1;
+    // First frame uses a default 1/60s so the chase begins smoothly.
+    const dt =
+      this._lastMs !== null ? (millisecond - this._lastMs) / 1000 : 1 / 60;
     this._lastMs = millisecond;
 
-    // On seek (large dt or first frame): snap directly, no spring.
-    if (dt < 0 || dt > SEEK_THRESHOLD) {
+    // On seek (large dt): snap directly, no spring.
+    if (dt > SEEK_THRESHOLD) {
       camera.position.x = desiredX;
       camera.position.y = desiredY;
       camera.position.z = desiredZ;
