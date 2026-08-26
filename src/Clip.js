@@ -577,8 +577,9 @@ export default class Clip3D extends BrowserClip {
   }
 
   handleWindowResize() {
-    this.context.window.addEventListener("resize", () => {
+    const resizeHandler = () => {
       const { offsetWidth, offsetHeight } = this.context.rootElement;
+      if (!offsetWidth || !offsetHeight) return;
       const aspect = offsetWidth / offsetHeight;
       for (const camera of this.getElements("!.cameras")) {
         camera.entity.object.aspect = aspect;
@@ -590,7 +591,28 @@ export default class Clip3D extends BrowserClip {
       }
       // render the scene
       this.renderLoop();
-    });
+    };
+
+    this.context.window.addEventListener("resize", resizeHandler);
+
+    // Detect when the container goes from 0×0 to real dimensions
+    // (e.g. page load, detached→attached DOM swap, CAsI mount).
+    if (typeof ResizeObserver !== "undefined") {
+      let hadSize = false;
+      const ro = new ResizeObserver((entries) => {
+        for (const entry of entries) {
+          const { width, height } = entry.contentRect;
+          if (width > 0 && height > 0) {
+            if (!hadSize) {
+              hadSize = true;
+              resizeHandler();
+            }
+          }
+        }
+      });
+      ro.observe(this.context.rootElement);
+      this._resizeObserver = ro;
+    }
   }
 
   render() {
