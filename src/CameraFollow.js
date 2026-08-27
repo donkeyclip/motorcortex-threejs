@@ -89,6 +89,12 @@ export default class CameraFollow extends Effect {
     const desiredLookZ = lookAtEntity.position.z;
 
     // dt for seek detection.
+    // Reset _lastMs when the Effect re-activates after a replay/seek-backward
+    // so the magnetic chase starts fresh instead of snapping.
+    if (this._lastMs !== null && millisecond < this._lastMs - 50) {
+      this._lastMs = null;
+      this._currentLookAt = null;
+    }
     const dt =
       this._lastMs !== null ? (millisecond - this._lastMs) / 1000 : 1 / 60;
     this._lastMs = millisecond;
