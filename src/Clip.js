@@ -400,6 +400,7 @@ export default class Clip3D extends BrowserClip {
         ["renderers", ...renderer.class]
       );
       const rendererObj = this.getObjectById(renderer.id);
+      rendererObj.localClippingEnabled = true;
       if (rendererObj.outputColorSpace !== undefined) {
         rendererObj.outputColorSpace = THREE.SRGBColorSpace;
       } else {
@@ -453,6 +454,24 @@ export default class Clip3D extends BrowserClip {
       else if (entity.object) return this.createObject(entity);
       return this.createMesh(entity);
     });
+
+    // Parent-child pass: re-parent entities that declare settings._parentEntity.
+    // Uses _parentEntity (not "parent") to avoid applySettingsToObjects overwriting
+    // the three.js internal .parent reference.
+    this.attributes.entities.forEach((entity) => {
+      if (!entity.settings?._parentEntity) return;
+      const childEls = this.context.getElements(`!#${entity.id}`);
+      const parentEls = this.context.getElements(
+        `!#${entity.settings._parentEntity}`
+      );
+      if (childEls?.[0]?.entity?.object && parentEls?.[0]?.entity?.object) {
+        const child = childEls[0].entity.object;
+        const parent = parentEls[0].entity.object;
+        parent.add(child);
+        child.position.set(0, 0, 0);
+      }
+    });
+
     /*
       Execute all light function callbacks
       we need this to add target to lights.
@@ -680,6 +699,14 @@ export default class Clip3D extends BrowserClip {
     // Create geometry
     const geometry = new THREE[geomType](...(definition.params || []));
 
+    // For BufferGeometry with explicit points (e.g. lines between two 3D positions)
+    if (definition.points && geometry.setFromPoints) {
+      const pts = definition.points.map(
+        (p) => new THREE.Vector3(p[0], p[1], p[2])
+      );
+      geometry.setFromPoints(pts);
+    }
+
     // Create material — shorthand or full
     const matDef = definition.material || {};
     const matType = matDef.type || "MeshStandardMaterial";
@@ -694,11 +721,48 @@ export default class Clip3D extends BrowserClip {
     }
     const material = new THREE[matType](matParams);
 
-    // Create mesh
-    const mesh = new THREE.Mesh(geometry, material);
+    // Create object — Line for line geometries, Sprite for labels, Mesh otherwise
+    const entityType = definition.entityType || "Mesh";
+    let mesh;
 
-    // Add wireframe edges for visibility (especially with transparent materials)
-    if (definition.edges !== false) {
+    if (entityType === "Sprite" && definition.text) {
+      // Text label sprite: renders text onto a canvas texture
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      const fontSize = definition.fontSize || 48;
+      const font = `bold ${fontSize}px Arial`;
+      ctx.font = font;
+      const textWidth = ctx.measureText(definition.text).width;
+      canvas.width = Math.ceil(textWidth) + 20;
+      canvas.height = fontSize + 16;
+      ctx.font = font;
+      ctx.fillStyle = matParams.color
+        ? `#${new THREE.Color(matParams.color).getHexString()}`
+        : "#ffffff";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(definition.text, canvas.width / 2, canvas.height / 2);
+      const texture = new THREE.CanvasTexture(canvas);
+      const spriteMat = new THREE.SpriteMaterial({
+        map: texture,
+        transparent: true,
+        depthTest: false,
+      });
+      mesh = new THREE.Sprite(spriteMat);
+      const aspect = canvas.width / canvas.height;
+      const spriteScale = definition.spriteScale || 2;
+      mesh.scale.set(spriteScale * aspect, spriteScale, 1);
+    } else {
+      mesh = new THREE[entityType](geometry, material);
+    }
+
+    // Dashed lines need computeLineDistances() to render the dash pattern
+    if (matType === "LineDashedMaterial" && geometry.computeLineDistances) {
+      geometry.computeLineDistances();
+    }
+
+    // Add wireframe edges for visibility (skip for non-mesh objects)
+    if (entityType === "Mesh" && definition.edges !== false) {
       const edgeGeo = new THREE.EdgesGeometry(geometry);
       const edgeColor =
         definition.edgeColor || definition.material?.color || "#2c3e50";
@@ -746,6 +810,15 @@ export default class Clip3D extends BrowserClip {
   hideEntity(element) {
     if (element?.object) {
       element.object.visible = false;
+    }
+  }
+
+  /**
+   * Called by MC to reveal a previously hidden entity.
+   */
+  showElement(element) {
+    if (element?.object) {
+      element.object.visible = true;
     }
   }
 }

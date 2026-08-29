@@ -3,6 +3,8 @@ import ObjectAnimation from "./ObjectAnimation";
 import MorphAnimation from "./MorphAnimation";
 import OrbitalMotion from "./OrbitalMotion";
 import CameraFollow from "./CameraFollow";
+import AppearanceChange from "./AppearanceChange";
+import MaterialEffect from "./MaterialEffect";
 import compositeAttributes from "./compoAttrs";
 import pkg from "../package.json";
 export default {
@@ -24,6 +26,14 @@ export default {
     {
       exportable: CameraFollow,
       name: "CameraFollow",
+    },
+    {
+      exportable: AppearanceChange,
+      name: "AppearanceChange",
+    },
+    {
+      exportable: MaterialEffect,
+      name: "MaterialEffect",
     },
   ],
   Clip: {
