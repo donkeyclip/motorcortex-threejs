@@ -286,5 +286,99 @@ scene2Clip.addIncident(
   6000
 );
 
+// ═══════════════════════════════════════════════════════════════════════════
+// MaterialEffect demo — sphere cutaway with inner layers
+// ═══════════════════════════════════════════════════════════════════════════
+
+// Add inner layer spheres (hidden inside teal_sphere at [0, 1.2, 0])
+const layers = [
+  { id: "inner_core", radius: 0.3, color: "#ffdd00" }, // yellow
+  { id: "outer_core", radius: 0.55, color: "#ff8800" }, // orange
+  { id: "mantle", radius: 0.9, color: "#cc3300" }, // red
+];
+
+for (const layer of layers) {
+  scene2Clip.addCustomEntity(
+    {
+      geometry: "SphereGeometry",
+      params: [layer.radius, 32, 32],
+      material: {
+        type: "MeshStandardMaterial",
+        color: layer.color,
+        roughness: 0.7,
+      },
+      position: [0, 1.2, 0],
+      edges: false,
+    },
+    layer.id,
+    ["layers"]
+  );
+}
+
+// At 6s: animate cutaway — planes slide from outside (radius) to center (0)
+const R = 1.2; // teal_sphere radius
+const openPlanes = [
+  [1, 0, 0, 0],
+  [0, 0, 1, 0],
+]; // target: cut through center
+const closedPlanes = [
+  [1, 0, 0, R],
+  [0, 0, 1, R],
+]; // initial: outside sphere (no cut)
+
+for (const target of ["!#teal_sphere", "!#mantle", "!#outer_core"]) {
+  // Animate open
+  scene2Clip.addIncident(
+    new threejs.MaterialEffect(
+      {
+        animatedAttrs: { material: { clippingPlanes: openPlanes } },
+        initialValues: { material: { clippingPlanes: closedPlanes } },
+      },
+      { selector: target, duration: 2000, easing: "easeInOutCubic" }
+    ),
+    6000
+  );
+  // Animate close
+  scene2Clip.addIncident(
+    new threejs.MaterialEffect(
+      {
+        animatedAttrs: { material: { clippingPlanes: closedPlanes } },
+        initialValues: { material: { clippingPlanes: openPlanes } },
+      },
+      { selector: target, duration: 2000, easing: "easeInOutCubic" }
+    ),
+    9000
+  );
+}
+
+// Animate color of the box: red → teal over 3s
+scene2Clip.addIncident(
+  new threejs.MaterialEffect(
+    {
+      animatedAttrs: { material: { color: "#2a9d8f" } },
+      initialValues: { material: { color: "#e76f51" } },
+    },
+    { selector: "!#red_box", duration: 3000 }
+  ),
+  3000
+);
+
+// ═══════════════════════════════════════════════════════════════════════════
+// LiveDistance demo — dashed line between red_box and teal_sphere
+// ═══════════════════════════════════════════════════════════════════════════
+scene2Clip.addIncident(
+  new threejs.LiveDistance(
+    {
+      animatedAttrs: { liveDistance: 1 },
+      targetSelector: "!#red_box",
+      targetSelector2: "!#teal_sphere",
+      label: "~3.2 units apart",
+      color: "#00ffcc",
+    },
+    { selector: "!#cam2", duration: 10000 }
+  ),
+  0
+);
+
 // ─── Player ────────────────────────────────────────────────────────────────
 new Player({ clip: master });

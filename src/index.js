@@ -5,6 +5,7 @@ import OrbitalMotion from "./OrbitalMotion";
 import CameraFollow from "./CameraFollow";
 import AppearanceChange from "./AppearanceChange";
 import MaterialEffect from "./MaterialEffect";
+import LiveDistance from "./LiveDistance";
 import compositeAttributes from "./compoAttrs";
 import pkg from "../package.json";
 export default {
@@ -34,6 +35,10 @@ export default {
     {
       exportable: MaterialEffect,
       name: "MaterialEffect",
+    },
+    {
+      exportable: LiveDistance,
+      name: "LiveDistance",
     },
   ],
   Clip: {
