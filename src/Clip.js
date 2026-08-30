@@ -230,6 +230,15 @@ export default class Clip3D extends BrowserClip {
   }
 
   createMesh(entity) {
+    // LatheGeometry expects Vector2 points — convert [[x,y],...] arrays
+    if (
+      entity.geometry.type === "LatheGeometry" &&
+      Array.isArray(entity.geometry.parameters[0])
+    ) {
+      entity.geometry.parameters[0] = entity.geometry.parameters[0].map(
+        (p) => new THREE.Vector2(p[0], p[1])
+      );
+    }
     const geometry = new THREE[entity.geometry.type](
       ...entity.geometry.parameters
     );

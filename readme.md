@@ -21,6 +21,10 @@
   - [3D Clip](#3d-clip)
   - [ObjectAnimation Effect](#objectanimation-effect)
   - [MorphAnimation Effect](#morphanimation-effect)
+  - [CameraFollow Effect](#camerafollow-effect)
+  - [OrbitalMotion Effect](#orbitalmotion-effect)
+  - [AppearanceChange Effect](#appearancechange-effect)
+  - [MaterialEffect](#materialeffect)
 - [Adding Incidents in your clip](#adding-incidents-in-your-clip)
 - [Contributing](#contributing)
 - [License](#license)
@@ -40,7 +44,7 @@ Can you become a 3d video creator with threejs? Well yes, you can! Motorcortex-t
 - lights
 - entities
 
-Scenes, cameras and lights are self-explanatory. Entities refer to any object added in the 3d scene model or mesh geometry. The plugin exports a Clip method to initialize a new 3D Clip and two Effects. The ObjectAnimation Effect is from where you can animate any property of an object's tranformation matrix ( location, rotation, scale ) and with the MorphAnimation Effect you can play any animation that your model supports.
+Scenes, cameras and lights are self-explanatory. Entities refer to any object added in the 3d scene model or mesh geometry. The plugin exports a Clip method to initialize a new 3D Clip and several Effects. The ObjectAnimation Effect is from where you can animate any property of an object's tranformation matrix ( location, rotation, scale ) and with the MorphAnimation Effect you can play any animation that your model supports.
 
 In order to support most of the features and possible updates of threejs out of the box the descriptive representation of a 3d scene has 3 concepts
 
@@ -299,43 +303,70 @@ clip.addCustomEntity(
 );
 ```
 
-The entity is created and added to the default scene. When `hidden` is `true`, the object starts with `visible: false` — use an `ObjectAnimation` incident to reveal it (e.g. scale from 0 to 1).
+The entity is created and added to the default scene. When `hidden` is `true`, the object starts with `visible: false` — use an `AppearanceChange` incident to reveal it.
 
-**Supported geometry types:** Any Three.js geometry — `BoxGeometry`, `SphereGeometry`, `CylinderGeometry`, `ConeGeometry`, `PlaneGeometry`, `TorusGeometry`, `TorusKnotGeometry`, `RingGeometry`, `DodecahedronGeometry`, etc.
+**Extended entity types:** In addition to standard Mesh entities, `addCustomEntity` supports:
+
+- **Lines:** Set `entityType: "Line"` with `geometry: "BufferGeometry"` and `points: [[x,y,z], [x,y,z]]` for line geometry. Supports `LineDashedMaterial`.
+- **Sprites:** Set `entityType: "Sprite"` with `text: "label text"` to create a billboard text label. Control size via `spriteScale` and color via `material.color`.
+
+```javascript
+// Dashed line between two points
+clip.addCustomEntity(
+  {
+    geometry: "BufferGeometry",
+    points: [
+      [0, 0, 0],
+      [5, 0, 5],
+    ],
+    entityType: "Line",
+    edges: false,
+    material: {
+      type: "LineDashedMaterial",
+      color: "#ffffff",
+      dashSize: 0.3,
+      gapSize: 0.15,
+    },
+  },
+  "my_line",
+  ["lines"]
+);
+
+// Text label sprite
+clip.addCustomEntity(
+  {
+    geometry: "BufferGeometry",
+    entityType: "Sprite",
+    text: "1.52 AU",
+    spriteScale: 2,
+    position: [2.5, 1, 2.5],
+    edges: false,
+    material: { type: "SpriteMaterial", color: "#ffffff" },
+  },
+  "my_label",
+  ["labels"]
+);
+```
+
+**Supported geometry types:** Any Three.js geometry — `BoxGeometry`, `SphereGeometry`, `CylinderGeometry`, `ConeGeometry`, `PlaneGeometry`, `TorusGeometry`, `TorusKnotGeometry`, `RingGeometry`, `DodecahedronGeometry`, `BufferGeometry`, etc.
 
 **Material shorthand:** `{ color: "#e76f51" }` defaults to `MeshStandardMaterial`. For other materials, specify `{ type: "MeshPhongMaterial", color: "#e76f51", shininess: 100 }`.
 
 **Definition shape:**
 
-| Property | Type    | Description                                                |
-| -------- | ------- | ---------------------------------------------------------- |
-| geometry | string  | Three.js geometry class name (e.g. `"BoxGeometry"`)        |
-| params   | array   | Constructor arguments for the geometry                     |
-| material | object  | `{ color, type?, emissive?, roughness?, metalness?, ... }` |
-| position | [x,y,z] | World position                                             |
-| rotation | [x,y,z] | Euler rotation in radians                                  |
-| scale    | [x,y,z] | Scale multiplier                                           |
-
-### Reveal animation pattern
-
-```javascript
-// 1. Add entity (hidden)
-clip.addCustomEntity(definition, "sphere1", ["shapes"], true);
-
-// 2. Set initial scale to 0 on the Three.js object
-const ent = clip.realClip.context.getElements("!#sphere1")[0];
-ent.entity.object.visible = true;
-ent.entity.object.scale.set(0, 0, 0);
-
-// 3. Animate scale to reveal
-clip.addIncident(
-  new threejs.ObjectAnimation(
-    { animatedAttrs: { scale: { x: 1, y: 1, z: 1 } } },
-    { selector: "!#sphere1", duration: 800 }
-  ),
-  1000 // start at 1s
-);
-```
+| Property    | Type    | Description                                                |
+| ----------- | ------- | ---------------------------------------------------------- |
+| geometry    | string  | Three.js geometry class name (e.g. `"BoxGeometry"`)        |
+| params      | array   | Constructor arguments for the geometry                     |
+| points      | array   | Array of `[x,y,z]` for `BufferGeometry` line endpoints     |
+| entityType  | string  | `"Mesh"` (default), `"Line"`, or `"Sprite"`                |
+| text        | string  | Label text (Sprite only)                                   |
+| spriteScale | number  | Scale factor for sprite labels                             |
+| material    | object  | `{ color, type?, emissive?, roughness?, metalness?, ... }` |
+| position    | [x,y,z] | World position                                             |
+| rotation    | [x,y,z] | Euler rotation in radians                                  |
+| scale       | [x,y,z] | Scale multiplier                                           |
+| edges       | boolean | Add wireframe edges (default `true`, set `false` to skip)  |
 
 ## Controls
 
@@ -362,7 +393,7 @@ $ yarn add @donkeyclip/motorcortex-threejs
 ```javascript
 import { loadPlugin } from "@donkeyclip/motorcortex";
 import threejsPlugin from "@donkeyclip/motorcortex-threejs";
-const threejs = loadPlugin(threejs);
+const threejs = loadPlugin(threejsPlugin);
 ```
 
 # Creating Incidents
@@ -374,17 +405,6 @@ With the Clip method you describe the initial state of your 3D Scene with a java
 ```javascript
 const clip = new threejs.Clip(
   {
-    /* Only add this property if you want to use postprocessing functionalities */
-    postProcessing: {
-      bloomPass: {
-        parameters: [1.5, 0.4, 0.85],
-        settings: {
-          threshold: 0,
-          strength: 1,
-          radius: 0,
-        },
-      },
-    },
     renderers: {
       type: "WebGLRenderer",
       parameters: [{ alpha: true }],
@@ -421,18 +441,6 @@ const clip = new threejs.Clip(
         },
         settings: { position: { set: [0, 0, 0] } },
       },
-      {
-        id: "man_1",
-        model: {
-          loader: "GLTFLoader",
-          file: "path/to/our/model.glb",
-        },
-        settings: {
-          position: { x: 10, y: 10, z: 10 },
-          rotation: { x: 0, y: -Math.PI / 2, z: 0 },
-          scale: { x: 2, y: 2, z: 2 },
-        },
-      },
     ],
     controls: { enable: true, enableEvents: true },
   },
@@ -445,22 +453,14 @@ const clip = new threejs.Clip(
 
 ## ObjectAnimation Effect
 
-If you want to animate the tranformation matrix of any object (camera,scene,light or any entity) you can do it by using the ObjectAnimation Effect. The example below will animate the camera's position to 20,20,20 and will continuously looking at box_1 position.
-Note that for targetEntity and selector we are using the ids as they were set in the clip definition. We can also use the followEntity option to follow a specific moving object with optionally defined offset.
-\*Important Note: When targe Entity and follow Entity are used combined you must first declare the followEntity and then the targetEntity as shown in the example bellow.
+If you want to animate the tranformation matrix of any object (camera, scene, light or any entity) you can do it by using the ObjectAnimation Effect.
 
 ```javascript
 const cameraAnimation = new threejs.ObjectAnimation(
   {
     animatedAttrs: {
-      followEntity: {
-        offsetX: 10,
-        offsetY: 10,
-        offsetZ: 10,
-        entity: "!#box_1",
-      },
-      targetEntity: "!#box_1",
       position: { x: 20, y: 20, z: 20 },
+      targetEntity: "!#box_1",
     },
   },
   {
@@ -471,23 +471,20 @@ const cameraAnimation = new threejs.ObjectAnimation(
 clip.addIncident(cameraAnimation, 0);
 ```
 
-| Animate Attribute | value                                                              | Description                                                                                                                                                                                                          |
-| ----------------- | ------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| targetEntity      | "!#targetId", "!.targetClass"                                      | A selector of the entity to lookAt                                                                                                                                                                                   |
-| followEntity      | {entity:"!#targetId", offsetX:number,offsetY:number,offsetZ:number | the id of the entity to follow                                                                                                                                                                                       |
-| position          | {x:number,y:number or "!#targetId",z:number}                       | the new position of the object. If set to targeting the id of an other entity it's value will be calculated by intersection points below the object. This came in handy when animating in a terrain is what you want |
-| rotation          | {x:number,y:number,z:number}                                       | the new rotation of the object                                                                                                                                                                                       |
-| scale             | {x:number,y:number,z:number}                                       | the new scale of the object                                                                                                                                                                                          |
-| rotationSetX      | number                                                             | the new rotation y of the object. This will set statically an will not animate through time                                                                                                                          |
-| rotationSetY      | number                                                             | the new rotation y of the object. This will set statically an will not animate through time                                                                                                                          |
-| rotationSetZ      | number                                                             | the new rotation z of the object. This will set statically an will not animate through time                                                                                                                          |
+| Animate Attribute | Value                                              | Description                           |
+| ----------------- | -------------------------------------------------- | ------------------------------------- |
+| targetEntity      | `"!#targetId"`, `"!.targetClass"`                  | A selector of the entity to lookAt    |
+| followEntity      | `{entity:"!#targetId", offsetX, offsetY, offsetZ}` | Entity to follow with optional offset |
+| position          | `{x, y, z}`                                        | New position of the object            |
+| rotation          | `{x, y, z}`                                        | New rotation of the object            |
+| scale             | `{x, y, z}`                                        | New scale of the object               |
 
 ## MorphAnimation Effect
 
-If you want to play an animation that your model support then MorphAnimation is what you are looking for.
+If you want to play an animation that your model supports then MorphAnimation is what you are looking for.
 
 ```javascript
-const manWalk = new threejsPlugin.MorphAnimation(
+const manWalk = new threejs.MorphAnimation(
   {
     attrs: {
       singleLoopDuration: 1000,
@@ -505,14 +502,214 @@ const manWalk = new threejsPlugin.MorphAnimation(
 clip.addIncident(manWalk, 0);
 ```
 
-| Attribute          | Value  | Description                            |
-| ------------------ | ------ | -------------------------------------- |
-| singleLoopDuration | number | The duration of a single loop          |
-| animationName      | string | the name of the animation to be played |
+## CameraFollow Effect
 
-| Animated Attribute | Value  | Description                                                                                                                                                                                                                                                          |
-| ------------------ | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| time (+any string) | number | The duration of the animation. If you want to play multiple animation in the same time you can add different time property in each incident. For example one incident may animate the property "time_1", another incident may animate the propery "time_2" and so on |
+A magnetic-chase camera that tracks a target entity with configurable offset. The camera smoothly approaches the target using exponential decay — it moves fast when far and tracks precisely when close.
+
+```javascript
+const chase = new threejs.CameraFollow(
+  {
+    animatedAttrs: {
+      follow: { offsetX: 5, offsetY: 3, offsetZ: 5 },
+    },
+    targetSelector: "!#earth",
+    lookAtTarget: true,
+  },
+  {
+    selector: "!#camera_1",
+    duration: 5000,
+  }
+);
+clip.addIncident(chase, 0);
+```
+
+| Attribute      | Type    | Description                                          |
+| -------------- | ------- | ---------------------------------------------------- |
+| follow         | object  | `{ offsetX, offsetY, offsetZ }` — offset from target |
+| targetSelector | string  | Entity selector to chase (e.g. `"!#earth"`)          |
+| lookAtTarget   | boolean | When `true`, camera always looks at the target       |
+
+The camera uses spring-based interpolation, so consecutive CameraFollow incidents create smooth orbital paths when offsets change between segments.
+
+## OrbitalMotion Effect
+
+Moves an entity along a circular orbit. Used for planetary systems, moons, or any circular animation. Supports parent-relative orbits (e.g. moon orbiting a planet that itself orbits the sun).
+
+```javascript
+const orbit = new threejs.OrbitalMotion(
+  {
+    animatedAttrs: {
+      orbit: {
+        radius: 10,
+        revolutions: 1,
+        phase: 0,
+        centerX: 0,
+        centerZ: 0,
+        parentSelector: null,
+      },
+    },
+  },
+  {
+    selector: "!#earth",
+    duration: 10000,
+  }
+);
+clip.addIncident(orbit, 0);
+```
+
+| Attribute      | Type   | Description                                                     |
+| -------------- | ------ | --------------------------------------------------------------- |
+| radius         | number | Orbit radius                                                    |
+| revolutions    | number | Number of full orbits during the incident                       |
+| phase          | number | Starting angle in radians                                       |
+| centerX        | number | Orbit center X (default 0)                                      |
+| centerZ        | number | Orbit center Z (default 0)                                      |
+| parentSelector | string | Parent entity selector for relative orbits (e.g. `"!#jupiter"`) |
+
+## AppearanceChange Effect
+
+Toggles visibility of a three.js object on the timeline. Used to show/hide entities at specific points in time.
+
+```javascript
+// Show entity
+clip.addIncident(
+  new threejs.AppearanceChange(
+    { animatedAttrs: { visible: true } },
+    { selector: "!#my_entity", duration: 2 }
+  ),
+  1000
+);
+
+// Hide entity
+clip.addIncident(
+  new threejs.AppearanceChange(
+    { animatedAttrs: { visible: false } },
+    { selector: "!#my_entity", duration: 2 }
+  ),
+  5000
+);
+```
+
+The Effect sets `object.visible` to the target value when MC calls `onProgress`. Use short durations (1-2ms) for instant toggles.
+
+## MaterialEffect
+
+Animate any material property on a three.js object. Uses the `material` composite attribute to pass all properties as a single object.
+
+**Supported property types:**
+
+- **Numeric** (`opacity`, `roughness`, `metalness`, `emissiveIntensity`) — smoothly interpolated
+- **Color** (`color`, `emissive`, `specular`) — interpolated via `THREE.Color.lerp`
+- **Clipping planes** (`clippingPlanes`) — array of `[nx, ny, nz, constant]`; constants are interpolated for animated cutaway effects
+- **Boolean** (`transparent`, `depthWrite`, `wireframe`) — toggled when the incident is active
+
+### Color animation
+
+```javascript
+clip.addIncident(
+  new threejs.MaterialEffect(
+    {
+      animatedAttrs: { material: { color: "#2a9d8f" } },
+      initialValues: { material: { color: "#e76f51" } },
+    },
+    { selector: "!#my_box", duration: 3000 }
+  ),
+  0
+);
+```
+
+### Opacity fade
+
+```javascript
+clip.addIncident(
+  new threejs.MaterialEffect(
+    {
+      animatedAttrs: { material: { opacity: 0, transparent: true } },
+      initialValues: { material: { opacity: 1 } },
+    },
+    { selector: "!#my_sphere", duration: 2000 }
+  ),
+  0
+);
+```
+
+### Animated cutaway (clipping planes)
+
+Clipping planes slice away geometry at render time — the geometry is untouched and the effect is fully reversible. Each plane is `[nx, ny, nz, constant]` where the normal `(nx, ny, nz)` defines the clip direction and `constant` controls how deep the cut goes. Animate the constant from outside the object (no cut) to the center (full cut).
+
+```javascript
+const R = 1.2; // sphere radius
+
+// Animate open: planes slide from outside to center
+clip.addIncident(
+  new threejs.MaterialEffect(
+    {
+      animatedAttrs: {
+        material: {
+          clippingPlanes: [
+            [1, 0, 0, 0], // target: cut through center on X
+            [0, 0, 1, 0], // target: cut through center on Z
+          ],
+        },
+      },
+      initialValues: {
+        material: {
+          clippingPlanes: [
+            [1, 0, 0, R], // initial: outside sphere (no cut)
+            [0, 0, 1, R],
+          ],
+        },
+      },
+    },
+    { selector: "!#my_sphere", duration: 2000, easing: "easeInOutCubic" }
+  ),
+  0
+);
+
+// Animate close: reverse the constants
+clip.addIncident(
+  new threejs.MaterialEffect(
+    {
+      animatedAttrs: {
+        material: {
+          clippingPlanes: [
+            [1, 0, 0, R],
+            [0, 0, 1, R],
+          ],
+        },
+      },
+      initialValues: {
+        material: {
+          clippingPlanes: [
+            [1, 0, 0, 0],
+            [0, 0, 1, 0],
+          ],
+        },
+      },
+    },
+    { selector: "!#my_sphere", duration: 2000, easing: "easeInOutCubic" }
+  ),
+  5000
+);
+```
+
+This works on any geometry — spheres, boxes, models. For planet cross-sections, place concentric spheres inside and clip all of them with the same planes to reveal inner layers.
+
+### All material properties
+
+| Property          | Type    | Interpolation | Description                       |
+| ----------------- | ------- | ------------- | --------------------------------- |
+| color             | string  | Color.lerp    | Diffuse color                     |
+| emissive          | string  | Color.lerp    | Emissive (glow) color             |
+| specular          | string  | Color.lerp    | Specular highlight color          |
+| opacity           | number  | linear        | 0 (transparent) to 1 (opaque)     |
+| roughness         | number  | linear        | 0 (glossy) to 1 (rough)           |
+| metalness         | number  | linear        | 0 (non-metal) to 1 (metal)        |
+| emissiveIntensity | number  | linear        | Emissive light intensity          |
+| transparent       | boolean | toggle        | Enable transparency               |
+| depthWrite        | boolean | toggle        | Write to depth buffer             |
+| wireframe         | boolean | toggle        | Render as wireframe               |
+| clippingPlanes    | array   | constant lerp | Array of `[nx, ny, nz, constant]` |
 
 # Adding Incidents in your clip
 

@@ -6,7 +6,7 @@ export const applySettingsToObjects = (
   escapeProperties = []
 ) => {
   for (const key in settings) {
-    if (escapeProperties.includes(key)) continue;
+    if (escapeProperties.includes(key) || key.startsWith("_")) continue;
     if (settings[key] instanceof Array) {
       checkSchema(obj, key, "function");
       obj[key](...settings[key]);
